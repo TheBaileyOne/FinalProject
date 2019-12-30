@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/bottom_navigation_item_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="@string/activity_main_bottom_screen_dashboard" />
+
+    <item
+        android:id="@+id/bottom_navigation_item_timeTable"
+        android:icon="@drawable/ic_date_range"
+        android:title="@string/activity_main_bottom_screen_timeTable" />
+
+    <item
+        android:id="@+id/bottom_navigation_item_subjects"
+        android:icon="@drawable/ic_school"
+        android:title="@string/activity_main_bottom_screen_subjects"/>
+    <item
+        android:id="@+id/bottom_navigation_item_studyMode"
+        android:icon="@drawable/ic_local_library"
+        android:title="@string/activity_main_bottom_screen_studyMode"/>
+</menu>

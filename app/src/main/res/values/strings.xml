@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">StudentLifeApp</string>
+    <string name="activity_main_bottom_screen_dashboard">Dashboard</string>
+    <string name="activity_main_bottom_screen_timeTable">Time Table</string>
+    <string name="activity_main_bottom_screen_subjects">Subjects</string>
+    <string name="activity_main_bottom_screen_studyMode">Study Mode</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
