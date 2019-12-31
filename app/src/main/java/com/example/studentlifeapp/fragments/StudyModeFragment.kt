@@ -40,7 +40,7 @@ class StudyModeFragment : Fragment() {
         //return inflater.inflate(R.layout.fragment_study_mode, container, false)
         val view: View = inflater.inflate(R.layout.fragment_study_mode, container, false)
 
-        view.studyButton.setOnClickListener{ view ->
+        view.studyButton.setOnClickListener{
             Log.d("studyButton","Selected")
             val intent = Intent(context, StudyMode::class.java);
             startActivity(intent);
