@@ -42,8 +42,8 @@ class StudyModeFragment : Fragment() {
 
         view.studyButton.setOnClickListener{
             Log.d("studyButton","Selected")
-            val intent = Intent(context, StudyMode::class.java);
-            startActivity(intent);
+            val intent = Intent(context, StudyMode::class.java)
+            startActivity(intent)
 
         }
         return view

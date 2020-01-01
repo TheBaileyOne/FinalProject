@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:id="@+id/event_view"
+    android:layout_marginHorizontal="16dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/event_view_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimary"
+            />
+        <TextView
+            android:id="@+id/event_view_title"
+            android:text="Event Title"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/event_view_icon"
+            android:layout_marginLeft="15dp"/>
+
+        <ImageView
+            android:id="@+id/event_view_location_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/event_view_title"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="0dp"
+            android:layout_toRightOf="@+id/event_view_icon"
+            app:srcCompat="@drawable/ic_location" />
+
+        <TextView
+            android:id="@+id/event_view_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/event_view_title"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_toRightOf="@+id/event_view_location_icon"
+            android:text="Location"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/event_view_time"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="3dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="14sp"
+            tools:text="12:00 \n-\n13:00"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</FrameLayout>
