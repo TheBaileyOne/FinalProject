@@ -1,8 +1,8 @@
 package com.example.studentlifeapp.fragments
 
-
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,9 +14,10 @@ import androidx.core.view.children
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studentlifeapp.R
+import com.example.studentlifeapp.*
+import com.example.studentlifeapp.data.Event
+import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.importEvents
-import com.example.studentlifeapp.daysOfWeekFromLocale
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.setTextColorRes
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -31,8 +32,10 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.calendar_day_layout.view.*
 import kotlinx.android.synthetic.main.fragment_timetable.*
 import kotlinx.android.synthetic.main.calendar_header.view.*
+import kotlinx.android.synthetic.main.event_item_view.*
+//import kotlinx.android.synthetic.main.event_item_view.view.*
 import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
+//import org.threeten.bp.LocalDateTime
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
@@ -40,16 +43,10 @@ import java.util.*
 
 
 
-data class Event(val time:LocalDateTime){
-    //TODO: set up data class for event
-}
-
-
 class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
     val events = mutableListOf<Event>()
-
-    @RequiresApi(Build.VERSION_CODES.O)
-//    private val formatter = DateTimeFormatter.ofPattern("HH:mm'\n'-'\n;HH:mm")
+//    private val baseView = R.layout.event_item_view
+    private val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
@@ -66,11 +63,27 @@ class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
         RecyclerView.ViewHolder(containerView), LayoutContainer {
 
         fun bind(event: Event) {
-            //TODO: data binding for elements of event
+//            val title = R.id.event_view_title as TextView
+//            title.text = event.title
 
+            event_view_title.text = event.title
+            event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
+            if (event.location?.basicDisplay() != null){
+                event_view_location.text = event.location?.basicDisplay()
+                event_view_location_icon.visibility = View.VISIBLE
+            }else{
+                event_view_location.text = ""
+                event_view_location_icon.visibility = View.INVISIBLE
+            }
+
+            event_view_time.text = when (event.type) {
+                EventType.REMINDER -> formatter.format(event.startTime)
+                else -> "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
+            }
+
+            //TODO: fix events objects/inheritance so that it is possible to access properties of all type of event
 
         }
-
     }
 }
 
@@ -78,6 +91,7 @@ class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
 class TimetableFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         return inflater.inflate(R.layout.fragment_timetable, container, false)
     }
 
@@ -86,7 +100,7 @@ class TimetableFragment : Fragment() {
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val eventAdapter = EventAdapter()
     @RequiresApi(Build.VERSION_CODES.O)
-    private val events = importEvents().groupBy{ it.time.toLocalDate()}
+    private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
 
     //TODO: private val events= [get events from database]
 
@@ -106,8 +120,8 @@ class TimetableFragment : Fragment() {
             lateinit var day: CalendarDay
             val textView = view.dayText
             val layout = view.dayLayout
-            val eventTopView = view.dayEventTop
-            val eventBottomView = view.dayEventBottom
+//            val eventTopView = view.dayEventTop
+//            val eventBottomView = view.dayEventBottom
 
             init {
                 view.setOnClickListener {
@@ -131,8 +145,8 @@ class TimetableFragment : Fragment() {
                 val layout = container.layout
                 textView.text = day.date.dayOfMonth.toString()
 
-                val eventTopView = container.eventTopView
-                val evenetBottomView = container.eventBottomView
+//                val eventTopView = container.eventTopView
+//                val eventBottomView = container.eventBottomView
 
                 if (day.owner == DayOwner.THIS_MONTH){
                     textView.setTextColorRes(R.color.colorPrimaryDark)
@@ -141,6 +155,7 @@ class TimetableFragment : Fragment() {
                     val events =events[day.date]
                     if (events != null){
                        //TODO: do logic for displaying events
+
                     }
                 } else {
                     //TODO: set colour
@@ -196,6 +211,7 @@ class TimetableFragment : Fragment() {
         eventAdapter.events.clear()
         eventAdapter.events.addAll(events[date].orEmpty())
         eventAdapter.notifyDataSetChanged()
+
     }
 
 }

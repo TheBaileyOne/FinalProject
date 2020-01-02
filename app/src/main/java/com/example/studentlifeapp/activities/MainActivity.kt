@@ -20,7 +20,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //TODO: Login/authentication
+        //TODO: get events data
         //initialize views
         viewPager=findViewById(R.id.view_pager)
         bottomNavigationView=findViewById(R.id.bottom_navigation_view)
