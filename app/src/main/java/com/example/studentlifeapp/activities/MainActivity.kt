@@ -3,6 +3,7 @@ package com.example.studentlifeapp.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.AdapterView
 import androidx.annotation.IdRes
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R

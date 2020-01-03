@@ -6,8 +6,15 @@ import com.example.studentlifeapp.R
 import org.threeten.bp.LocalDateTime
 
 
-data class Event(val title: String, val type: EventType = EventType.EVENT, val startTime: LocalDateTime, val endTime : LocalDateTime = startTime,
-                 val notifications: MutableList<LocalDateTime> = mutableListOf(startTime), val location: Location? = null, val note: String = ""){
+data class Event(
+    val title: String,
+    val type: EventType = EventType.EVENT,
+    val startTime: LocalDateTime,
+    val endTime : LocalDateTime = startTime,
+    val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
+    val location: Location? = null,
+    val note: String = "")
+{
     val colour: Int = setColour()
     private fun setColour(): Int {
         //TODO("set correct colours")
@@ -23,8 +30,6 @@ data class Event(val title: String, val type: EventType = EventType.EVENT, val s
             EventType.SOCIETY -> R.color.DeepPink
         }
     }
-
-
 }
 
 data class Location(val name:String, val town: String? = null, val city: String? = null, val county: String? = null, val  postCode: String? = null, val country: String= "United Kingdom"){

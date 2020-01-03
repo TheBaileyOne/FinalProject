@@ -97,17 +97,14 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
 class TimetableFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
         return inflater.inflate(R.layout.fragment_timetable, container, false)
     }
 
     private var selectedDate: LocalDate? = null
+    private val today = LocalDate.now()
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val eventAdapter = EventAdapter(){event:Event-> eventClicked(event)}
     private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
-
-
-    //TODO: private val events= [get events from database]
 
     //what to do when event clicked
     private fun eventClicked(event: Event){
@@ -128,6 +125,13 @@ class TimetableFragment : Fragment() {
 
         calendarView.setup(currentMonth.minusMonths(10),currentMonth.plusMonths(10), daysOfWeek.first())
         calendarView.scrollToMonth(currentMonth)
+
+        if(savedInstanceState == null){
+            calendarView.post {
+                selectDate(today)
+            }
+        }
+
         class DayViewContainer(view:View):ViewContainer(view){
             lateinit var day: CalendarDay
             val textView = view.dayText
@@ -142,13 +146,14 @@ class TimetableFragment : Fragment() {
             init {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH) {
-                        if (selectedDate != day.date) {
-                            val oldDate = selectedDate
-                            selectedDate = day.date
-                            calendarView.notifyDateChanged(day.date)
-                            oldDate?.let { calendarView.notifyDateChanged(it) }
-                            updateAdapterForDate(day.date)
-                        }
+                        selectDate(day.date)
+//                        if (selectedDate != day.date) {
+//                            val oldDate = selectedDate
+//                            selectedDate = day.date
+//                            calendarView.notifyDateChanged(day.date)
+//                            oldDate?.let { calendarView.notifyDateChanged(it) }
+//                            updateAdapterForDate(day.date)
+//                        }
                     }
                 }
             }
@@ -250,6 +255,16 @@ class TimetableFragment : Fragment() {
             calendarView.findFirstVisibleMonth()?.let{
                 calendarView.smoothScrollToMonth(it.yearMonth.previous)
             }
+        }
+    }
+
+    private fun selectDate(date:LocalDate){
+        if (selectedDate != date) {
+            val oldDate = selectedDate
+            selectedDate = date
+            calendarView.notifyDateChanged(date)
+            oldDate?.let { calendarView.notifyDateChanged(it) }
+            updateAdapterForDate(date)
         }
     }
 
