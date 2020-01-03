@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
+<!--    TODO: setup colour theme-->
 <!--    temporary colours list-->
     <color name="White">#FFFFFF</color>
     <color name="Ivory">#FFFFF0</color>

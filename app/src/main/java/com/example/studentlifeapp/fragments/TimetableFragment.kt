@@ -1,16 +1,17 @@
 package com.example.studentlifeapp.fragments
 
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.annotation.RequiresApi
+import android.widget.Toast
 import androidx.core.view.children
+import androidx.core.view.marginBottom
+import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,12 +42,12 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
 import java.util.*
 
+//TODO: include FAB button or another thing to add an event
+class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdapter.EventsViewHolder>(){
 
-
-class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
-    val events = mutableListOf<Event>()
-//    private val baseView = R.layout.event_item_view
+    val events = mutableListOf<Event>() //Data source for the adapter
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
@@ -54,17 +55,22 @@ class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
     }
 
     override fun onBindViewHolder(viewHolder: EventsViewHolder, position: Int) {
-        viewHolder.bind(events[position])
+        viewHolder.bind(events[position], onClick)
     }
 
     override fun getItemCount(): Int = events.size
 
-    inner class EventsViewHolder(override val containerView: View) :
-        RecyclerView.ViewHolder(containerView), LayoutContainer {
 
-        fun bind(event: Event) {
-//            val title = R.id.event_view_title as TextView
-//            title.text = event.title
+    //assigns or updates data in the view items (overwrites previous data if view reused)
+    inner class EventsViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer {
+
+        init{
+            itemView.setOnClickListener{
+                onClick(events[adapterPosition])
+            }
+        }
+
+        fun bind(event: Event, clickListener: (Event) -> Unit) {
 
             event_view_title.text = event.title
             event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
@@ -80,10 +86,10 @@ class EventAdapter:RecyclerView.Adapter<EventAdapter.EventsViewHolder>() {
                 EventType.REMINDER -> formatter.format(event.startTime)
                 else -> "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
             }
-
-            //TODO: fix events objects/inheritance so that it is possible to access properties of all type of event
+//            containerView.setOnClickListener{clickListener(event)}
 
         }
+
     }
 }
 
@@ -96,16 +102,22 @@ class TimetableFragment : Fragment() {
     }
 
     private var selectedDate: LocalDate? = null
-    @RequiresApi(Build.VERSION_CODES.O)
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
-    private val eventAdapter = EventAdapter()
-    @RequiresApi(Build.VERSION_CODES.O)
+    private val eventAdapter = EventAdapter(){event:Event-> eventClicked(event)}
     private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
+
 
     //TODO: private val events= [get events from database]
 
+    //what to do when event clicked
+    private fun eventClicked(event: Event){
+        Toast.makeText(activity,"Clicked: ${event.title}", Toast.LENGTH_LONG).show()
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
+        //layoutManager places items on the screen maing sure they get the screen space needed
         calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
         calendar_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
@@ -120,8 +132,12 @@ class TimetableFragment : Fragment() {
             lateinit var day: CalendarDay
             val textView = view.dayText
             val layout = view.dayLayout
-//            val eventTopView = view.dayEventTop
-//            val eventBottomView = view.dayEventBottom
+            val eventView1 = view.dayEvent1
+            val eventView2 = view.dayEvent2
+            val eventView3 = view.dayEvent3
+            val eventViewExtra = view.dayEventExtra
+
+
 
             init {
                 view.setOnClickListener {
@@ -145,8 +161,16 @@ class TimetableFragment : Fragment() {
                 val layout = container.layout
                 textView.text = day.date.dayOfMonth.toString()
 
-//                val eventTopView = container.eventTopView
-//                val eventBottomView = container.eventBottomView
+                val eventView1 = container.eventView1
+                val eventView2 = container.eventView2
+                val eventView3 = container.eventView3
+                val eventViewExtra = container.eventViewExtra
+
+                eventView1.background = null
+                eventView2.background = null
+                eventView3.background = null
+                eventViewExtra.visibility = View.GONE
+
 
                 if (day.owner == DayOwner.THIS_MONTH){
                     textView.setTextColorRes(R.color.colorPrimaryDark)
@@ -154,8 +178,30 @@ class TimetableFragment : Fragment() {
 
                     val events =events[day.date]
                     if (events != null){
-                       //TODO: do logic for displaying events
+                        when {
+                            events.count() == 1 -> {
+                                eventView3.setBackgroundColor(view.context.getColorCompat(events[0].colour))
+                                eventView3.marginBottom
+                            }
+                            events.count()==2 -> {
+                                eventView2.setBackgroundColor(view.context.getColorCompat(events[1].colour))
+                                eventView3.setBackgroundColor(view.context.getColorCompat(events[0].colour))
 
+                            }
+                            events.count()==3 -> {
+                                eventView1.setBackgroundColor(view.context.getColorCompat(events[0].colour))
+                                eventView2.setBackgroundColor(view.context.getColorCompat(events[1].colour))
+                                eventView3.setBackgroundColor(view.context.getColorCompat(events[2].colour))
+                            }
+                            else -> {
+                                eventView1.setBackgroundColor(view.context.getColorCompat(events[0].colour))
+                                eventView2.setBackgroundColor(view.context.getColorCompat(events[1].colour))
+                                eventView3.setBackgroundColor(view.context.getColorCompat(events[2].colour))
+                                val countString = "+ ${events.count() - 3}"
+                                eventViewExtra.text = countString
+                                eventViewExtra.visibility = View.VISIBLE
+                            }
+                        }
                     }
                 } else {
                     //TODO: set colour

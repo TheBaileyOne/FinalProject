@@ -13,7 +13,7 @@
         <activity
             android:name=".activities.StudyMode"
             android:label="@string/title_activity_study_mode"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
