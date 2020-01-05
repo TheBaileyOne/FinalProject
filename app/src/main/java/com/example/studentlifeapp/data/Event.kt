@@ -1,7 +1,5 @@
 package com.example.studentlifeapp.data
 
-import android.icu.text.CaseMap
-import androidx.annotation.ColorInt
 import com.example.studentlifeapp.R
 import org.threeten.bp.LocalDateTime
 import java.io.Serializable
@@ -11,10 +9,11 @@ data class Event(
     val title: String,
     val type: EventType = EventType.EVENT,
     val startTime: LocalDateTime,
-    val endTime : LocalDateTime = startTime,
+    val endTime: LocalDateTime = startTime,
     val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
     val location: Location? = null,
-    val note: String = ""): Serializable
+    val note: String = "",
+    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime)): Serializable
 {
     val colour: Int = setColour()
     private fun setColour(): Int {
@@ -31,6 +30,7 @@ data class Event(
             EventType.SOCIETY -> R.color.DeepPink
         }
     }
+
 }
 
 data class Location(val name:String, val town: String? = null, val city: String? = null, val county: String? = null, val  postCode: String? = null, val country: String= "United Kingdom"){

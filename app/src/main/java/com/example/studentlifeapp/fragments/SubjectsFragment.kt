@@ -69,14 +69,14 @@ class SubjectsFragment : Fragment() {
         retainInstance = true
     }
 
-    //ensure fragment actually attatches, and that activity implements interface
+    //ensure fragment actually attaches, and that activity implements interface
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context is SubClickedListener){
             subClickListener = context
         } else{
             throw ClassCastException(
-                "$context must implement SubClickListner"
+                "$context must implement SubClickListener"
             )
 
         }

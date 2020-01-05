@@ -14,6 +14,7 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.getJsonExtra
 import com.example.studentlifeapp.inflate
@@ -21,9 +22,10 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_study_mode.*
 import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.event_item_view.*
+import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 
-class SubjectEventsAdapter(private val events:MutableList<Event>): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
+class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
@@ -32,27 +34,27 @@ class SubjectEventsAdapter(private val events:MutableList<Event>): RecyclerView.
     }
     override fun getItemCount(): Int = events.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectEventsViewHolder {
-        return SubjectEventsViewHolder(parent.inflate(R.layout.event_item_view))
+        return SubjectEventsViewHolder(parent.inflate(R.layout.subject_event_item_view))
     }
 
     inner class SubjectEventsViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView),
+
+
         LayoutContainer {
         //TODO: on click listener to open up event details page, with edit event allowance
-        fun bind(event: Event){
-            event_view_title.text = event.title
-            event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
-            if (event.location?.basicDisplay() != null){
-                event_view_location.text = event.location?.basicDisplay()
-                event_view_location_icon.visibility = View.VISIBLE
-            }else{
-                event_view_location.text = ""
-                event_view_location_icon.visibility = View.INVISIBLE
-            }
+        fun bind(event: Pair<String,List<Event>>) {
+//            event_view_title.text = event.title
+            val formatter = DateTimeFormatter.ofPattern("EEE")
+            val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-            event_view_time.text = when (event.type) {
-                EventType.REMINDER -> formatter.format(event.startTime)
-                else -> "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
-            }
+            subject_event_view_title.text = event.first
+            if (event.second.size > 1) subject_event_view_timeList.text = "Times..."
+            else subject_event_view_timeList.text =
+                "${timeFormatter.format(event.second[0].startTime)} - ${timeFormatter.format(event.second[0].endTime)}"
+
+            subject_event_view_day.text = formatter.format(event.second[0].startTime.dayOfWeek)
+            subject_event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.second[0].colour))
+
         }
     }
 }
@@ -69,10 +71,15 @@ class SubjectDetails : AppCompatActivity() {
 
         //TODO: sort out animation for activity opening
         val subject :Subject? = intent.getJsonExtra(Subject::class.java)
+        val events: MutableList<Event> = subject!!.events
+        events.sortBy { it.startTime }
+        val eventsMap = events.groupBy{it.title}
+        val eventsGroup = eventsMap.toList()
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            viewManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
-        viewAdapter = SubjectEventsAdapter(subject!!.events)
+
+        viewManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
+        viewAdapter = SubjectEventsAdapter(eventsGroup)
 
         subject_title_view_name.text = subject?.name
         subject_info_view_name.text = subject?.summary
