@@ -1,18 +1,21 @@
 package com.example.studentlifeapp.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
-import android.widget.AdapterView
 import androidx.annotation.IdRes
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.fragments.SubjectsFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
+import com.example.studentlifeapp.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, SubjectsFragment.SubClickedListener {
 
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -58,7 +61,18 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
         if(screenPosition != viewPager.currentItem){
             viewPager.currentItem = screenPosition
+            if(mainScreen == MainScreen.SUBJECTS){
+
+            }
         }
+    }
+
+    //from interface, when subject is clicked listener
+    override fun subClicked(subject: Subject) {
+        val intent = Intent(this, SubjectDetails::class.java).apply{
+            putExtraJson(subject)
+        }
+        startActivity(intent)
     }
 
     //select item in bottom navigation
@@ -69,7 +83,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     //listener for registering navigation clicks
-
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         getMainScreenForMenuItem(menuItem.itemId)?.let{
             scrollToScreen(it)
@@ -78,5 +91,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         return false
     }
+
+
 
 }

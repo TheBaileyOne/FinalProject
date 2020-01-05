@@ -15,10 +15,10 @@ class StudyMode : AppCompatActivity() {
         setContentView(R.layout.activity_study_mode)
         setSupportActionBar(toolbar)
         supportActionBar?.setIcon(R.drawable.ic_timer)
-        supportActionBar?.title = "     Timer"
+        supportActionBar?.title = "     Study Mode"
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //Ads items to the action bar if preseent
+        //Adds items to the action bar if preseent
         menuInflater.inflate(R.menu.menu_study_mode, menu)
         return true
     }

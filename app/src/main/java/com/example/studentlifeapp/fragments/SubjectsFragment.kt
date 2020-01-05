@@ -1,8 +1,12 @@
 package com.example.studentlifeapp.fragments
 
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,13 +14,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.addFragment
 import com.example.studentlifeapp.data.importSubjects
 import com.example.studentlifeapp.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_subjects.*
 import kotlinx.android.synthetic.main.list_item.*
+import java.lang.ClassCastException
 
-class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf()):RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
+
+class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
 
 
     override fun getItemCount(): Int = subjects.size
@@ -34,7 +42,11 @@ class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf()):Rec
 //    inner class SubjectViewHolder(inflater : LayoutInflater,parent:ViewGroup):RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item,parent,false)){
     inner class SubjectViewHolder(override val containerView: View):RecyclerView.ViewHolder(containerView), LayoutContainer{
 
-
+    init{
+        itemView.setOnClickListener {
+            onClick(subjects[adapterPosition])
+        }
+    }
         fun bind(subject: Subject){
             list_title.text = subject.name
             list_description.text = subject.summary
@@ -43,13 +55,38 @@ class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf()):Rec
 }
 class SubjectsFragment : Fragment() {
 
+    //communicates to activity that a subject has been clicked
+    interface SubClickedListener{
+        fun subClicked(subject:Subject)
+    }
+
+    private lateinit var subClickListener: SubClickedListener
     private val subjects = importSubjects()
-    private val subjectAdapter = SubjectsAdapter(subjects)
+    private val subjectAdapter = SubjectsAdapter(subjects){subject:Subject->subjectClicked(subject)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         retainInstance = true
     }
+
+    //ensure fragment actually attatches, and that activity implements interface
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is SubClickedListener){
+            subClickListener = context
+        } else{
+            throw ClassCastException(
+                "$context must implement SubClickListner"
+            )
+
+        }
+    }
+    private fun subjectClicked(subject:Subject){
+        Toast.makeText(activity,"Clicked: ${subject.name}",Toast.LENGTH_LONG).show()
+        subClickListener.subClicked(subject)
+
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 

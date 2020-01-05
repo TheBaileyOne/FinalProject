@@ -147,13 +147,6 @@ class TimetableFragment : Fragment() {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH) {
                         selectDate(day.date)
-//                        if (selectedDate != day.date) {
-//                            val oldDate = selectedDate
-//                            selectedDate = day.date
-//                            calendarView.notifyDateChanged(day.date)
-//                            oldDate?.let { calendarView.notifyDateChanged(it) }
-//                            updateAdapterForDate(day.date)
-//                        }
                     }
                 }
             }

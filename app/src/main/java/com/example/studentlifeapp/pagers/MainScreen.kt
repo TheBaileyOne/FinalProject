@@ -23,6 +23,7 @@ enum class MainScreen(@IdRes val menuItemId: Int,
         R.string.activity_main_bottom_screen_studyMode,StudyModeFragment())
 }
 
+
 fun getMainScreenForMenuItem(menuItemId: Int): MainScreen? {
     for (mainScreen in MainScreen.values()) {
         if (mainScreen.menuItemId == menuItemId){

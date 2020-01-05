@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subject_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.SubjectDetailsFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="5dp"
+    android:background="@color/cardview_light_background">
 
     <LinearLayout
         android:id="@+id/subject_title_view"
@@ -16,12 +18,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:textSize="16sp"
             android:text="Subject Name: "
             android:textStyle="bold"/>
         <TextView
             android:id="@+id/subject_title_view_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:textSize="16sp"
             android:layout_margin="5dp"
             android:text="Details" />
     </LinearLayout>
@@ -35,10 +40,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:textSize="16sp"
             android:text="Subject Info: "
             android:textStyle="bold"/>
         <TextView
             android:id="@+id/subject_info_view_name"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
@@ -54,12 +61,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:textSize="16sp"
             android:text="Subject Events: "
             android:textStyle="bold"/>
+        <Button
+            android:id="@+id/subject_info_view_button_addEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Event"
+            android:layout_gravity="center"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/subject_events_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"/>
     </LinearLayout>
 
 </LinearLayout>

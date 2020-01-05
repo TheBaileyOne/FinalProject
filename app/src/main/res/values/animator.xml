@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <animator name="slide_in_left">@animator/slide_in_left</animator>
+    <animator name="slide_in_right">@animator/slide_in_right</animator>
+    <animator name="slide_out_left">@animator/slide_out_left</animator>
+    <animator name="slide_out_right">@animator/slide_out_right</animator>
+</resources>

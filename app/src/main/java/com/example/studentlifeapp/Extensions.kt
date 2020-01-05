@@ -11,6 +11,8 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.temporal.WeekFields
 import java.util.*
@@ -33,6 +35,29 @@ fun dpToPx(dp: Int, context: Context): Int =
         TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(),
         context.resources.displayMetrics
     ).toInt()
+
+fun addFragment(fm: FragmentManager, fragment: Fragment, container:Int,
+                replace:Boolean,addToBackStack:Boolean,addAnimation:Boolean){
+    val fragmentTransaction = fm.beginTransaction()
+    if(addAnimation){
+        fragmentTransaction.setCustomAnimations(
+            R.animator.slide_in_right,
+            R.animator.slide_out_left,
+            R.animator.slide_in_left,
+            R.animator.slide_out_right
+        )
+    }
+    if(replace){
+        fragmentTransaction.replace(container,fragment,fragment.javaClass.name)
+    }else{
+        fragmentTransaction.add(container,fragment,fragment.javaClass.name)
+    }
+    if(addToBackStack){
+        fragmentTransaction.addToBackStack((fragment.javaClass.name))
+    }
+    fragmentTransaction.commit()
+
+}
 
 internal fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)

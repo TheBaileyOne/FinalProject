@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout
+    android:id="@+id/main_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.MainActivity">
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    tools:context=".activities.MainActivity"
+    >
+    <FrameLayout
+        android:id="@+id/view_pager_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
-
+        android:layout_weight="1"
+        android:focusableInTouchMode="true">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view"
         android:layout_width="match_parent"

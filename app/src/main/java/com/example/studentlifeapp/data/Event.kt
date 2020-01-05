@@ -4,6 +4,7 @@ import android.icu.text.CaseMap
 import androidx.annotation.ColorInt
 import com.example.studentlifeapp.R
 import org.threeten.bp.LocalDateTime
+import java.io.Serializable
 
 
 data class Event(
@@ -13,7 +14,7 @@ data class Event(
     val endTime : LocalDateTime = startTime,
     val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
     val location: Location? = null,
-    val note: String = "")
+    val note: String = ""): Serializable
 {
     val colour: Int = setColour()
     private fun setColour(): Int {
