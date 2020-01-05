@@ -15,64 +15,42 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <ImageView
-            android:id="@+id/event_view_icon"
+            android:id="@+id/subject_event_view_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginTop="16dp"
             />
         <TextView
-            android:id="@+id/event_view_icon_text"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="8dp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:textSize="14sp"
-            tools:text="THU\n28th"
-            android:layout_alignParentLeft="true"
-            android:visibility="invisible"
-            />
-        <TextView
-            android:id="@+id/event_view_title"
+            android:id="@+id/subject_event_view_title"
             android:text="Event Title"
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:textStyle="bold"
-            android:layout_toRightOf="@+id/event_view_icon"
+            android:layout_toRightOf="@+id/subject_event_view_icon"
             android:layout_marginLeft="15dp"/>
 
-        <ImageView
-            android:id="@+id/event_view_location_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/event_view_title"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="0dp"
-            android:layout_toRightOf="@+id/event_view_icon"
-            app:srcCompat="@drawable/ic_location" />
-
         <TextView
-            android:id="@+id/event_view_location"
+            android:id="@+id/subject_event_view_timeList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/event_view_title"
-            android:layout_marginLeft="3dp"
+            android:layout_below="@+id/subject_event_view_title"
+            android:layout_marginLeft="15dp"
             android:layout_marginTop="3dp"
-            android:layout_toRightOf="@+id/event_view_location_icon"
-            android:text="Location"
+            android:layout_toRightOf="@+id/subject_event_view_icon"
+            android:text=""
             android:textSize="13sp"/>
 
         <TextView
-            android:id="@+id/event_view_time"
+            android:id="@+id/subject_event_view_day"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="3dp"
             android:textStyle="bold"
             android:gravity="center"
             android:textSize="14sp"
-            tools:text="12:00 \n-\n13:00"
+            tools:text="DAY"
             android:layout_alignParentRight="true"
             />
 

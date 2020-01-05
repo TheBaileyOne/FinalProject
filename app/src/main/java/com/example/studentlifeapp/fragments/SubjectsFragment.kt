@@ -42,11 +42,11 @@ class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf(), val
 //    inner class SubjectViewHolder(inflater : LayoutInflater,parent:ViewGroup):RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item,parent,false)){
     inner class SubjectViewHolder(override val containerView: View):RecyclerView.ViewHolder(containerView), LayoutContainer{
 
-    init{
-        itemView.setOnClickListener {
-            onClick(subjects[adapterPosition])
+        init{
+            itemView.setOnClickListener {
+                onClick(subjects[adapterPosition])
+            }
         }
-    }
         fun bind(subject: Subject){
             list_title.text = subject.name
             list_description.text = subject.summary

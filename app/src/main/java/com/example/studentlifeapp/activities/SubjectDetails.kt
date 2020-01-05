@@ -7,6 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +17,7 @@ import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.data.importEvents
+import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.getJsonExtra
 import com.example.studentlifeapp.inflate
@@ -25,10 +28,11 @@ import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 
-class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
+class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
-
+    //onclick listener
+//    var onItemClick: ((Pair<String,List<Event>>) -> Unit)? = null
     override fun onBindViewHolder(viewHolder: SubjectEventsViewHolder, position: Int) {
         viewHolder.bind(events[position])
     }
@@ -38,9 +42,12 @@ class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>): R
     }
 
     inner class SubjectEventsViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView),
-
-
         LayoutContainer {
+        init{
+            itemView.setOnClickListener{
+                onItemClick?.invoke(events[adapterPosition])
+            }
+        }
         //TODO: on click listener to open up event details page, with edit event allowance
         fun bind(event: Pair<String,List<Event>>) {
 //            event_view_title.text = event.title
@@ -70,29 +77,42 @@ class SubjectDetails : AppCompatActivity() {
         setContentView(R.layout.activity_subject_details)
 
         //TODO: sort out animation for activity opening
-        val subject :Subject? = intent.getJsonExtra(Subject::class.java)
+        val subject: Subject? = intent.getJsonExtra(Subject::class.java)
         val events: MutableList<Event> = subject!!.events
         events.sortBy { it.startTime }
-        val eventsMap = events.groupBy{it.title}
+        val eventsMap = events.groupBy { it.title }
         val eventsGroup = eventsMap.toList()
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewManager = LinearLayoutManager(this,RecyclerView.VERTICAL,false)
-        viewAdapter = SubjectEventsAdapter(eventsGroup)
+        viewManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+        viewAdapter = SubjectEventsAdapter(eventsGroup){event:Pair<String,List<Event>> ->eventClicked(event)}
 
         subject_title_view_name.text = subject?.name
         subject_info_view_name.text = subject?.summary
 
-        recyclerView = subject_events_recyclerView.apply{
+        recyclerView = subject_events_recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
 
         }
-        recyclerView.addItemDecoration(DividerItemDecoration(this,RecyclerView.VERTICAL))
+        recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
 
+
+
+    }
+
+
+    private fun eventClicked(event:Pair<String,List<Event>>) {
+        Toast.makeText(this,"event ${event.first} clicked",Toast.LENGTH_SHORT).show()
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = EventExpandFragment(event.second)
+        fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
