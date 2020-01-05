@@ -7,6 +7,10 @@
     tools:context=".fragments.EventExpandFragment"
     android:background="#99000000">
     <FrameLayout
+        android:id="@+id/event_expand_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="30dp"

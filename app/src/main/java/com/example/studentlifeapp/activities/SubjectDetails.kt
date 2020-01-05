@@ -7,32 +7,25 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
-import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.getJsonExtra
 import com.example.studentlifeapp.inflate
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.activity_study_mode.*
 import kotlinx.android.synthetic.main.activity_subject_details.*
-import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 
 class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    //onclick listener
-//    var onItemClick: ((Pair<String,List<Event>>) -> Unit)? = null
+
     override fun onBindViewHolder(viewHolder: SubjectEventsViewHolder, position: Int) {
         viewHolder.bind(events[position])
     }
@@ -50,7 +43,6 @@ class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, va
         }
         //TODO: on click listener to open up event details page, with edit event allowance
         fun bind(event: Pair<String,List<Event>>) {
-//            event_view_title.text = event.title
             val formatter = DateTimeFormatter.ofPattern("EEE")
             val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
@@ -106,13 +98,14 @@ class SubjectDetails : AppCompatActivity() {
 
 
     private fun eventClicked(event:Pair<String,List<Event>>) {
-        Toast.makeText(this,"event ${event.first} clicked",Toast.LENGTH_SHORT).show()
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        val fragment = EventExpandFragment(event.second)
-        fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        if (event.second.size>1){
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragment = EventExpandFragment(event.second)
+            fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

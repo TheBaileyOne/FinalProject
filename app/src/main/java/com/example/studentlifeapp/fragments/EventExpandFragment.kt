@@ -1,7 +1,5 @@
 package com.example.studentlifeapp.fragments
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,19 +8,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
-import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.fragment_event_expand.*
-import kotlinx.android.synthetic.main.list_item.*
 import org.threeten.bp.format.DateTimeFormatter
-import java.lang.ClassCastException
 
 //class EventExpandAdapter(val events:List<Event>,val onClick: (Event) -> Unit): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
 class EventExpandAdapter(val events:List<Event>): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
@@ -77,7 +69,7 @@ class EventExpandAdapter(val events:List<Event>): RecyclerView.Adapter<EventExpa
 
 }
 
-class EventExpandFragment(private val events: List<Event>) : Fragment() {
+class EventExpandFragment(private val events: List<Event>) : Fragment(){
 
     interface EventClickedListener{
         fun eventClicked(event:Event)
