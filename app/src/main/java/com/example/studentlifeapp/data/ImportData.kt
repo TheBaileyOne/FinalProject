@@ -3,10 +3,11 @@ package com.example.studentlifeapp.data
 import org.threeten.bp.LocalDateTime
 //import org.threeten.bp.YearMonth
 
+//TODO: Import data from current date onwards. Don't bother with data from before
+
 fun importEvents():MutableList<Event> {
     val list = mutableListOf<Event>()
 //    val currentMonth = YearMonth.now()
-
 
     list.add(Event("Reminder1", EventType.REMINDER, LocalDateTime.now()))
     list.add(Event("Class1", EventType.CLASS, LocalDateTime.now().minusHours(2),

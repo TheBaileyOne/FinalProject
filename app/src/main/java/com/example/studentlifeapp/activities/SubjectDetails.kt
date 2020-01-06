@@ -24,8 +24,6 @@ import org.threeten.bp.format.DateTimeFormatter
 
 class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
-    private val formatter = DateTimeFormatter.ofPattern("HH:mm")
-
     override fun onBindViewHolder(viewHolder: SubjectEventsViewHolder, position: Int) {
         viewHolder.bind(events[position])
     }
