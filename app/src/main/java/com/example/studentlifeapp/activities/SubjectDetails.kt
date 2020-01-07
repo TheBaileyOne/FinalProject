@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.fragments.AddEvent
 import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.getJsonExtra
@@ -90,6 +91,16 @@ class SubjectDetails : AppCompatActivity() {
         recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
 
+
+        subject_info_view_button_addEvent.setOnClickListener{
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragment = AddEvent()
+            fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+
+        }
 
 
     }
