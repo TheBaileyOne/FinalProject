@@ -71,6 +71,21 @@ class AddEvent : Fragment() {
             timePicker.show()
         }
 
+        val spinnerRep = view.findViewById<Spinner>(R.id.spinner_repeat)
+        val repeatVal = arrayOf("Days","Weeks","Months","Years")
+        spinnerRep?.adapter = ArrayAdapter(activity?.applicationContext!!, R.layout.support_simple_spinner_dropdown_item, repeatVal)
+        spinnerRep?.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Something to do with an error")
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val type = parent?.getItemAtPosition(position)
+                Toast.makeText(context,"Time: $type",Toast.LENGTH_SHORT).show()
+
+            }
+        }
+
         return view
     }
 
