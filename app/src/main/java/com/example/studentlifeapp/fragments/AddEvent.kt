@@ -2,8 +2,6 @@ package com.example.studentlifeapp.fragments
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,21 +10,49 @@ import android.view.ViewGroup
 import android.widget.*
 
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
-import kotlinx.android.synthetic.*
+import com.example.studentlifeapp.data.Location
 import kotlinx.android.synthetic.main.fragment_add_event.*
 import kotlinx.android.synthetic.main.fragment_add_event.view.*
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import org.threeten.bp.temporal.ChronoUnit
+import org.threeten.bp.temporal.TemporalUnit
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddEvent : Fragment() {
+class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
 
-    val format = SimpleDateFormat("dd MMM, YYYY", Locale.UK)
-    var timeFormat = SimpleDateFormat ("HH:mm", Locale.UK)
+
+
+    private lateinit var callback: OnEventSavedListener
+
+    interface OnEventSavedListener{
+        fun onEventSaved(events:MutableList<Event>)
+    }
+    fun setOnEventSavedListener(callback: OnEventSavedListener){
+        this.callback = callback
+    }
+    //TODO: Notifications
+    private val format = SimpleDateFormat("dd MMM, YYYY", Locale.UK)
+    private val timeFormat = SimpleDateFormat ("HH:mm", Locale.UK)
+    lateinit var eventName:String
+    lateinit var eventStartTime: LocalDateTime
+    lateinit var eventEndTime:LocalDateTime
+    lateinit var location :Location
+    lateinit var notes:String
+    lateinit var eventType: EventType
+    lateinit var durationValue: String
+//    val repeatTimes:MutableList = mutableListOf<LocalDateTime>()
+//    lateinit var event:Event
+    val events:MutableList<Event> = mutableListOf()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_add_event, container, false)
+
+        //Event Type Spinner
         val spinner = view.findViewById<Spinner>(R.id.event_type_spinner)
         val values = enumValues<EventType>()
         spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, R.layout.support_simple_spinner_dropdown_item, values)
@@ -34,14 +60,17 @@ class AddEvent : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Something to do with an error")
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val type = parent?.getItemAtPosition(position)
+//                val type = parent?.getItemAtPosition(position)
+//                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
+                var type = parent?.getItemAtPosition(position)
+                type = type.toString()
+                eventType = EventType.valueOf(type)
                 Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
-
             }
         }
 
+        //Start Date Selection
         val setDate = view.findViewById<EditText>(R.id.add_event_date)
         val setTime = view.findViewById<EditText>(R.id.add_event_time)
         var startDateDate:String
@@ -71,24 +100,130 @@ class AddEvent : Fragment() {
             timePicker.show()
         }
 
+        //Event end date pickers
+        val setFinishDate = view.findViewById<EditText>(R.id.add_event_end_date)
+        val setFinishTime = view.findViewById<EditText>(R.id.add_event_time_end)
+        var finishDateDate:String
+        var finishDateTime:String
+
+        setFinishDate.setOnClickListener {
+            val now = Calendar.getInstance()
+            val datePicker2 = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+                Toast.makeText(context,"Date picker picked", Toast.LENGTH_SHORT)
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(Calendar.YEAR,year)
+                selectedDate.set(Calendar.MONTH,month)
+                selectedDate.set(Calendar.DAY_OF_MONTH,dayOfMonth)
+                finishDateDate = format.format(selectedDate.time)
+                add_event_end_date.setText(finishDateDate)
+            }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
+            datePicker2.show()
+        }
+
+        setFinishTime.setOnClickListener {
+            val now = Calendar.getInstance()
+            val timePicker2 = TimePickerDialog(context, TimePickerDialog.OnTimeSetListener{view,hourOfDay,minute ->
+                val selectedTime = Calendar.getInstance()
+                selectedTime.set(Calendar.HOUR_OF_DAY,hourOfDay)
+                selectedTime.set(Calendar.MINUTE,minute)
+                finishDateTime = timeFormat.format(selectedTime.time)
+                add_event_time_end.setText(finishDateTime)
+            }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE),true)
+            timePicker2.show()
+        }
+
+        //Repeat Event a number of times
         val spinnerRep = view.findViewById<Spinner>(R.id.spinner_repeat)
-        val repeatVal = arrayOf("Days","Weeks","Months","Years")
+        val repeatVal = arrayOf("Never","Days","Weeks","Months","Years")
         spinnerRep?.adapter = ArrayAdapter(activity?.applicationContext!!, R.layout.support_simple_spinner_dropdown_item, repeatVal)
         spinnerRep?.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Something to do with an error")
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val type = parent?.getItemAtPosition(position)
                 Toast.makeText(context,"Time: $type",Toast.LENGTH_SHORT).show()
-
+                durationValue = type.toString()
+                if (durationValue.equals("Never")){
+                    add_event_repeat_num.visibility = View.GONE
+                }else{
+                    add_event_repeat_num.visibility = View.VISIBLE
+                }
             }
+        }
+        view.button_add_event.setOnClickListener{
+            addEvent()
+//            Toast.makeText(context,"Event Saved", Toast.LENGTH_SHORT)
+            callback.onEventSaved(events)
+            this.activity?.onBackPressed()
         }
 
         return view
     }
 
-    fun getString(value:String): String = value
+    fun dateDialogSet(editText:EditText?){
+        TODO("Put reusable code in")
+    }
+
+    fun timeDialogSet(editText:EditText?){
+        TODO("Put reusable code in")
+    }
+
+    private fun addEvent(){
+        if(add_event_name.text == null || add_event_date.text == null ||
+            add_event_time == null || add_event_end_date == null || add_event_time_end == null ||
+            (add_event_repeat_num == null && durationValue != "never")){
+            Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT)
+        }else{
+            val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
+            eventName = add_event_name.text.toString()
+            eventStartTime = LocalDateTime.parse("${add_event_date.text} ${add_event_time.text}",formatter)
+            eventEndTime = LocalDateTime.parse("${add_event_end_date.text} ${add_event_time_end.text}",formatter)
+            notes = add_event_notes.text.toString()
+            var event = Event(eventName,eventType,eventStartTime,eventEndTime,note=notes)
+            events.add(event)
+
+
+            var newStart:LocalDateTime
+            var newEnd:LocalDateTime
+
+            if (durationValue != "Never") {
+                val durationNumber = add_event_repeat_num.text.toString().toLong()
+                var count = 0
+                var eventLength = ChronoUnit.HOURS.between(event.startTime,event.endTime)
+                if(subjectEnd != null){
+                    do {
+                        newStart = when(durationValue){
+                            "Days" -> events[count].startTime.plusDays(durationNumber)
+                            "Weeks" -> events[count].startTime.plusWeeks(durationNumber)
+                            "Months" -> events[count].startTime.plusMonths(durationNumber)
+                            "Years" -> events[count].startTime.plusYears(durationNumber)
+                            else -> throw Exception("Invalid repeat variable")
+                        }
+                        newEnd = newStart.plusHours(eventLength)
+                        events.add(events[count].copy(startTime = newStart, endTime = newEnd))
+                        count++
+                    }while(newStart.isBefore(subjectEnd))
+                }
+            }
+        }
+    }
+
+
+
+    private fun repeatEvent():LocalDateTime{
+        TODO("repeat event creation a certain amount of times, or until a certain date")
+        val now = Calendar.getInstance()
+
+        val lastRepeat = Calendar.getInstance()
+        val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+            lastRepeat.set(Calendar.YEAR,year)
+            lastRepeat.set(Calendar.MONTH,month)
+            lastRepeat.set(Calendar.DAY_OF_MONTH,dayOfMonth)
+        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
+        datePicker.show()
+
+        return LocalDateTime.now()
+    }
 
 }

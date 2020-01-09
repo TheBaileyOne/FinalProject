@@ -1,12 +1,12 @@
 package com.example.studentlifeapp.activities
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -57,18 +57,18 @@ class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, va
     }
 }
 
-class SubjectDetails : AppCompatActivity() {
-
+class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
+    //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: RecyclerView.Adapter<*>
     private lateinit var viewManager: RecyclerView.LayoutManager
-
+    private lateinit var subject: Subject
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
 
+        subject = intent.getJsonExtra(Subject::class.java)
         //TODO: sort out animation for activity opening
-        val subject: Subject? = intent.getJsonExtra(Subject::class.java)
         val events: MutableList<Event> = subject!!.events
         events.sortBy { it.startTime }
         val eventsMap = events.groupBy { it.title }
@@ -91,20 +91,25 @@ class SubjectDetails : AppCompatActivity() {
         recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
 
-
+        //add event button clicked
         subject_info_view_button_addEvent.setOnClickListener{
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val fragment = AddEvent()
+            val fragment = AddEvent(subject.subjectEnd)
+            fragment.setOnEventSavedListener(this)
             fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
+
 
         }
 
 
     }
 
+    private fun addEvent(){
+
+    }
 
     private fun eventClicked(event:Pair<String,List<Event>>) {
         if (event.second.size>1){
@@ -131,5 +136,12 @@ class SubjectDetails : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_edit,menu)
         return true
     }
+
+    override fun onEventSaved(events: MutableList<Event>) {
+        subject?.addEvents(events)
+        Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT)
+    }
+
+
 }
 

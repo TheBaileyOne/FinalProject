@@ -27,10 +27,10 @@ fun <T> Intent.getJsonExtra(name: String, `class`: Class<T>): T? {
     return null
 }
 
-fun <T> Intent.getJsonExtra(`class`: Class<T>): T? {
+fun <T> Intent.getJsonExtra(`class`: Class<T>): T {
     val stringExtra = getStringExtra(DEFAULT_NAME)
     if (stringExtra != null) {
         return IntentUtil.gson.fromJson<T>(stringExtra, `class`)
     }
-    return null
+    return IntentUtil.gson.fromJson<T>("",`class`)
 }

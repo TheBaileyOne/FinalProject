@@ -12,8 +12,9 @@ data class Event(
     val endTime: LocalDateTime = startTime,
     val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
     val location: Location? = null,
-    val note: String = "",
-    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime)): Serializable
+    val note: String? = null,
+    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime)
+): Serializable
 {
     val colour: Int = setColour()
     private fun setColour(): Int {
