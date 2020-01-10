@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 
 import com.example.studentlifeapp.R
@@ -26,7 +27,7 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
 
 
 
-    private lateinit var callback: OnEventSavedListener
+    internal lateinit var callback: OnEventSavedListener
 
     interface OnEventSavedListener{
         fun onEventSaved(events:MutableList<Event>)
@@ -44,18 +45,27 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
     lateinit var notes:String
     lateinit var eventType: EventType
     lateinit var durationValue: String
+    lateinit var eventId: String
 //    val repeatTimes:MutableList = mutableListOf<LocalDateTime>()
 //    lateinit var event:Event
     val events:MutableList<Event> = mutableListOf()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_event, container, false)
-
+        val nameText = view.findViewById<EditText>(R.id.add_event_name)
+        nameText.hint = "e.g. Geography101: lecture"
         //Event Type Spinner
         val spinner = view.findViewById<Spinner>(R.id.event_type_spinner)
         val values = enumValues<EventType>()
-        spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, R.layout.support_simple_spinner_dropdown_item, values)
+        spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
         spinner?.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Something to do with an error")
@@ -135,7 +145,10 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
         //Repeat Event a number of times
         val spinnerRep = view.findViewById<Spinner>(R.id.spinner_repeat)
         val repeatVal = arrayOf("Never","Days","Weeks","Months","Years")
-        spinnerRep?.adapter = ArrayAdapter(activity?.applicationContext!!, R.layout.support_simple_spinner_dropdown_item, repeatVal)
+        spinnerRep?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, repeatVal).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerRep.adapter = adapter
+        }
         spinnerRep?.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 TODO("Something to do with an error")
@@ -154,8 +167,7 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
         view.button_add_event.setOnClickListener{
             addEvent()
 //            Toast.makeText(context,"Event Saved", Toast.LENGTH_SHORT)
-            callback.onEventSaved(events)
-            this.activity?.onBackPressed()
+
         }
 
         return view
@@ -170,17 +182,19 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
     }
 
     private fun addEvent(){
-        if(add_event_name.text == null || add_event_date.text == null ||
-            add_event_time == null || add_event_end_date == null || add_event_time_end == null ||
-            (add_event_repeat_num == null && durationValue != "never")){
-            Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT)
+        if(add_event_name.text.isEmpty()|| add_event_date.text.isEmpty() ||
+            add_event_time.text.isEmpty() || add_event_end_date.text.isEmpty() || add_event_time_end.text.isEmpty() ||
+            (add_event_repeat_num.text.isEmpty() && durationValue != "never")){
+            Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT).show()
         }else{
+
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
             eventName = add_event_name.text.toString()
             eventStartTime = LocalDateTime.parse("${add_event_date.text} ${add_event_time.text}",formatter)
             eventEndTime = LocalDateTime.parse("${add_event_end_date.text} ${add_event_time_end.text}",formatter)
             notes = add_event_notes.text.toString()
-            var event = Event(eventName,eventType,eventStartTime,eventEndTime,note=notes)
+            eventId = "${eventType.name}: ${eventName}"
+            var event = Event(eventName,eventType,eventStartTime,eventEndTime,note=notes, eventId=eventId)
             events.add(event)
 
 
@@ -203,11 +217,29 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
                         newEnd = newStart.plusHours(eventLength)
                         events.add(events[count].copy(startTime = newStart, endTime = newEnd))
                         count++
+                        if (events[count].startTime.isAfter(subjectEnd)){
+                            events.removeAt(count)
+                        }
                     }while(newStart.isBefore(subjectEnd))
+//                    do {
+//                        newStart = when(durationValue){
+//                            "Days" -> events[count].startTime.plusDays(durationNumber)
+//                            "Weeks" -> events[count].startTime.plusWeeks(durationNumber)
+//                            "Months" -> events[count].startTime.plusMonths(durationNumber)
+//                            "Years" -> events[count].startTime.plusYears(durationNumber)
+//                            else -> throw Exception("Invalid repeat variable")
+//                        }
+//                        newEnd = newStart.plusHours(eventLength)
+//                        events.add(events[count].copy(startTime = newStart, endTime = newEnd))
+//                        count++
+//                    }while(newStart.isBefore(subjectEnd))
                 }
             }
+            callback.onEventSaved(events)
+            this.activity?.onBackPressed()
         }
     }
+
 
 
 

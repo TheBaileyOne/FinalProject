@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 
-class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
+class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
     override fun onBindViewHolder(viewHolder: SubjectEventsViewHolder, position: Int) {
         viewHolder.bind(events[position])
@@ -55,12 +55,17 @@ class SubjectEventsAdapter(private val events:List<Pair<String,List<Event>>>, va
 
         }
     }
+    fun refreshList(newEvents: List<Pair<String, List<Event>>>){
+        events = newEvents
+        this.notifyDataSetChanged()
+
+    }
 }
 
 class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
     //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var viewAdapter: SubjectEventsAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var subject: Subject
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,9 +75,10 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
         subject = intent.getJsonExtra(Subject::class.java)
         //TODO: sort out animation for activity opening
         val events: MutableList<Event> = subject!!.events
-        events.sortBy { it.startTime }
-        val eventsMap = events.groupBy { it.title }
-        val eventsGroup = eventsMap.toList()
+        val eventsGroup = formatEvents(events)
+//        events.sortBy { it.startTime }
+//        val eventsMap = events.groupBy { it.title }
+//        val eventsGroup = eventsMap.toList()
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -107,8 +113,10 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
 
     }
 
-    private fun addEvent(){
-
+    private fun formatEvents(events:MutableList<Event>):List<Pair<String,List<Event>>>{
+        events.sortBy { it.startTime }
+        val eventsMap = events.groupBy { it.eventId }
+        return eventsMap.toList()
     }
 
     private fun eventClicked(event:Pair<String,List<Event>>) {
@@ -139,7 +147,9 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
 
     override fun onEventSaved(events: MutableList<Event>) {
         subject?.addEvents(events)
-        Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT)
+        Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
+        val eventsGroup = formatEvents(subject.events)
+        viewAdapter.refreshList(eventsGroup)
     }
 
 
