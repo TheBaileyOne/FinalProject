@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
-import com.example.studentlifeapp.addFragment
 import com.example.studentlifeapp.data.importSubjects
 import com.example.studentlifeapp.inflate
 import kotlinx.android.extensions.LayoutContainer
@@ -93,6 +92,20 @@ class SubjectsFragment : Fragment() {
         inflater.inflate(R.menu.menu_add, menu)
         super.onCreateOptionsMenu(menu, inflater)
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_add -> {
+                Toast.makeText(context, "add button selected",Toast.LENGTH_SHORT).show()
+                val fragmentManager = activity?.supportFragmentManager
+                val fragmentTransaction = fragmentManager?.beginTransaction()
+                val fragment = AddSubject()
+                fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)?.commit()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

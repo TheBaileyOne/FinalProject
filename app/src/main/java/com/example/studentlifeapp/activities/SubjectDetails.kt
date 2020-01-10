@@ -76,9 +76,6 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
         //TODO: sort out animation for activity opening
         val events: MutableList<Event> = subject!!.events
         val eventsGroup = formatEvents(events)
-//        events.sortBy { it.startTime }
-//        val eventsMap = events.groupBy { it.title }
-//        val eventsGroup = eventsMap.toList()
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
