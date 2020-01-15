@@ -89,7 +89,6 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
             setHasFixedSize(true)
             layoutManager = viewManager
             adapter = viewAdapter
-
         }
         recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
@@ -103,7 +102,6 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
             fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
-
 
         }
 

@@ -221,18 +221,6 @@ class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
                             events.removeAt(count)
                         }
                     }while(newStart.isBefore(subjectEnd))
-//                    do {
-//                        newStart = when(durationValue){
-//                            "Days" -> events[count].startTime.plusDays(durationNumber)
-//                            "Weeks" -> events[count].startTime.plusWeeks(durationNumber)
-//                            "Months" -> events[count].startTime.plusMonths(durationNumber)
-//                            "Years" -> events[count].startTime.plusYears(durationNumber)
-//                            else -> throw Exception("Invalid repeat variable")
-//                        }
-//                        newEnd = newStart.plusHours(eventLength)
-//                        events.add(events[count].copy(startTime = newStart, endTime = newEnd))
-//                        count++
-//                    }while(newStart.isBefore(subjectEnd))
                 }
             }
             callback.onEventSaved(events)
