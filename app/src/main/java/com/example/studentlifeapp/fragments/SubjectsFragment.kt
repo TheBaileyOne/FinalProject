@@ -59,26 +59,41 @@ class SubjectsFragment : Fragment() {
         fun subClicked(subject:Subject)
     }
 
+    interface SubAddClickedListener{
+        fun subAddClick()
+    }
+
     private lateinit var subClickListener: SubClickedListener
+    private lateinit var subAddClickListener: SubAddClickedListener
     private val subjects = importSubjects()
     private val subjectAdapter = SubjectsAdapter(subjects){subject:Subject->subjectClicked(subject)}
+    lateinit var menuItem:MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        retainInstance = true
+//        retainInstance = true
     }
 
     //ensure fragment actually attaches, and that activity implements interface
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is SubClickedListener){
+        if (context is SubClickedListener) {
             subClickListener = context
-        } else{
+        } else {
             throw ClassCastException(
                 "$context must implement SubClickListener"
             )
 
         }
+        if (context is SubAddClickedListener) {
+            subAddClickListener = context
+        } else {
+            throw ClassCastException(
+                "$context must implement SubClickListener"
+            )
+
+        }
+
     }
     private fun subjectClicked(subject:Subject){
         Toast.makeText(activity,"Clicked: ${subject.name}",Toast.LENGTH_LONG).show()
@@ -90,18 +105,25 @@ class SubjectsFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
         inflater.inflate(R.menu.menu_add, menu)
+//        menuItem = menu.findItem(R.id.action_add)
         super.onCreateOptionsMenu(menu, inflater)
 
     }
 
+//    fun setMenuItemEnabled(enabled:Boolean){
+//        menuItem.setEnabled(enabled)
+//    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_add -> {
-                Toast.makeText(context, "add button selected",Toast.LENGTH_SHORT).show()
-                val fragmentManager = activity?.supportFragmentManager
-                val fragmentTransaction = fragmentManager?.beginTransaction()
-                val fragment = AddSubject()
-                fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)?.commit()
+//                Toast.makeText(context, "add button selected",Toast.LENGTH_SHORT).show()
+//                val fragmentManager = activity?.supportFragmentManager
+//                val fragmentTransaction = fragmentManager?.beginTransaction()
+//                val fragment = AddSubject()
+////                fragment.setOnSubjectSavedListener(this)
+//                fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)?.commit()
+                subAddClickListener.subAddClick()
                 return true
             }
         }

@@ -13,8 +13,8 @@ enum class MainScreen(@IdRes val menuItemId: Int,
                       @StringRes val titleStringId: Int,
                       val fragment: Fragment
 ){
-    DASHBOARD(R.id.bottom_navigation_item_dashboard, R.drawable.ic_dashboard,
-        R.string.activity_main_bottom_screen_dashboard, DashboardFragment()),
+//    DASHBOARD(R.id.bottom_navigation_item_dashboard, R.drawable.ic_dashboard,
+//        R.string.activity_main_bottom_screen_dashboard, DashboardFragment()),
     TIMETABLE(R.id.bottom_navigation_item_timeTable,R.drawable.ic_date_range,
         R.string.activity_main_bottom_screen_timeTable, TimetableFragment()),
     SUBJECTS(R.id.bottom_navigation_item_subjects,R.drawable.ic_school,

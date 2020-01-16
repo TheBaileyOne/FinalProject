@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/cardview_light_background">
+    android:background="@color/cardview_light_background"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/textView9"
@@ -51,7 +52,8 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/add_subject_name" />
+        app:layout_constraintTop_toBottomOf="@+id/add_subject_name"
+        android:focusable="false"/>
 
     <TextView
         android:id="@+id/textView11"
@@ -72,10 +74,10 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:textSize="16sp"
-        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView11"
-        app:layout_constraintTop_toBottomOf="@+id/add_subject_start" />
+        app:layout_constraintTop_toBottomOf="@+id/add_subject_start"
+        android:focusable="false"/>
 
     <TextView
         android:id="@+id/textView12"

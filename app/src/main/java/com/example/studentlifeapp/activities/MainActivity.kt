@@ -8,6 +8,8 @@ import androidx.annotation.IdRes
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.fragments.AddEvent
+import com.example.studentlifeapp.fragments.AddSubject
 import com.example.studentlifeapp.fragments.SubjectsFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
@@ -15,7 +17,8 @@ import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
 import com.example.studentlifeapp.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, SubjectsFragment.SubClickedListener {
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
+    SubjectsFragment.SubClickedListener, SubjectsFragment.SubAddClickedListener,AddSubject.OnSubjectSavedListener {
 
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -32,10 +35,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
 
         //set items to be displayed
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
+//        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
+        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
 
         //show default screen
-        val defaultScreen = MainScreen.DASHBOARD
+        val defaultScreen = MainScreen.TIMETABLE
         scrollToScreen(defaultScreen)
         selectBottomNavigationViewMenuItem(defaultScreen.menuItemId)
         supportActionBar?.setTitle(defaultScreen.titleStringId)
@@ -69,6 +73,21 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     //from interface, when subject is clicked listener
     override fun subClicked(subject: Subject) {
+        val intent = Intent(this, SubjectDetails::class.java).apply{
+            putExtraJson(subject)
+        }
+        startActivity(intent)
+    }
+
+    override fun subAddClick() {
+        val fragmentManager = this.supportFragmentManager
+        val fragmentTransaction = fragmentManager?.beginTransaction()
+        val fragment = AddSubject()
+        fragment.setOnSubjectSavedListener(this)
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).commit()
+    }
+
+    override fun onSubjectSaved(subject: Subject) {
         val intent = Intent(this, SubjectDetails::class.java).apply{
             putExtraJson(subject)
         }
