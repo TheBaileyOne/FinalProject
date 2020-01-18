@@ -147,4 +147,9 @@ class SubjectsFragment : Fragment() {
         subjectAdapter.notifyDataSetChanged()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
+//        TODO("Refresh the subject list")
+    }
 }

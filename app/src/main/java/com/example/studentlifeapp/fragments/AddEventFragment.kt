@@ -23,7 +23,7 @@ import org.threeten.bp.temporal.TemporalUnit
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddEvent(private val subjectEnd: LocalDateTime? = null) : Fragment() {
+class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment() {
 
 
 

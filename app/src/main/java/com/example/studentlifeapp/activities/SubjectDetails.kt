@@ -7,13 +7,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.fragments.AddEvent
+import com.example.studentlifeapp.fragments.AddEventFragment
 import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.getJsonExtra
@@ -62,7 +63,7 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
     }
 }
 
-class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
+class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener {
     //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: SubjectEventsAdapter
@@ -97,7 +98,7 @@ class SubjectDetails : AppCompatActivity(),AddEvent.OnEventSavedListener {
         subject_info_view_button_addEvent.setOnClickListener{
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val fragment = AddEvent(subject.subjectEnd)
+            val fragment = AddEventFragment(subject.subjectEnd)
             fragment.setOnEventSavedListener(this)
             fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
             fragmentTransaction.addToBackStack(null)

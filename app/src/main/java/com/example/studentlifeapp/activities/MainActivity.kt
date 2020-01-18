@@ -4,12 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.IdRes
+import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.fragments.AddEvent
-import com.example.studentlifeapp.fragments.AddSubject
+import com.example.studentlifeapp.fragments.AddSubjectFragment
 import com.example.studentlifeapp.fragments.SubjectsFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
@@ -18,7 +19,7 @@ import com.example.studentlifeapp.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    SubjectsFragment.SubClickedListener, SubjectsFragment.SubAddClickedListener,AddSubject.OnSubjectSavedListener {
+    SubjectsFragment.SubClickedListener, SubjectsFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener {
 
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -81,17 +82,34 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun subAddClick() {
         val fragmentManager = this.supportFragmentManager
-        val fragmentTransaction = fragmentManager?.beginTransaction()
-        val fragment = AddSubject()
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = AddSubjectFragment()
         fragment.setOnSubjectSavedListener(this)
-        fragmentTransaction.replace(R.id.view_pager_container, fragment).commit()
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("addSubFrag").commit()
+//        val bottomNav = findViewById<View>(R.id.bottom_navigation_view)
+//        bottomNav.visibility = View.GONE
+        showBottomNav(false)
+    }
+
+    fun showBottomNav(show:Boolean){
+        val bottomNav = findViewById<View>(R.id.bottom_navigation_view)
+        if(show){
+            bottomNav.visibility = View.VISIBLE
+        }
+        else{
+            bottomNav.visibility = View.GONE
+        }
     }
 
     override fun onSubjectSaved(subject: Subject) {
+        showBottomNav(true)
         val intent = Intent(this, SubjectDetails::class.java).apply{
             putExtraJson(subject)
         }
+        val fm = this.supportFragmentManager
         startActivity(intent)
+
+        fm.popBackStack("addSubFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
     //select item in bottom navigation
@@ -110,6 +128,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
         return false
     }
+
 
 
 }

@@ -1,9 +1,6 @@
 package com.example.studentlifeapp.fragments
 
 import android.app.DatePickerDialog
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,21 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
-
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.activities.SubjectDetails
+import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.putExtraJson
-import kotlinx.android.synthetic.main.fragment_add_event.*
 import kotlinx.android.synthetic.main.fragment_add_subject.*
 import kotlinx.android.synthetic.main.fragment_add_subject.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
-import java.time.DateTimeException
 import java.util.*
 
-class AddSubject : Fragment() {
+class AddSubjectFragment : Fragment() {
 
     internal lateinit var callback: OnSubjectSavedListener
 
@@ -49,6 +42,11 @@ class AddSubject : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        (activity as MainActivity).showBottomNav(true)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -108,4 +106,6 @@ class AddSubject : Fragment() {
             optionsMenu.findItem(R.id.action_add).isVisible = true
         }
     }
+
+
 }
