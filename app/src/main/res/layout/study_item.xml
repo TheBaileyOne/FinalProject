@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:id="@+id/event_view"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/study_item_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            />
+        <TextView
+            android:id="@+id/study_item_title"
+            android:text="Study Title"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold"
+            android:layout_toRightOf="@+id/study_item_icon"
+            android:layout_marginLeft="16dp"/>
+
+        <TextView
+            android:id="@+id/study_item_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/study_item_title"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/study_item_icon"
+            android:text="Duration"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/study_item_time"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="3dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="14sp"
+            tools:text="15 \nMins"
+            android:layout_alignParentRight="true"
+            />
+
+    </RelativeLayout>
+
+
+
+
+</FrameLayout>

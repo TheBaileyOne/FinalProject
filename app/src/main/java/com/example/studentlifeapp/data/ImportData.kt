@@ -22,6 +22,7 @@ fun importEvents():MutableList<Event> {
     list.add(Event("reminder3",EventType.REMINDER, LocalDateTime.now().plusDays(12)))
     list.add(Event("reminder3",EventType.EXAM, LocalDateTime.now().plusDays(12)))
     list.add(Event("reminder3",EventType.SOCIETY, LocalDateTime.now().plusDays(12)))
+    list.add(Event("Study",EventType.STUDY, LocalDateTime.now().plusDays(13),LocalDateTime.now().plusDays(13).plusHours(1),note = "revise sectionB"))
     //TODO: Get events from database
     return list
 }

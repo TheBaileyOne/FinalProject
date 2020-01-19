@@ -1,4 +1,4 @@
-package com.example.studentlifeapp
+package com.example.studentlifeapp.util
 
 import android.content.Intent
 import com.google.gson.Gson

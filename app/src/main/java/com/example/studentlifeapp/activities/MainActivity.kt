@@ -15,7 +15,7 @@ import com.example.studentlifeapp.fragments.SubjectsFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
-import com.example.studentlifeapp.putExtraJson
+import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,

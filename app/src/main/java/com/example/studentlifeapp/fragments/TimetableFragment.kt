@@ -103,7 +103,7 @@ class TimetableFragment : Fragment() {
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
-    private val eventAdapter = EventAdapter(){event:Event-> eventClicked(event)}
+    private val eventAdapter = EventAdapter{event:Event-> eventClicked(event)}
     private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
 
     //what to do when event clicked

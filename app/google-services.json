@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "90294114782-fgn0nbej7br5l8cs6leql9ljheh4g32e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.studentlifeapp",
+            "certificate_hash": "90bb338c95c1de783d49cc8dc0dd602ce5138705"
+          }
+        },
+        {
           "client_id": "90294114782-rc0g2el9qfdklgcshrjs4q2kn4ks3a15.apps.googleusercontent.com",
           "client_type": 3
         }
