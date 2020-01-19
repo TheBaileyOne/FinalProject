@@ -10,24 +10,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <receiver
-            android:name=".TimerExpiredReceiver"
-            android:enabled="true"
-            android:exported="false"></receiver>
-
-        <activity android:name=".activities.AddSubject" />
-        <activity android:name=".activities.SubjectDetails" />
+        <activity android:name=".activities.Signup"></activity>
+        <activity android:name=".activities.Login" />
         <activity
-            android:name=".activities.StudyMode"
-            android:label="@string/title_activity_study_mode"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MainActivity">
+            android:name=".activities.SplashActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".TimerExpiredReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".activities.SubjectDetails" />
+        <activity
+            android:name=".activities.StudyMode"
+            android:label="@string/title_activity_study_mode"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.MainActivity" />
     </application>
 
 </manifest>
