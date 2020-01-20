@@ -21,4 +21,5 @@
     <string name="password_hint">Password</string>
     <string name="login_btn">Login</string>
     <string name="signup_btn">Sign-Up</string>
+    <string name="name">Name</string>
 </resources>
