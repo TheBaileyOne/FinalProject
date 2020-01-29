@@ -24,6 +24,7 @@ fun importEvents():MutableList<Event> {
     list.add(Event("reminder3",EventType.SOCIETY, LocalDateTime.now().plusDays(12)))
     list.add(Event("Study",EventType.STUDY, LocalDateTime.now().plusDays(13),LocalDateTime.now().plusDays(13).plusHours(1),note = "revise sectionB"))
     //TODO: Get events from database
+    //TODO: Import/export by date
     return list
 }
 
@@ -57,15 +58,9 @@ fun importSubjects():MutableList<Subject>{
         location = Location("Lecture Hall")))
     list.add(Subject("Subject1","An exampleSubject", events1))
     list.add(Subject("Subject2","Second example Subject", events2))
-    fun importEvents():MutableList<Event>{
-        val allEvents = mutableListOf<Event>()
-        for(subject in list){
-            for(event in subject.events) {
-                allEvents.add(event)
-            }
-        }
-        return allEvents
-    }
+
+
 
     return list
 }
+

@@ -8,11 +8,14 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.NonNull
 import com.example.studentlifeapp.R
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import java.lang.Exception
 
 class Signup : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -47,7 +50,13 @@ class Signup : AppCompatActivity() {
 
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)) {
                 Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show()
-            } else{
+
+            } else if(password.length<6) {
+                Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_LONG).show()
+
+            }
+
+            else{
                 auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener{ task ->
                     if(task.isSuccessful){
                         Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
@@ -70,6 +79,8 @@ class Signup : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }else {
+                        Log.w("TAG", "createUserWithEmail:failure", task.exception);
+
                         Toast.makeText(this, "Registration Failed", Toast.LENGTH_LONG).show()
                     }
                 })

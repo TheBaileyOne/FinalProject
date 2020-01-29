@@ -18,6 +18,8 @@ import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+//TODO: Add a side navigation draw with access to user settings (Account managing)
+
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     SubjectsFragment.SubClickedListener, SubjectsFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener {
 
