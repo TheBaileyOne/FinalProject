@@ -2,6 +2,7 @@ package com.example.studentlifeapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.fragments.AddEventFragment
@@ -142,6 +144,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
 
     override fun onEventSaved(events: MutableList<Event>) {
         subject?.addEvents(events)
+        val db = DatabaseManager()
+        db.exportEvents(events)
         Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
         val eventsGroup = formatEvents(subject.events)
         viewAdapter.refreshList(eventsGroup)

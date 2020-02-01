@@ -184,7 +184,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
     private fun addEvent(){
         if(add_event_name.text.isEmpty()|| add_event_date.text.isEmpty() ||
             add_event_time.text.isEmpty() || add_event_end_date.text.isEmpty() || add_event_time_end.text.isEmpty() ||
-            (add_event_repeat_num.text.isEmpty() && durationValue != "never")){
+            (add_event_repeat_num.text.isEmpty() && durationValue != "Never")){
             Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT).show()
         }else{
 

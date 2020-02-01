@@ -1,6 +1,8 @@
 package com.example.studentlifeapp.fragments
 
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,11 +18,16 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.*
+import com.example.studentlifeapp.data.DatabaseManager
+import com.example.studentlifeapp.data.DatabaseManager.DbEventsCallback
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.setTextColorRes
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -104,7 +111,11 @@ class TimetableFragment : Fragment() {
     private val today = LocalDate.now()
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val eventAdapter = EventAdapter{event:Event-> eventClicked(event)}
-    private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
+    private val user = FirebaseAuth.getInstance().currentUser!!.uid
+    private val db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
+    private val dbEvents = mutableListOf<Event>()
+    private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}
+//    private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
 
     //what to do when event clicked
     private fun eventClicked(event: Event){
@@ -115,10 +126,39 @@ class TimetableFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
         //layoutManager places items on the screen maing sure they get the screen space needed
+        db.get()
+            .addOnSuccessListener {result ->
+                for (document in result){
+                    if (document !=null) {
+                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
+                        val type = if(document.getString("type")!=null) EventType.valueOf(document.getString("type")!!) else EventType.LECTURE
+                        // val event = document.toObject(Event::class.java)
+                        val event = Event(
+                            title = document.getString("title")!!,
+                            type = type,
+                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
+                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
+                            note = document.getString("note"),
+                            eventId = document.getString("eventId")!!
+                        )
+                        dbEvents.add(event)
+                        Log.d("Add event", "event: $event added")
+                    }
+                }
+                events = dbEvents.groupBy { it.startTime.toLocalDate() }
+                calendarView.notifyCalendarChanged()
+                Log.d("Calendar Change", "events updated: $events")
+            }
+            .addOnFailureListener{e->
+                Log.d(ContentValues.TAG,"Error getting documents: ", e)
+            }
+
         calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
         calendar_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         eventAdapter.notifyDataSetChanged()
+
+
 
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
@@ -131,6 +171,8 @@ class TimetableFragment : Fragment() {
                 selectDate(today)
             }
         }
+
+
 
         class DayViewContainer(view:View):ViewContainer(view){
             lateinit var day: CalendarDay
@@ -267,5 +309,12 @@ class TimetableFragment : Fragment() {
         eventAdapter.notifyDataSetChanged()
 
     }
+
+    private fun updateAdapterAll(){
+//        for (eventGroup in importedEvents){
+//            updateAdapterForDate(eventGroup.key)
+//        }
+    }
+
 
 }

@@ -13,7 +13,7 @@ data class Event(
     val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
     val location: Location? = null,
     val note: String? = null,
-    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
+//    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
     val eventId: String = title
 ): Serializable
 {

@@ -13,7 +13,11 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.google.firebase.Timestamp
 import org.threeten.bp.DayOfWeek
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import org.threeten.bp.temporal.WeekFields
 import java.util.*
 
@@ -96,3 +100,7 @@ fun GradientDrawable.setCornerRadius(
         bottomLeft, bottomLeft
     ).toFloatArray()
 }
+
+fun LocalDateTime.toTimeStamp() = Timestamp(atZone(ZoneId.systemDefault()).toEpochSecond(),nano)
+fun Timestamp.tolocalDateTime(zone: ZoneId = ZoneId.systemDefault()) = LocalDateTime.ofInstant(
+    Instant.ofEpochMilli(seconds*1000+nanoseconds/1000),zone)
