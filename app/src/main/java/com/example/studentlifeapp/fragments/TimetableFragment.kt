@@ -1,33 +1,30 @@
 package com.example.studentlifeapp.fragments
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
 import androidx.core.view.marginBottom
-import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.*
-import com.example.studentlifeapp.data.DatabaseManager
-import com.example.studentlifeapp.data.DatabaseManager.DbEventsCallback
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.setTextColorRes
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -115,6 +112,7 @@ class TimetableFragment : Fragment() {
     private val db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
     private val dbEvents = mutableListOf<Event>()
     private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}
+    private lateinit var listener: ListenerRegistration
 //    private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
 
     //what to do when event clicked
@@ -122,38 +120,71 @@ class TimetableFragment : Fragment() {
         Toast.makeText(activity,"Clicked: ${event.title}", Toast.LENGTH_LONG).show()
 
     }
+//    override fun onPause() {
+//        super.onPause()
+//        listener.remove()
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        dbListener()
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
         //layoutManager places items on the screen maing sure they get the screen space needed
-        db.get()
-            .addOnSuccessListener {result ->
-                for (document in result){
-                    if (document !=null) {
-                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
-                        val type = if(document.getString("type")!=null) EventType.valueOf(document.getString("type")!!) else EventType.LECTURE
-                        // val event = document.toObject(Event::class.java)
-                        val event = Event(
-                            title = document.getString("title")!!,
-                            type = type,
-                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
-                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
-                            note = document.getString("note"),
-                            eventId = document.getString("eventId")!!
-                        )
-                        dbEvents.add(event)
-                        Log.d("Add event", "event: $event added")
-                    }
-                }
-                events = dbEvents.groupBy { it.startTime.toLocalDate() }
-                calendarView.notifyCalendarChanged()
-                Log.d("Calendar Change", "events updated: $events")
-            }
-            .addOnFailureListener{e->
-                Log.d(ContentValues.TAG,"Error getting documents: ", e)
-            }
+//        db.get()
+//            .addOnSuccessListener {result ->
+//                for (document in result){
+//                    if (document !=null) {
+//                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
+//                        val type = if(document.getString("type")!=null) EventType.valueOf(document.getString("type")!!) else EventType.LECTURE
+//                        // val event = document.toObject(Event::class.java)
+//                        val event = Event(
+//                            title = document.getString("title")!!,
+//                            type = type,
+//                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
+//                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
+//                            note = document.getString("note"),
+//                            eventId = document.getString("eventId")!!
+//                        )
+//                        dbEvents.add(event)
+//                    }
+//                }
+//                events = dbEvents.groupBy { it.startTime.toLocalDate() }
+//                calendarView.notifyCalendarChanged()
+//            }
+//            .addOnFailureListener{e->
+//                Log.d(TAG,"Error getting documents: ", e)
+//            }
+        listener = dbListener()
+//        listener = db.addSnapshotListener{value, e ->
+//            if (e!= null){
+//                Log.w(TAG, "snapshot listen failed.",e)
+//                return@addSnapshotListener
+//            }
+//            for (doc in value!!){
+//                dbEvents.add(
+//                    Event(
+//                        title = doc.getString("title")!!,
+//                        type = EventType.valueOf(doc.getString("type")!!),
+//                        startTime = (doc.get("start_time") as Timestamp).tolocalDateTime(),
+//                        endTime = (doc.get("end_time") as Timestamp).tolocalDateTime(),
+//                        note = doc.getString("note"),
+//                        eventId = doc.getString("eventId")!!
+//                    )
+//                )
+//            }
+//            events = dbEvents.groupBy { it.startTime.toLocalDate() }
+//            calendarView.notifyCalendarChanged()
+//            Log.d(TAG, "Events updated")
+//        }
 
-        calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
+
+
+
+
+    calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
         calendar_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         eventAdapter.notifyDataSetChanged()
@@ -315,6 +346,34 @@ class TimetableFragment : Fragment() {
 //            updateAdapterForDate(eventGroup.key)
 //        }
     }
+    private fun dbListener(): ListenerRegistration {
+
+        return db.addSnapshotListener{ value, e ->
+            if (e!= null){
+                Log.w(TAG, "snapshot listen failed.",e)
+                return@addSnapshotListener
+            }
+
+            for (docChange in value!!.documentChanges){
+                dbEvents.add(
+                    Event(
+                        title = docChange.document.getString("title")!!,
+                        type = EventType.valueOf(docChange.document.getString("type")!!),
+                        startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
+                        endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
+                        note = docChange.document.getString("note"),
+                        eventId = docChange.document.getString("eventId")!!
+                    )
+                )
+            }
+            events = dbEvents.groupBy { it.startTime.toLocalDate() }
+            calendarView.notifyCalendarChanged()
+            Log.d(TAG, "Events updated")
+
+        }
+    }
+
+
 
 
 }
