@@ -1,5 +1,6 @@
 package com.example.studentlifeapp.activities
 
+import android.content.ContentValues.TAG
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -14,12 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
+import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.fragments.AddEventFragment
 import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.util.getJsonExtra
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.tolocalDateTime
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
@@ -70,13 +75,19 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     private lateinit var viewAdapter: SubjectEventsAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var subject: Subject
+    private lateinit var subjectRef:String
+    private val events = mutableListOf<Event>()
+    private lateinit var listener: ListenerRegistration
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
-
         subject = intent.getJsonExtra(Subject::class.java)
+//        subjectRef = intent.getStringExtra("subRef")!!
+        subjectRef = subject.getId()
+        listener = subDbEventsListener()
         //TODO: sort out animation for activity opening
-        val events: MutableList<Event> = subject!!.events
+//        val events: MutableList<Event> = subject!!.events
         val eventsGroup = formatEvents(events)
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -145,10 +156,76 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     override fun onEventSaved(events: MutableList<Event>) {
         subject?.addEvents(events)
         val db = DatabaseManager()
-        db.exportEvents(events)
+//        db.exportEvents(events)
         Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
-        val eventsGroup = formatEvents(subject.events)
-        viewAdapter.refreshList(eventsGroup)
+//        val dbEvents: MutableList<Event> = mutableListOf()
+//        db.getDatabase().collection("subjects").get()
+//            .addOnSuccessListener {result ->
+//                for (document in result){
+//                    if (document !=null) {
+//                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
+//                        val type = if(document.getString("type")!=null)  else EventType.LECTURE
+//                        // val event = document.toObject(Event::class.java)
+//                        val event = Event(
+//                            title = document.getString("title")!!,
+//                            type = EventType.valueOf(document.getString("type")!!),
+//                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
+//                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
+//                            note = document.getString("note"),
+//                            eventId = document.getString("eventId")!!
+//                        )
+//                        dbEvents.add(event)
+//                    }
+//                }
+//
+//                val eventsGroup = formatEvents(dbEvents)
+//                viewAdapter.refreshList(eventsGroup)
+//            }
+//            .addOnFailureListener{e->
+//                Log.d(ContentValues.TAG,"Error getting documents: ", e)
+//            }
+    }
+    private fun subDbEventsListener():ListenerRegistration{
+        Log.d("subDbEventsListenerCalled","subDbEventsListener called")
+        val db = DatabaseManager()
+        val dbEvents: MutableList<Event> = mutableListOf()
+        return db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
+            .addSnapshotListener { snapshot, e ->
+
+                Log.d("subDbEventsListenerCalled","Snapshot Retrieved")
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                for(docChange in snapshot!!.documentChanges){
+                    Log.d("DocChange", "docChange = ${docChange.document.getString("ref")}")
+                    val eventId = docChange.document.getString("ref")!!
+                    db.getDatabase().collection("events").document(eventId).get()
+//                    db.getDatabase().collection("eventRef").document(docChange.document.getString("ref")!!).get()
+                        .addOnSuccessListener {event ->
+                            Log.d(TAG, "Success")
+                            if(event!=null){
+//                                Log.d("EventChanged", "${event.id} => ${event.data}")
+                                dbEvents.add(Event(
+                                title = event.getString("title")!!,
+                                type = EventType.valueOf(event.getString("type")!!),
+                                startTime = (event.get("start_time") as Timestamp).tolocalDateTime(),
+                                endTime = (event.get("end_time") as Timestamp).tolocalDateTime(),
+                                note = event.getString("note"),
+                                eventId = event.getString("eventId")!!))
+                                }
+                            val eventsGroup = formatEvents(dbEvents)
+                            viewAdapter.refreshList(eventsGroup)
+                        }
+                        .addOnFailureListener{e ->
+                            Log.w(TAG, "get collection fail, Error: $e")
+                        }
+                }
+//                Log.d("DbEvents","dbEvents = $dbEvents")
+
+
+            }
     }
 
 

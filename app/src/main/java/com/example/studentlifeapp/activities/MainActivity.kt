@@ -3,6 +3,7 @@ package com.example.studentlifeapp.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.annotation.IdRes
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun subClicked(subject: Subject) {
         val intent = Intent(this, SubjectDetails::class.java).apply{
             putExtraJson(subject)
+            putExtra("subRef", subject.getId())
         }
         startActivity(intent)
     }
@@ -105,8 +107,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     override fun onSubjectSaved(subject: Subject) {
         showBottomNav(true)
+        Log.d("onSubSaved","Listener called. \nSubject: ${subject.name}\nSubject Reference: ${subject.getId()}")
         val intent = Intent(this, SubjectDetails::class.java).apply{
             putExtraJson(subject)
+            putExtra("subRef", subject.getId())
         }
         val fm = this.supportFragmentManager
         startActivity(intent)

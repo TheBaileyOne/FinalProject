@@ -1,7 +1,9 @@
 package com.example.studentlifeapp.fragments
 
 import android.app.DatePickerDialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -11,7 +13,9 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.toTimeStamp
 import kotlinx.android.synthetic.main.fragment_add_subject.*
 import kotlinx.android.synthetic.main.fragment_add_subject.view.*
 import org.threeten.bp.LocalDateTime
@@ -96,14 +100,37 @@ class AddSubjectFragment : Fragment() {
         if (add_subject_name.text.isEmpty() || add_subject_start.text.isEmpty()||add_subject_end.text.isEmpty()){
             Toast.makeText(context,"Please fill in all compulsory fields", Toast.LENGTH_SHORT).show()
         }else{
+            val db = DatabaseManager()
             subjectName = add_subject_name.text.toString()
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
             subjectStart = LocalDateTime.parse("${add_subject_start.text} 00:00", formatter)
             subjectEnd = LocalDateTime.parse("${add_subject_end.text} 23:59", formatter)
             val subjectDetails = add_subject_summary.text.toString()
             val subject = Subject(subjectName,subjectDetails, subjectStart = subjectStart, subjectEnd = subjectEnd)
-            callback.onSubjectSaved(subject)
-            optionsMenu.findItem(R.id.action_add).isVisible = true
+
+            var subRef:String?
+            val docData = hashMapOf(
+                "name" to subject.name,
+                "summary" to subject.summary,
+                "subject_start" to subject.subjectStart.toTimeStamp(),
+                "subject_end" to subject.subjectEnd.toTimeStamp()
+            )
+            db.getDatabase().collection("subjects").add(docData)
+                .addOnSuccessListener {documentReference ->
+                    subRef = documentReference.id
+                    subject.setId(subRef!!)
+                    Log.d(TAG,  "Document written with ID: ${documentReference.id}")
+
+                    callback.onSubjectSaved(subject)
+                    optionsMenu.findItem(R.id.action_add).isVisible = true
+                }
+                .addOnFailureListener{e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+//            db.addSubject(subject)
+//            Log.d("AddSubject:", "subject added: $subject")
+//            callback.onSubjectSaved(subject)
+//            optionsMenu.findItem(R.id.action_add).isVisible = true
         }
     }
 

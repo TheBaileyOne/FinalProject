@@ -1,9 +1,11 @@
 package com.example.studentlifeapp.fragments
 
+import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
@@ -15,15 +17,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.importSubjects
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.tolocalDateTime
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_subjects.*
 import kotlinx.android.synthetic.main.list_item.*
 import java.lang.ClassCastException
 
 
-class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
+class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
 
 
     override fun getItemCount(): Int = subjects.size
@@ -51,6 +57,10 @@ class SubjectsAdapter( val subjects: MutableList<Subject> = mutableListOf(), val
             list_description.text = subject.summary
         }
     }
+    fun refreshList(newSubjects:MutableList<Subject>){
+        subjects = newSubjects
+        this.notifyDataSetChanged()
+    }
 }
 class SubjectsFragment : Fragment() {
 
@@ -65,7 +75,9 @@ class SubjectsFragment : Fragment() {
 
     private lateinit var subClickListener: SubClickedListener
     private lateinit var subAddClickListener: SubAddClickedListener
-    private val subjects = importSubjects()
+//    private val subjects = importSubjects()
+    private var subjects = mutableListOf<Subject>()
+    private lateinit var listener: ListenerRegistration
     private val subjectAdapter = SubjectsAdapter(subjects){subject:Subject->subjectClicked(subject)}
     lateinit var menuItem:MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +153,8 @@ class SubjectsFragment : Fragment() {
 //            layoutManager = LinearLayoutManager(activity)
 //            adapter = SubjectsAdapter()
 //        }
+        listener = subDbListener()
+
         subjects_recyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
         subjects_recyclerView.adapter=subjectAdapter
         subjects_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
@@ -151,5 +165,29 @@ class SubjectsFragment : Fragment() {
         super.onResume()
         Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
 //        TODO("Refresh the subject list")
+    }
+
+    private fun subDbListener(): ListenerRegistration {
+        val db = DatabaseManager()
+//        val dbSubjects:MutableList<Subject> = mutableListOf()
+        return db.getDatabase().collection("subjects")
+            .addSnapshotListener{snapshot, e ->
+                if (e!= null){
+                    Log.w(ContentValues.TAG, "snapshot listen failed.",e)
+                    return@addSnapshotListener
+                }
+                for (docChange in snapshot!!.documentChanges){
+                    val subject = Subject(
+                            name = docChange.document.getString("name")!!,
+                            summary = docChange.document.getString("summary")!!,
+                            subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
+                            subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime()
+                        )
+                    subject.setId(docChange.document.id)
+//                    dbSubjects.add(subject)
+                    subjects.add(subject)
+                }
+                subjectAdapter.refreshList(subjects)
+            }
     }
 }

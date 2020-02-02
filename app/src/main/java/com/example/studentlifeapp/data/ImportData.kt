@@ -56,8 +56,8 @@ fun importSubjects():MutableList<Subject>{
         location = Location("Class Room")))
     events2.add(Event("Lecture2", EventType.LECTURE, LocalDateTime.now().plusHours(23), LocalDateTime.now().plusHours(35),
         location = Location("Lecture Hall")))
-    list.add(Subject("Subject1","An exampleSubject", events1))
-    list.add(Subject("Subject2","Second example Subject", events2))
+//    list.add(Subject("Subject1","An exampleSubject", events1))
+//    list.add(Subject("Subject2","Second example Subject", events2))
 
 
 

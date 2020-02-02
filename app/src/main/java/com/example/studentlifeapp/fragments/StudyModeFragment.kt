@@ -64,7 +64,8 @@ class StudyModeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: StudyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
-
+    private val events = mutableListOf<Event>()
+    private lateinit var studies: List<Event>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -85,8 +86,8 @@ class StudyModeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val events = importEvents()
-        val studies = events.filter{
+
+        studies = events.filter{
             it.type == EventType.STUDY
         }
 
