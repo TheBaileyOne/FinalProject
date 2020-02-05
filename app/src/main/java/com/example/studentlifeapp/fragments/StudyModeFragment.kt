@@ -1,6 +1,8 @@
 package com.example.studentlifeapp.fragments
 
+import android.content.ContentValues
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -15,15 +17,20 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.StudyMode
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.tolocalDateTime
 import com.example.studentlifeapp.util.PrefUtil
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_study_mode.*
 import kotlinx.android.synthetic.main.fragment_study_mode.view.*
 import kotlinx.android.synthetic.main.study_item.*
+import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
 class StudyAdapter(private var studies:List<Event> = mutableListOf(), val onClick: (Event)-> Unit): RecyclerView.Adapter<StudyAdapter.StudyViewHolder>(){
@@ -43,10 +50,13 @@ class StudyAdapter(private var studies:List<Event> = mutableListOf(), val onClic
             }
         }
         fun bind(study:Event){
+            val formatter = DateTimeFormatter.ofPattern("EEE d LLL - HH:mm")
             study_item_title.text = study.title
-            study_item_description.text= study.note
-            val difference = ChronoUnit.MINUTES.between(study.startTime, study.endTime)
-            study_item_time.text = "${Math.toIntExact(difference)} \nmins"
+//            study_item_description.text= study.note
+            study_item_description.text= formatter.format(study.startTime)
+            study_item_icon.visibility = View.GONE
+            val difference =Math.toIntExact (ChronoUnit.MINUTES.between(study.startTime, study.endTime))
+            study_item_time.text = "$difference\nmins"
         }
     }
 
@@ -64,8 +74,10 @@ class StudyModeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: StudyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
-    private val events = mutableListOf<Event>()
-    private lateinit var studies: List<Event>
+    private var events = mutableListOf<Event>()
+//    private var events = mutableListOf<Event>()
+    private lateinit var listener: ListenerRegistration
+//    private lateinit var studies: List<Event>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -82,17 +94,28 @@ class StudyModeFragment : Fragment() {
         return view
 
     }
+    //TODO: Sort out list reloading, and make list fit in screen better
+    override fun onPause() {
+        super.onPause()
+        listener.remove()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        listener.remove()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listener = studyDbListener()
 
-
-        studies = events.filter{
-            it.type == EventType.STUDY
-        }
+//        studies = events.filter{
+//            it.type == EventType.STUDY
+//        }
 
         viewManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        viewAdapter = StudyAdapter(studies){study:Event ->studyClicked(study)}
+        viewAdapter = StudyAdapter(events){study:Event ->studyClicked(study)}
+//        viewAdapter = StudyAdapter(studies){study:Event ->studyClicked(study)}
 
         recyclerView = study_recyclerView.apply {
             setHasFixedSize(true)
@@ -113,6 +136,33 @@ class StudyModeFragment : Fragment() {
         startActivity(intent)
     }
 
+    private fun studyDbListener():ListenerRegistration{
+        val db = DatabaseManager().getDatabase().collection("events")
+        val dbQuery = db.whereEqualTo("type","STUDY")
+        val dbEvents: MutableList<Event> = mutableListOf()
+        return dbQuery.addSnapshotListener{snapshot, e ->
+            if (e != null) {
+                Log.w(ContentValues.TAG, "Listen failed.", e)
+                return@addSnapshotListener
+            }
+            for(docChange in snapshot!!.documentChanges){
+                dbEvents.add(
+                    Event(
+                        title = docChange.document.getString("title")!!,
+                        type = EventType.valueOf(docChange.document.getString("type")!!),
+                        startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
+                        endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
+                        note = docChange.document.getString("note"),
+                        eventId = docChange.document.getString("eventId")!!
+                    )
+                )
+            }
+            events = dbEvents.sortedBy{it.startTime}.toMutableList()
+            viewAdapter.refreshList(events)
+        }
+
+    }
+
 }
 
 class SetStudyModeFragment: PreferenceFragmentCompat(){
@@ -120,3 +170,5 @@ class SetStudyModeFragment: PreferenceFragmentCompat(){
         addPreferencesFromResource(R.xml.preferences)
     }
 }
+
+

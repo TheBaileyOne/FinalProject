@@ -17,9 +17,8 @@ data class Event(
     val eventId: String = title
 ): Serializable
 {
-    val colour: Int = setColour()
+    var colour: Int = setColour()
     private fun setColour(): Int {
-        //TODO("set correct colours")
         return when (type) {
             EventType.LECTURE ->  R.color.SkyBlue
             EventType.REMINDER ->  R.color.Red
@@ -31,6 +30,9 @@ data class Event(
             EventType.JOBSHIFT -> R.color.MediumPurple
             EventType.SOCIETY -> R.color.DeepPink
         }
+    }
+    private fun setCustomColour(colour: Int) {
+        this.colour = colour
     }
 
 }

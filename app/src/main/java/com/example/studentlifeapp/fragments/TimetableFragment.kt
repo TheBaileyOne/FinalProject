@@ -120,68 +120,20 @@ class TimetableFragment : Fragment() {
         Toast.makeText(activity,"Clicked: ${event.title}", Toast.LENGTH_LONG).show()
 
     }
-//    override fun onPause() {
-//        super.onPause()
-//        listener.remove()
-//    }
+    override fun onPause() {
+        super.onPause()
+        listener.remove()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        listener.remove()
+    }
 //
-//    override fun onResume() {
-//        super.onResume()
-//        dbListener()
-//    }
 
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
-        //layoutManager places items on the screen maing sure they get the screen space needed
-//        db.get()
-//            .addOnSuccessListener {result ->
-//                for (document in result){
-//                    if (document !=null) {
-//                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
-//                        val type = if(document.getString("type")!=null) EventType.valueOf(document.getString("type")!!) else EventType.LECTURE
-//                        // val event = document.toObject(Event::class.java)
-//                        val event = Event(
-//                            title = document.getString("title")!!,
-//                            type = type,
-//                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
-//                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
-//                            note = document.getString("note"),
-//                            eventId = document.getString("eventId")!!
-//                        )
-//                        dbEvents.add(event)
-//                    }
-//                }
-//                events = dbEvents.groupBy { it.startTime.toLocalDate() }
-//                calendarView.notifyCalendarChanged()
-//            }
-//            .addOnFailureListener{e->
-//                Log.d(TAG,"Error getting documents: ", e)
-//            }
         listener = dbListener()
-//        listener = db.addSnapshotListener{value, e ->
-//            if (e!= null){
-//                Log.w(TAG, "snapshot listen failed.",e)
-//                return@addSnapshotListener
-//            }
-//            for (doc in value!!){
-//                dbEvents.add(
-//                    Event(
-//                        title = doc.getString("title")!!,
-//                        type = EventType.valueOf(doc.getString("type")!!),
-//                        startTime = (doc.get("start_time") as Timestamp).tolocalDateTime(),
-//                        endTime = (doc.get("end_time") as Timestamp).tolocalDateTime(),
-//                        note = doc.getString("note"),
-//                        eventId = doc.getString("eventId")!!
-//                    )
-//                )
-//            }
-//            events = dbEvents.groupBy { it.startTime.toLocalDate() }
-//            calendarView.notifyCalendarChanged()
-//            Log.d(TAG, "Events updated")
-//        }
-
-
-
 
 
     calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
@@ -347,14 +299,17 @@ class TimetableFragment : Fragment() {
 //        }
     }
     private fun dbListener(): ListenerRegistration {
+        val dbEvents = mutableListOf<Event>()
 
         return db.addSnapshotListener{ value, e ->
             if (e!= null){
                 Log.w(TAG, "snapshot listen failed.",e)
                 return@addSnapshotListener
             }
+            val source = if (value != null && value.metadata.hasPendingWrites()) "local" else "server"
 
             for (docChange in value!!.documentChanges){
+                Log.d("Doc Change", "$source doc of type: ${docChange.type}")
                 dbEvents.add(
                     Event(
                         title = docChange.document.getString("title")!!,
@@ -366,7 +321,9 @@ class TimetableFragment : Fragment() {
                     )
                 )
             }
+            this.dbEvents.addAll(dbEvents)
             events = dbEvents.groupBy { it.startTime.toLocalDate() }
+            dbEvents.clear()
             calendarView.notifyCalendarChanged()
             Log.d(TAG, "Events updated")
 

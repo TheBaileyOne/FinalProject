@@ -13,12 +13,14 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/study_item_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            />
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="16dp" />
         <TextView
             android:id="@+id/study_item_title"
             android:text="Study Title"

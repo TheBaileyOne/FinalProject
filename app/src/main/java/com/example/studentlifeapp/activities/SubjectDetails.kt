@@ -83,11 +83,9 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
         subject = intent.getJsonExtra(Subject::class.java)
-//        subjectRef = intent.getStringExtra("subRef")!!
         subjectRef = subject.getId()
         listener = subDbEventsListener()
         //TODO: sort out animation for activity opening
-//        val events: MutableList<Event> = subject!!.events
         val eventsGroup = formatEvents(events)
         supportActionBar?.title = subject?.name
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -154,59 +152,26 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     }
 
     override fun onEventSaved(events: MutableList<Event>) {
-        subject?.addEvents(events)
-        val db = DatabaseManager()
-//        db.exportEvents(events)
+        subject.addEvents(events)
         Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
-//        val dbEvents: MutableList<Event> = mutableListOf()
-//        db.getDatabase().collection("subjects").get()
-//            .addOnSuccessListener {result ->
-//                for (document in result){
-//                    if (document !=null) {
-//                        Log.d(ContentValues.TAG, "${document.id}=> ${document.data}")
-//                        val type = if(document.getString("type")!=null)  else EventType.LECTURE
-//                        // val event = document.toObject(Event::class.java)
-//                        val event = Event(
-//                            title = document.getString("title")!!,
-//                            type = EventType.valueOf(document.getString("type")!!),
-//                            startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
-//                            endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
-//                            note = document.getString("note"),
-//                            eventId = document.getString("eventId")!!
-//                        )
-//                        dbEvents.add(event)
-//                    }
-//                }
-//
-//                val eventsGroup = formatEvents(dbEvents)
-//                viewAdapter.refreshList(eventsGroup)
-//            }
-//            .addOnFailureListener{e->
-//                Log.d(ContentValues.TAG,"Error getting documents: ", e)
-//            }
+
     }
     private fun subDbEventsListener():ListenerRegistration{
-        Log.d("subDbEventsListenerCalled","subDbEventsListener called")
         val db = DatabaseManager()
         val dbEvents: MutableList<Event> = mutableListOf()
         return db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
             .addSnapshotListener { snapshot, e ->
-
-                Log.d("subDbEventsListenerCalled","Snapshot Retrieved")
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
                     return@addSnapshotListener
                 }
 
                 for(docChange in snapshot!!.documentChanges){
-                    Log.d("DocChange", "docChange = ${docChange.document.getString("ref")}")
                     val eventId = docChange.document.getString("ref")!!
                     db.getDatabase().collection("events").document(eventId).get()
-//                    db.getDatabase().collection("eventRef").document(docChange.document.getString("ref")!!).get()
                         .addOnSuccessListener {event ->
-                            Log.d(TAG, "Success")
+                            Log.d(TAG, "Event Retrieved")
                             if(event!=null){
-//                                Log.d("EventChanged", "${event.id} => ${event.data}")
                                 dbEvents.add(Event(
                                 title = event.getString("title")!!,
                                 type = EventType.valueOf(event.getString("type")!!),
@@ -222,9 +187,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                             Log.w(TAG, "get collection fail, Error: $e")
                         }
                 }
-//                Log.d("DbEvents","dbEvents = $dbEvents")
-
-
             }
     }
 

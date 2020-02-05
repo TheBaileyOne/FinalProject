@@ -96,6 +96,7 @@ class AddSubjectFragment : Fragment() {
         }
         return view
     }
+
     private fun addSubject(){
         if (add_subject_name.text.isEmpty() || add_subject_start.text.isEmpty()||add_subject_end.text.isEmpty()){
             Toast.makeText(context,"Please fill in all compulsory fields", Toast.LENGTH_SHORT).show()
@@ -127,10 +128,6 @@ class AddSubjectFragment : Fragment() {
                 .addOnFailureListener{e ->
                     Log.w(TAG, "Error adding document", e)
                 }
-//            db.addSubject(subject)
-//            Log.d("AddSubject:", "subject added: $subject")
-//            callback.onSubjectSaved(subject)
-//            optionsMenu.findItem(R.id.action_add).isVisible = true
         }
     }
 

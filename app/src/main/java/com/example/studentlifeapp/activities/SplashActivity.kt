@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth
 class SplashActivity : AppCompatActivity() {
     private val splashTimeOut= 2000L
     private lateinit var auth: FirebaseAuth
-    private var authListener: FirebaseAuth.AuthStateListener? = null
     private var loggedIn:Boolean = false
 
 
@@ -29,26 +28,15 @@ class SplashActivity : AppCompatActivity() {
         //TODO:sort out login, so user stays logged in if they have logged in once, and so that it wont enter main activity if no user exists
 
         auth = FirebaseAuth.getInstance()
-//        authListener = FirebaseAuth.AuthStateListener(){
-//            fun onAuthStatechanged(@NonNull auth: FirebaseAuth){
-//                val user = FirebaseAuth.getInstance().currentUser
-//                if (user !=null){
-//                    loggedIn = true
-//                }
-//            }
-//        }
+
         val currentUser = auth.currentUser
         if (currentUser != null){
             loggedIn = true
         }
         val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
-//        val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
         Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
         Handler().postDelayed({
-            //start main activity
             startActivity(Intent(this@SplashActivity, nextActivity))
-//            startActivity(Intent(this@SplashActivity, Login::class.java))
-            //finish this activity
             finish()
         },splashTimeOut)
 
