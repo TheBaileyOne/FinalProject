@@ -80,6 +80,8 @@ class SubjectsFragment : Fragment() {
     private lateinit var listener: ListenerRegistration
     private val subjectAdapter = SubjectsAdapter(subjects){subject:Subject->subjectClicked(subject)}
     lateinit var menuItem:MenuItem
+    private val dbSubjects:MutableList<Subject> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -107,6 +109,19 @@ class SubjectsFragment : Fragment() {
         }
 
     }
+
+    override fun onPause() {
+        super.onPause()
+        listener.remove()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        listener.remove()
+        Log.d("SubClose", "Fragment closed")
+        subjects.clear()
+    }
+
     private fun subjectClicked(subject:Subject){
         Toast.makeText(activity,"Clicked: ${subject.name}",Toast.LENGTH_LONG).show()
         subClickListener.subClicked(subject)
@@ -165,10 +180,12 @@ class SubjectsFragment : Fragment() {
         super.onResume()
         Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
 //        TODO("Refresh the subject list")
+
     }
 
     private fun subDbListener(): ListenerRegistration {
         val db = DatabaseManager()
+        Log.d("SubDbListener", "Listener callsed. Subjects = $subjects")
 //        val dbSubjects:MutableList<Subject> = mutableListOf()
         return db.getDatabase().collection("subjects")
             .addSnapshotListener{snapshot, e ->
@@ -177,6 +194,7 @@ class SubjectsFragment : Fragment() {
                     return@addSnapshotListener
                 }
                 for (docChange in snapshot!!.documentChanges){
+                    Log.d("SubChange", "${docChange.document.getString("name")}")
                     val subject = Subject(
                             name = docChange.document.getString("name")!!,
                             summary = docChange.document.getString("summary")!!,
@@ -187,6 +205,7 @@ class SubjectsFragment : Fragment() {
 //                    dbSubjects.add(subject)
                     subjects.add(subject)
                 }
+                Log.d("SubChange","Subjects: $subjects")
                 subjectAdapter.refreshList(subjects)
             }
     }
