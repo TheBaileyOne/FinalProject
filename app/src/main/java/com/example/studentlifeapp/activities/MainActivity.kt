@@ -12,12 +12,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.fragments.AddSubjectFragment
 import com.example.studentlifeapp.fragments.SubjectsFragment
+import com.example.studentlifeapp.fragments.TimetableFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
+import com.example.studentlifeapp.util.StudyGenerator
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -31,6 +34,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var mainPagerAdapter:MainPagerAdapter
+    private  var events = mutableListOf<Event>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,9 +80,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.option_logout-> {
+
+                val timetableFrag = mainPagerAdapter.getItem(0)
+                val subjectsFrag = mainPagerAdapter.getItem(1)
+                (timetableFrag as TimetableFragment).clearTimetable()
+                (subjectsFrag as SubjectsFragment).onLogout()
+
+
                 FirebaseAuth.getInstance().signOut()
                 Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this,Login::class.java).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                val intent = Intent(this,Login::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                startActivity(intent)
+                finish()
                 return true}
         }
         return super.onOptionsItemSelected(item)
@@ -123,6 +137,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         else{
             bottomNav.visibility = View.GONE
         }
+    }
+
+    fun setEvents(events:MutableList<Event>){
+        this.events = events
+    }
+
+    fun onGenerateStudy(subject:Subject){
+        val studyGen = StudyGenerator(subject, events = events)
+        studyGen.startGenerator()
     }
 
     override fun onSubjectSaved(subject: Subject) {

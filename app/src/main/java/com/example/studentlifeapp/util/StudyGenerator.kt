@@ -9,12 +9,13 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-class StudyGenerator(val subject: Subject, val startDate: LocalDateTime = subject.subjectStart, val endDate: LocalDateTime = subject.subjectEnd){
+class StudyGenerator(val subject: Subject, val startDate: LocalDateTime = subject.subjectStart, val endDate: LocalDateTime = subject.subjectEnd, val events:List<Event>){
 //    private val busyTimes = mutableListOf<Pair<LocalDateTime,LocalDateTime>>()
-    private val events = importEvents() //TODO: Database query for events between start and end date
+//    private val events = importEvents() //TODO: Database query for events between start and end date
     private val studyList = mutableListOf<Event>()
+    private val groupedEvents = events.groupBy{startDate}
 
-    private fun startGenerator(){
+    fun startGenerator(){
 
     }
 
@@ -50,7 +51,7 @@ class StudyGenerator(val subject: Subject, val startDate: LocalDateTime = subjec
         
     }
 
-    fun checkRange(event: Event, studyTime:LocalDateTime):Boolean{
+    private fun checkRange(event: Event, studyTime:LocalDateTime):Boolean{
 //        return !(studyTime.isAfter(event.startTime)&& studyTime.isBefore(event.endTime))
         return studyTime.isAfter(event.startTime)&& studyTime.isBefore(event.endTime)
     }

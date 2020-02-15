@@ -119,8 +119,13 @@ class SubjectsFragment : Fragment() {
         super.onStop()
         listener.remove()
         Log.d("SubClose", "Fragment closed")
+//        subjects.clear()
+    }
+
+    fun onLogout(){
         subjects.clear()
     }
+
 
     private fun subjectClicked(subject:Subject){
         Toast.makeText(activity,"Clicked: ${subject.name}",Toast.LENGTH_LONG).show()
@@ -180,21 +185,22 @@ class SubjectsFragment : Fragment() {
         super.onResume()
         Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
 //        TODO("Refresh the subject list")
-
+        Log.d("Subject Refresh", "SubjectFragment, Subjects: ${subjects.size}")
+        subjectAdapter.refreshList(subjects)
     }
 
     private fun subDbListener(): ListenerRegistration {
         val db = DatabaseManager()
-        Log.d("SubDbListener", "Listener callsed. Subjects = $subjects")
+//        Log.d("SubDbListener", "Listener callsed. Subjects = $subjects")
 //        val dbSubjects:MutableList<Subject> = mutableListOf()
         return db.getDatabase().collection("subjects")
             .addSnapshotListener{snapshot, e ->
                 if (e!= null){
-                    Log.w(ContentValues.TAG, "snapshot listen failed.",e)
+//                    Log.w(ContentValues.TAG, "snapshot listen failed.",e)
                     return@addSnapshotListener
                 }
                 for (docChange in snapshot!!.documentChanges){
-                    Log.d("SubChange", "${docChange.document.getString("name")}")
+//                    Log.d("SubChange", "${docChange.document.getString("name")}")
                     val subject = Subject(
                             name = docChange.document.getString("name")!!,
                             summary = docChange.document.getString("summary")!!,
@@ -205,7 +211,7 @@ class SubjectsFragment : Fragment() {
 //                    dbSubjects.add(subject)
                     subjects.add(subject)
                 }
-                Log.d("SubChange","Subjects: $subjects")
+//                Log.d("SubChange","Subjects: $subjects")
                 subjectAdapter.refreshList(subjects)
             }
     }

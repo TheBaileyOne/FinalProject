@@ -1,6 +1,6 @@
 package com.example.studentlifeapp.fragments
 
-import android.content.ContentValues
+ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
@@ -13,17 +13,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.children
 import androidx.core.view.marginBottom
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.*
+import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.setTextColorRes
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ListenerRegistration
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -100,20 +104,23 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
 
 class TimetableFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_timetable, container, false)
-    }
+
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private val monthTitleFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val eventAdapter = EventAdapter{event:Event-> eventClicked(event)}
-    private val user = FirebaseAuth.getInstance().currentUser!!.uid
-    private val db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
+    private lateinit var user: String
+    private lateinit var db: CollectionReference
     private val dbEvents = mutableListOf<Event>()
-    private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}
+    private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}.toMutableMap()
     private lateinit var listener: ListenerRegistration
-//    private val events = importEvents().groupBy{ it.startTime.toLocalDate()}
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        user = FirebaseAuth.getInstance().currentUser!!.uid
+        db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
+        return inflater.inflate(R.layout.fragment_timetable, container, false)
+    }
 
     //what to do when event clicked
     private fun eventClicked(event: Event){
@@ -129,12 +136,20 @@ class TimetableFragment : Fragment() {
         super.onStop()
         listener.remove()
     }
-//
 
+    fun clearTimetable(){
+        dbEvents.clear()
+        events.clear()
+        calendarView.notifyCalendarChanged()
+        listener.remove()
+        Log.d("Clear","events cleared")
+
+    }
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
+        Log.d("User", "Current User: ${FirebaseAuth.getInstance().currentUser?.email}")
+        Log.d("User","User events = ${dbEvents.size}")
         listener = dbListener()
-
 
     calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
@@ -274,6 +289,7 @@ class TimetableFragment : Fragment() {
                 calendarView.smoothScrollToMonth(it.yearMonth.previous)
             }
         }
+        calendarView.notifyCalendarChanged()
     }
 
     private fun selectDate(date:LocalDate){
@@ -322,10 +338,12 @@ class TimetableFragment : Fragment() {
                 )
             }
             this.dbEvents.addAll(dbEvents)
-            events = dbEvents.groupBy { it.startTime.toLocalDate() }
+            events = dbEvents.groupBy { it.startTime.toLocalDate() }.toMutableMap()
+            Log.d(TAG, "Events updated, number of Events: ${dbEvents.size}")
             dbEvents.clear()
             calendarView.notifyCalendarChanged()
-            Log.d(TAG, "Events updated")
+
+            (activity as MainActivity).setEvents(dbEvents)
 
         }
     }
