@@ -193,7 +193,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
             eventStartTime = LocalDateTime.parse("${add_event_date.text} ${add_event_time.text}",formatter)
             eventEndTime = LocalDateTime.parse("${add_event_end_date.text} ${add_event_time_end.text}",formatter)
             notes = add_event_notes.text.toString()
-            eventId = "${eventType.name}: ${eventName}"
+            eventId = "${eventType.name}: $eventName"
             var event = Event(eventName,eventType,eventStartTime,eventEndTime,note=notes, eventId=eventId)
             events.add(event)
 

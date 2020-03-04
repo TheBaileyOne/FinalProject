@@ -98,11 +98,11 @@ class AddSubjectFragment : Fragment() {
     }
 
     private fun addSubject(){
-        if (add_subject_name.text.isEmpty() || add_subject_start.text.isEmpty()||add_subject_end.text.isEmpty()){
+        if (add_study_name.text.isEmpty() || add_subject_start.text.isEmpty()||add_subject_end.text.isEmpty()){
             Toast.makeText(context,"Please fill in all compulsory fields", Toast.LENGTH_SHORT).show()
         }else{
             val db = DatabaseManager()
-            subjectName = add_subject_name.text.toString()
+            subjectName = add_study_name.text.toString()
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
             subjectStart = LocalDateTime.parse("${add_subject_start.text} 00:00", formatter)
             subjectEnd = LocalDateTime.parse("${add_subject_end.text} 23:59", formatter)

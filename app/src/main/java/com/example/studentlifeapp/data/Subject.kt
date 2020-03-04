@@ -7,7 +7,9 @@ import kotlinx.android.parcel.RawValue
 import org.threeten.bp.LocalDateTime
 import java.io.Serializable
 
-class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1)){
+class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),
+              val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
+              val credits:Int = 20, val assements: MutableList<Assessment> = mutableListOf()){
 //class Subject(val name: String, val summary: String, val events:MutableList<Event> = mutableListOf(),val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1)){
 //    fun addEvents(newEvents: MutableList<Event>){
 //        for (event in newEvents){
@@ -50,3 +52,12 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
 
 
 }
+
+data class Assessment(
+    val name: String,
+    var mark: Float,
+    val maxMark: Float,
+    val weighting: Float,
+    val type: EventType,
+    val subAssessments:MutableList<Assessment>?
+)

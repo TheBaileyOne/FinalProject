@@ -11,6 +11,7 @@
     android:focusable="true">
 
     <RelativeLayout
+        android:id = "@+id/event_view_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
         <ImageView

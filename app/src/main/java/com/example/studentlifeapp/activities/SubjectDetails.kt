@@ -19,11 +19,14 @@ import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.fragments.AddEventFragment
 import com.example.studentlifeapp.fragments.EventExpandFragment
+import com.example.studentlifeapp.fragments.GenerateStudiesFragment
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.util.getJsonExtra
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.tolocalDateTime
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_subject_details.*
@@ -77,12 +80,18 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     private lateinit var subject: Subject
     private lateinit var subjectRef:String
     private val events = mutableListOf<Event>()
+
     private lateinit var listener: ListenerRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
-        subject = intent.getJsonExtra(Subject::class.java)
+        subject = intent.getJsonExtra("subject",Subject::class.java)!!
+//        val allEvents = intent.getJsonExtra("events",EventsParser::class.java)!!.events
+//        val studyGenerator = StudyGenerator(subject, subject.subjectStart, subject.subjectEnd, allEvents)
+//        AsyncTask.execute {
+//            studyGenerator.startGenerator()
+//        }
         subjectRef = subject.getId()
         listener = subDbEventsListener()
         //TODO: sort out animation for activity opening
@@ -115,8 +124,37 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             fragmentTransaction.commit()
 
         }
+        subject_info_view_button_generateStudy.setOnClickListener{
+            val dbEvents = mutableListOf<Event>()
+            val user = FirebaseAuth.getInstance().currentUser!!.uid
+            val db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
+            db.get()
+                .addOnSuccessListener {documents ->
+                    for (document in documents){
+                        dbEvents.add(
+                            Event(
+                                title = document.getString("title")!!,
+                                type = EventType.valueOf(document.getString("type")!!),
+                                startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
+                                endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
+                                note = document.getString("note"),
+                                eventId = document.getString("eventId")!!
+                            )
+                        )
+                    }
+//                    generateStudy(dbEvents)
+                    val fragmentManager = this.supportFragmentManager
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    val fragment = GenerateStudiesFragment(dbEvents,subject)
+                    fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
+                    fragmentTransaction.addToBackStack(null)
+                    fragmentTransaction.commit()
 
-
+                }
+                .addOnFailureListener{e->
+                    Log.w(TAG, "Error getting documentsL ", e)
+                }
+        }
     }
 
     private fun formatEvents(events:MutableList<Event>):List<Pair<String,List<Event>>>{
@@ -150,7 +188,11 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         menuInflater.inflate(R.menu.menu_edit,menu)
         return true
     }
+    fun addStudies(studies:MutableList<Event>){
+        subject.addEvents(studies)
+        Toast.makeText(this, "${studies.size} studies added", Toast.LENGTH_SHORT).show()
 
+    }
     override fun onEventSaved(events: MutableList<Event>) {
         subject.addEvents(events)
         Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
@@ -189,6 +231,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                 }
             }
     }
+
 
 
 }

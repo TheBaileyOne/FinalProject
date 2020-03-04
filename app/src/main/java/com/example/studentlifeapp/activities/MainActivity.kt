@@ -24,6 +24,7 @@ import com.example.studentlifeapp.util.StudyGenerator
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.core.EventManager
 
 
 //TODO: Add a side navigation draw with access to user settings (Account managing)
@@ -34,7 +35,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var mainPagerAdapter:MainPagerAdapter
-    private  var events = mutableListOf<Event>()
+    private var events = mutableListOf<Event>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,8 +114,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     //from interface, when subject is clicked listener
     override fun subClicked(subject: Subject) {
         val intent = Intent(this, SubjectDetails::class.java).apply{
-            putExtraJson(subject)
+            putExtraJson("subject",subject)
             putExtra("subRef", subject.getId())
+            putExtraJson("events",EventsParser(events))
         }
         startActivity(intent)
     }
@@ -141,12 +144,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     fun setEvents(events:MutableList<Event>){
         this.events = events
+
     }
 
-    fun onGenerateStudy(subject:Subject){
-        val studyGen = StudyGenerator(subject, events = events)
-        studyGen.startGenerator()
-    }
+    fun getEvents() = events
+//
+//    fun onGenerateStudy(subject:Subject){
+//        val studyGen = StudyGenerator(subject, events = events)
+//        studyGen.startGenerator()
+//    }
 
     override fun onSubjectSaved(subject: Subject) {
         showBottomNav(true)
@@ -181,3 +187,4 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
 
 }
+data class EventsParser(val events: MutableList<Event>)

@@ -343,7 +343,7 @@ class TimetableFragment : Fragment() {
             dbEvents.clear()
             calendarView.notifyCalendarChanged()
 
-            (activity as MainActivity).setEvents(dbEvents)
+//            (activity as MainActivity).setEvents(dbEvents)
 
         }
     }
