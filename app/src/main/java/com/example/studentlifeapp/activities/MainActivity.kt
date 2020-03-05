@@ -15,22 +15,20 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.fragments.AddSubjectFragment
-import com.example.studentlifeapp.fragments.SubjectsFragment
+import com.example.studentlifeapp.fragments.CourseFragment
 import com.example.studentlifeapp.fragments.TimetableFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
-import com.example.studentlifeapp.util.StudyGenerator
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.core.EventManager
 
 
 //TODO: Add a side navigation draw with access to user settings (Account managing)
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    SubjectsFragment.SubClickedListener, SubjectsFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener {
+    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener {
 
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -86,7 +84,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 val timetableFrag = mainPagerAdapter.getItem(0)
                 val subjectsFrag = mainPagerAdapter.getItem(1)
                 (timetableFrag as TimetableFragment).clearTimetable()
-                (subjectsFrag as SubjectsFragment).onLogout()
+                (subjectsFrag as CourseFragment).onLogout()
 
 
                 FirebaseAuth.getInstance().signOut()

@@ -156,6 +156,7 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
             else{
                 Toast.makeText(context, "No events selected for deletion", Toast.LENGTH_LONG).show()
             }
+            studies_generated_remove.text = "Remove Selected"
 
         }
         studies_generated_save.setOnClickListener{

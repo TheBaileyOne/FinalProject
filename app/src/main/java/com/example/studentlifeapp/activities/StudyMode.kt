@@ -1,6 +1,7 @@
 package com.example.studentlifeapp.activities
 
 import android.app.AlarmManager
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -12,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.TimerExpiredReceiver
+import com.example.studentlifeapp.util.NotificationUtil
 import com.example.studentlifeapp.util.PrefUtil
 
 import kotlinx.android.synthetic.main.activity_study_mode.*
@@ -84,7 +86,7 @@ class StudyMode : AppCompatActivity() {
         initTimer()
 
         removeAlarm(this)
-        //TODO: hide notification
+        NotificationUtil.hideTimerNotification(this)
     }
 
     override fun onPause() {
@@ -92,10 +94,10 @@ class StudyMode : AppCompatActivity() {
         if (timerState == TimerState.RUNNING){
             timer.cancel()
             val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
-            //TODO:show notification
+            NotificationUtil.showTimerRunning(this,wakeUpTime)
         }
         else if (timerState == TimerState.PAUSED){
-            //TODO: show notification
+            NotificationUtil.showTimerPaused(this)
         }
 
         PrefUtil.setPreviousTimerLengthSeconds(timerLengthSeconds,this)

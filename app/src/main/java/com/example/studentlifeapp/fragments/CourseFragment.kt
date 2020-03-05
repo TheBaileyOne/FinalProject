@@ -1,30 +1,23 @@
 package com.example.studentlifeapp.fragments
 
-import android.content.ContentValues
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.data.DatabaseManager
-import com.example.studentlifeapp.data.importSubjects
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.tolocalDateTime
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fragment_subjects.*
+import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.android.synthetic.main.list_item.*
 import java.lang.ClassCastException
 
@@ -62,7 +55,7 @@ class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf
         this.notifyDataSetChanged()
     }
 }
-class SubjectsFragment : Fragment() {
+class CourseFragment : Fragment() {
 
     //communicates to activity that a subject has been clicked
     interface SubClickedListener{
@@ -164,7 +157,7 @@ class SubjectsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.fragment_subjects, container, false)
+        return inflater.inflate(R.layout.fragment_course, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
