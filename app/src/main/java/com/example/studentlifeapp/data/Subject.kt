@@ -10,13 +10,7 @@ import java.lang.Exception
 
 class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),
               val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
-              val credits:Int = 20, val assements: MutableList<Assessment> = mutableListOf()){
-//class Subject(val name: String, val summary: String, val events:MutableList<Event> = mutableListOf(),val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1)){
-//    fun addEvents(newEvents: MutableList<Event>){
-//        for (event in newEvents){
-//            events.add(event)
-//        }
-//    }
+              val credits:Int = 20, val assements: MutableList<String> = mutableListOf(), var percentage:Double = 0.0, var remainingWeight:Int = 100){
     private var id: String = ""
     fun setId(id:String){
         this.id = id
@@ -42,16 +36,37 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
                     eventRef = documentReference.id
                     Log.d(TAG,  "Document written with ID: ${documentReference.id}")
                     events.add(eventRef)
-                    db.addSubjectEvent(eventRef, id)
+                    db.addSubReference(eventRef, id, "eventRef")
+//                    db.addSubjectEvent(eventRef, id)
                 }
                 .addOnFailureListener{e ->
                     Log.w(TAG, "Error adding document", e)
                 }
-
         }
     }
-
-
+    fun addAssessment(assessment: Assessment){
+        Log.d("Subject.addAssessments" ,"events: $assessment")
+        val db = DatabaseManager()
+        var assessmentRef: String
+        val docData = hashMapOf(
+            "name" to assessment.name,
+            "mark" to assessment.mark,
+            "maxMark" to assessment.maxMark,
+            "weighting" to assessment.weighting,
+            "type" to assessment.type
+        )
+        db.getDatabase().collection("assessments").add(docData)
+            .addOnSuccessListener {documentReference ->
+                assessmentRef = documentReference.id
+                Log.d(TAG,  "Document written with ID: ${documentReference.id}")
+                assements.add(assessmentRef)
+                db.addSubReference(assessmentRef, id, "assessmentRef")
+//                db.addSubjectAssessment(assessmentRef, id)
+            }
+            .addOnFailureListener{e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+    }
 }
 
 enum class Classification{
@@ -64,10 +79,9 @@ data class Assessment(
     val maxMark: Double = 100.0,
     val weighting: Double,
     val type: EventType,
-    val isSubAssessment: Boolean = false,
-    var hasSubAssessment: Boolean = false,
-    val parentAssessment: Assessment?,
-    val dbRef: String = "" //sort out for database implementation.
+    var dbRef: String = "",
+    var linkedEvent:String = ""
+    //sort out for database implementation.
 ){
     private var percentage = calculatePercentage()
     var classification:Classification = calculateClassification()
@@ -76,21 +90,13 @@ data class Assessment(
         return (mark/maxMark)*100
     }
     fun getWeightedPercentage() = percentage*(weighting/100)
-    fun addSubAssessment(name: String,mark: Double,maxMark: Double, weighting:Double, type: EventType){
-        hasSubAssessment = true
-        val subAssessment = Assessment(name, mark, maxMark, weighting,type, true, parentAssessment = this )
-        subAssesments.add(subAssessment)
-//        this.mark += subAssessment.getWeightedPercentage()
-    }
-    fun updateMark(mark: Double){
-        this.mark += mark
-        percentage = calculatePercentage()
-        classification = calculateClassification()
-//        this.mark = mark
-    }
-    private fun updateParentMark(){
-        parentAssessment?.updateMark(getWeightedPercentage())
-    }
+
+//    fun updateMark(mark: Double){
+//        this.mark += mark
+//        percentage = calculatePercentage()
+//        classification = calculateClassification()
+////        this.mark = mark
+//    }
 
     fun calculateClassification():Classification{
         return if (percentage in 70.0..100.0){
@@ -112,4 +118,5 @@ data class Assessment(
             throw Exception("Invalid percentage")
         }
     }
+
 }

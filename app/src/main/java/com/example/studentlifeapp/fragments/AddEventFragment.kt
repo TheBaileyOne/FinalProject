@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.*
 
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Location
@@ -224,6 +225,9 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
                 }
             }
             callback.onEventSaved(events)
+            if (activity is MainActivity){
+                (activity as MainActivity).showBottomNav(true)
+            }
             this.activity?.onBackPressed()
         }
     }

@@ -8,15 +8,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TableRow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.data.DatabaseManager
-import com.example.studentlifeapp.data.Event
-import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.data.*
+import com.example.studentlifeapp.fragments.AddAssessmentFragment
 import com.example.studentlifeapp.fragments.AddEventFragment
 import com.example.studentlifeapp.fragments.EventExpandFragment
 import com.example.studentlifeapp.fragments.GenerateStudiesFragment
@@ -32,6 +32,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
+import java.text.DecimalFormat
 
 class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
@@ -72,7 +73,7 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
     }
 }
 
-class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener {
+class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener, AddAssessmentFragment.OnAssessmentSavedListener {
     //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: SubjectEventsAdapter
@@ -80,8 +81,10 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     private lateinit var subject: Subject
     private lateinit var subjectRef:String
     private val events = mutableListOf<Event>()
-
-    private lateinit var listener: ListenerRegistration
+    private val rows = mutableListOf<TableRow>()
+    private var subjectPercentage = 0.0
+    private lateinit var eventsListener: ListenerRegistration
+    private lateinit var assessmentListener: ListenerRegistration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +96,9 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
 //            studyGenerator.startGenerator()
 //        }
         subjectRef = subject.getId()
-        listener = subDbEventsListener()
+        eventsListener = subDbEventsListener()
+        assessmentListener = subDbAssessmentsListener()
+
         //TODO: sort out animation for activity opening
         val eventsGroup = formatEvents(events)
         supportActionBar?.title = subject?.name
@@ -155,7 +160,71 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                     Log.w(TAG, "Error getting documentsL ", e)
                 }
         }
+        button_add_score.setOnClickListener{
+
+            val fragmentManager = this.supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragment = AddAssessmentFragment(subject.remainingWeight)
+            fragment.setOnAssessmentSavedListener(this)
+            fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
+            fragmentTransaction.addToBackStack(null)
+            fragmentTransaction.commit()
+//            val assessment = Assessment("Test",70.0,100.0,50.0, EventType.EXAM)
+//            addRow(assessment)
+        }
     }
+
+    private fun addRow(assessment: Assessment){
+        val row = TableRow(this)
+        val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
+        row.layoutParams = layoutParams
+        val nameText = TextView(this)
+        nameText.text = assessment.name
+        nameText.setPadding(4,0,4,0)
+        val weightingText = TextView(this)
+        weightingText.text = assessment.weighting.toString()
+        weightingText.setPadding(4,0,4,0)
+        val maxMarkText = TextView(this)
+        maxMarkText.text = assessment.maxMark.toString()
+        maxMarkText.setPadding(4,0,4,0)
+        val markText = TextView(this)
+        markText.text = assessment.mark.toString()
+        markText.setPadding(4,0,4,0)
+        val percentageText = TextView(this)
+        val decFormat = DecimalFormat("#.00")
+        percentageText.text = decFormat.format(assessment.calculatePercentage())
+        percentageText.setPadding(4,0,4,0)
+        row.addView(nameText)
+        row.addView(weightingText)
+        row.addView(maxMarkText)
+        row.addView(markText)
+        row.addView(percentageText)
+        table_subject_grades.addView(row)
+        rows.add(row)
+
+    }
+
+    private fun tableTitleDisplay(visible: Boolean){
+        if (visible){
+            table_subject_grades_title.visibility = View.VISIBLE
+        }else{
+            table_subject_grades_title.visibility = View.GONE
+        }
+
+    }
+
+    private fun displayTotalPercentage(visible: Boolean){
+        if(visible){
+            sub_percent_view.visibility = View.VISIBLE
+        }else{
+            sub_percent_view.visibility = View.GONE
+        }
+    }
+
+    fun onMarkChange(){
+        //TODO: Allow marks to change
+    }
+
 
     private fun formatEvents(events:MutableList<Event>):List<Pair<String,List<Event>>>{
         events.sortBy { it.startTime }
@@ -198,6 +267,52 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
 
     }
+    override fun onAssessmentSaved(assessment: Assessment) {
+        subject.addAssessment(assessment)
+        Toast.makeText(this, "assessment added",Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun subDbAssessmentsListener():ListenerRegistration{
+        val db = DatabaseManager()
+        val dbAssessments: MutableList<Assessment> = mutableListOf()
+        return db.getDatabase().collection("subjects").document(subjectRef).collection("assessmentRef")
+            .addSnapshotListener{snapshot, e ->
+                if (e!= null){
+                    Log.w(TAG, "assessment listen Failed:", e)
+                    return@addSnapshotListener
+                }
+                tableTitleDisplay(true)
+                for(docChange in snapshot!!.documentChanges){
+                    val assessmentId = docChange.document.getString("ref")!!
+                    db.getDatabase().collection("assessments").document(assessmentId).get()
+                        .addOnSuccessListener { assessment ->
+                            Log.d(TAG, "Assessment Retrieved")
+                            if (assessment != null){
+                                val assessment = Assessment(
+                                    name = assessment.getString("name")!!,
+                                    mark = assessment.getDouble("mark")!!,
+                                    maxMark =  assessment.getDouble("maxMark")!!,
+                                    weighting = assessment.getDouble("weighting")!!,
+                                    type = EventType.valueOf(assessment.getString("type")!!)
+                                )
+                                dbAssessments.add(assessment)
+                                addRow(assessment)
+                                subject.remainingWeight -= assessment.weighting.toInt()
+                                subjectPercentage += assessment.getWeightedPercentage()
+                                displayTotalPercentage(true)
+                                subject_percent.text = getString(R.string.subject_percent_string,subjectPercentage.toFloat())
+
+                            }
+                        }
+                        .addOnFailureListener{e ->
+                            Log.w(TAG, "get collection fail, Error: $e")
+                        }
+                }
+            }
+
+    }
+
     private fun subDbEventsListener():ListenerRegistration{
         val db = DatabaseManager()
         val dbEvents: MutableList<Event> = mutableListOf()
@@ -231,6 +346,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                 }
             }
     }
+
 
 
 

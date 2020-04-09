@@ -1,5 +1,6 @@
 package com.example.studentlifeapp.activities
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,14 +13,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.fragments.AddEventFragment
 import com.example.studentlifeapp.fragments.AddSubjectFragment
 import com.example.studentlifeapp.fragments.CourseFragment
 import com.example.studentlifeapp.fragments.TimetableFragment
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
+import com.example.studentlifeapp.toTimeStamp
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -28,8 +32,8 @@ import com.google.firebase.auth.FirebaseAuth
 //TODO: Add a side navigation draw with access to user settings (Account managing)
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener {
-
+    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener{
+//AddEventFragment.OnEventSavedListener
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var mainPagerAdapter:MainPagerAdapter
@@ -182,6 +186,29 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return false
     }
 
+//    override fun onEventSaved(events: MutableList<Event>) {
+//        val db = DatabaseManager()
+//        for (event in events) {
+//            var eventRef: String
+//            val docData = hashMapOf(
+//                "title" to event.title,
+//                "type" to event.type,
+//                "start_time" to event.startTime.toTimeStamp(),
+//                "end_time" to event.endTime.toTimeStamp(),
+//                "note" to event.note,
+//                "eventId" to event.eventId
+//                //TODO: add notifications and location and times
+//            )
+//            db.getDatabase().collection("events").add(docData)
+//                .addOnSuccessListener { documentReference ->
+////                    eventRef = documentReference.id
+//                    Log.d(ContentValues.TAG, "Document written with ID: ${documentReference.id}")
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.w(ContentValues.TAG, "Error adding document", e)
+//                }
+//        }
+//    }
 
 
 }

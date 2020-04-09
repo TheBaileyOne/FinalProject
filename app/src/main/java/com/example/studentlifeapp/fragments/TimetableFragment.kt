@@ -113,6 +113,8 @@ class TimetableFragment : Fragment() {
     private lateinit var user: String
     private lateinit var db: CollectionReference
     private val dbEvents = mutableListOf<Event>()
+    private var tempStore = mutableListOf<Event>()
+    private var storeBool:Boolean = false
     private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}.toMutableMap()
     private lateinit var listener: ListenerRegistration
 
@@ -151,12 +153,19 @@ class TimetableFragment : Fragment() {
         Log.d("User","User events = ${dbEvents.size}")
         listener = dbListener()
 
-    calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
+        calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
         calendar_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         eventAdapter.notifyDataSetChanged()
-
-
+//        fab_add.setOnClickListener {
+//            val fragmentTransaction = fragmentManager?.beginTransaction()
+//            val fragment = AddEventFragment()
+//            fragment.setOnEventSavedListener(activity as MainActivity)
+//            fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)
+//                ?.commit()
+//            (activity as MainActivity).showBottomNav(false)
+//            storeBool = true
+//        }
 
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
@@ -338,17 +347,21 @@ class TimetableFragment : Fragment() {
                 )
             }
             this.dbEvents.addAll(dbEvents)
+//            events = if (storeBool){
+//                tempStore?.addAll(dbEvents)
+//                tempStore.groupBy { it.startTime.toLocalDate()}.toMutableMap()
+//            } else{
             events = dbEvents.groupBy { it.startTime.toLocalDate() }.toMutableMap()
+//            }
             Log.d(TAG, "Events updated, number of Events: ${dbEvents.size}")
+//            tempStore = dbEvents
             dbEvents.clear()
             calendarView.notifyCalendarChanged()
+//            storeBool = false
 
 //            (activity as MainActivity).setEvents(dbEvents)
 
         }
     }
-
-
-
 
 }

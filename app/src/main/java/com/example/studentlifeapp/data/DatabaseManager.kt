@@ -22,6 +22,17 @@ class DatabaseManager{
         return db
     }
 
+    fun addSubReference(ref:String, subRef:String, refCollection: String){
+        val data = hashMapOf("ref" to ref)
+        db.collection("subjects").document(subRef).collection(refCollection)
+            .add(data)
+            .addOnSuccessListener {docRef->
+                Log.d(TAG,  "Document written with ID: ${docRef.id}")
+            }
+            .addOnFailureListener{e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+    }
 
     fun addSubjectEvent(ref:String, subRef:String){
         val data = hashMapOf("ref" to ref)
@@ -34,6 +45,18 @@ class DatabaseManager{
                 Log.w(TAG, "Error adding document", e)
             }
     }
+    fun addSubjectAssessment(ref:String, subRef:String){
+        val data = hashMapOf ("ref" to ref)
+        db.collection("subjects").document(subRef).collection("assessmentRef")
+            .add(data)
+            .addOnSuccessListener{docRef ->
+                Log.d(TAG, "Document written with ID:${docRef.id}")
+            }
+            .addOnFailureListener{e->
+                Log.w(TAG, "Error adding document", e)
+            }
+    }
+
 
 
 
