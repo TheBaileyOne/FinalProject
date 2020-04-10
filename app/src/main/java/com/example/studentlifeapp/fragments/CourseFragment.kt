@@ -100,7 +100,6 @@ class CourseFragment : Fragment() {
             )
 
         }
-
     }
 
     override fun onPause() {
@@ -176,15 +175,14 @@ class CourseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
-//        TODO("Refresh the subject list")
+//        Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
         Log.d("Subject Refresh", "SubjectFragment, Subjects: ${subjects.size}")
         subjectAdapter.refreshList(subjects)
     }
 
     private fun subDbListener(): ListenerRegistration {
         val db = DatabaseManager()
-//        Log.d("SubDbListener", "Listener callsed. Subjects = $subjects")
+//        Log.d("SubDbListener", "Listener called. Subjects = $subjects")
 //        val dbSubjects:MutableList<Subject> = mutableListOf()
         return db.getDatabase().collection("subjects")
             .addSnapshotListener{snapshot, e ->

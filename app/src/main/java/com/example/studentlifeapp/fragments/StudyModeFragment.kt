@@ -22,6 +22,7 @@ import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.importEvents
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.toTimeStamp
 import com.example.studentlifeapp.tolocalDateTime
 import com.example.studentlifeapp.util.PrefUtil
 import com.google.firebase.Timestamp
@@ -30,6 +31,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_study_mode.*
 import kotlinx.android.synthetic.main.fragment_study_mode.view.*
 import kotlinx.android.synthetic.main.study_item.*
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 
@@ -138,9 +140,12 @@ class StudyModeFragment : Fragment() {
 
     private fun studyDbListener():ListenerRegistration{
         val db = DatabaseManager().getDatabase().collection("events")
-        val dbQuery = db.whereEqualTo("type","STUDY")
+        val timestamp = LocalDateTime.now().minusHours(23).toTimeStamp()
+        val dbOrder = db.orderBy("start_time")
+        val dbQuery = dbOrder.whereGreaterThanOrEqualTo("start_time", timestamp)
+        val dbQuery2 = dbQuery.whereEqualTo("type","STUDY")
         val dbEvents: MutableList<Event> = mutableListOf()
-        return dbQuery.addSnapshotListener{snapshot, e ->
+        return dbQuery2.addSnapshotListener{snapshot, e ->
             if (e != null) {
                 Log.w(ContentValues.TAG, "Listen failed.", e)
                 return@addSnapshotListener

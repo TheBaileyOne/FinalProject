@@ -47,15 +47,16 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //TODO: get events data
         //initialize views
         viewPager=findViewById(R.id.view_pager)
+        viewPager.offscreenPageLimit = 4
         bottomNavigationView=findViewById(R.id.bottom_navigation_view)
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
 
         //set items to be displayed
-//        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
+        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
+//        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
 
         //show default screen
-        val defaultScreen = MainScreen.TIMETABLE
+        val defaultScreen = MainScreen.DASHBOARD
         scrollToScreen(defaultScreen)
         selectBottomNavigationViewMenuItem(defaultScreen.menuItemId)
         supportActionBar?.setTitle(defaultScreen.titleStringId)
@@ -105,11 +106,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     //scrolls ViewPager to show the screen
     private fun scrollToScreen(mainScreen:MainScreen){
         val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
+        Toast.makeText(this, "Screen Positition: $screenPosition", Toast.LENGTH_SHORT).show()
         if(screenPosition != viewPager.currentItem){
             viewPager.currentItem = screenPosition
-            if(mainScreen == MainScreen.SUBJECTS){
 
-            }
         }
     }
 

@@ -23,4 +23,8 @@
     <string name="name">Name</string>
     <string name="max_weight_string" formatted="true">/%1$d%%</string>
     <string name="subject_percent_string">%1$.2f%%</string>
+    <string name="placeholder_string">%1$s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

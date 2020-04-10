@@ -316,6 +316,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     private fun subDbEventsListener():ListenerRegistration{
         val db = DatabaseManager()
         val dbEvents: MutableList<Event> = mutableListOf()
+
         return db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
