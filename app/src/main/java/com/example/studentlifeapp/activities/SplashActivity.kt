@@ -24,21 +24,20 @@ class SplashActivity : AppCompatActivity() {
         //making this activity full screen
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
-
-        //TODO:sort out login, so user stays logged in if they have logged in once, and so that it wont enter main activity if no user exists
-
         auth = FirebaseAuth.getInstance()
-
-        val currentUser = auth.currentUser
-        if (currentUser != null){
-            loggedIn = true
-        }
-        val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
-        Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
-        Handler().postDelayed({
+        val listener = FirebaseAuth.AuthStateListener {
+            val currentUser = auth.currentUser
+            if (currentUser != null){
+                loggedIn = true
+            }
+            val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
+            Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this@SplashActivity, nextActivity))
             finish()
-        },splashTimeOut)
+
+        }
+        auth.addAuthStateListener(listener)
+
 
     }
 }
