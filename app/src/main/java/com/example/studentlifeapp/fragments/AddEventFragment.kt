@@ -58,10 +58,10 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_event, container, false)
-        val nameText = view.findViewById<EditText>(R.id.add_event_name)
-        nameText.hint = "e.g. Geography101: lecture"
+//        val nameText = view.findViewById<EditText>(R.id.add_event_name_edit)
+//        nameText.hint = "e.g. Geography101: lecture"
         //Event Type Spinner
-        val spinner = view.findViewById<Spinner>(R.id.event_type_spinner)
+        val spinner = view.findViewById<Spinner>(R.id.event_type_spinner_options)
         val values = enumValues<EventType>()
         spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -144,7 +144,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
         }
 
         //Repeat Event a number of times
-        val spinnerRep = view.findViewById<Spinner>(R.id.spinner_repeat)
+        val spinnerRep = view.findViewById<Spinner>(R.id.spinner_repeat_options)
         val repeatVal = arrayOf("Never","Days","Weeks","Months","Years")
         spinnerRep?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, repeatVal).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -183,14 +183,14 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
     }
 
     private fun addEvent(){
-        if(add_event_name.text.isEmpty()|| add_event_date.text.isEmpty() ||
+        if(add_event_name_edit.text.isNullOrBlank()|| add_event_date.text.isEmpty() ||
             add_event_time.text.isEmpty() || add_event_end_date.text.isEmpty() || add_event_time_end.text.isEmpty() ||
             (add_event_repeat_num.text.isEmpty() && durationValue != "Never")){
             Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT).show()
         }else{
 
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
-            eventName = add_event_name.text.toString()
+            eventName = add_event_name_edit.text.toString()
             eventStartTime = LocalDateTime.parse("${add_event_date.text} ${add_event_time.text}",formatter)
             eventEndTime = LocalDateTime.parse("${add_event_end_date.text} ${add_event_time_end.text}",formatter)
             notes = add_event_notes.text.toString()
@@ -230,24 +230,6 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
             }
             this.activity?.onBackPressed()
         }
-    }
-
-
-
-
-    private fun repeatEvent():LocalDateTime{
-        TODO("repeat event creation a certain amount of times, or until a certain date")
-        val now = Calendar.getInstance()
-
-        val lastRepeat = Calendar.getInstance()
-        val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
-            lastRepeat.set(Calendar.YEAR,year)
-            lastRepeat.set(Calendar.MONTH,month)
-            lastRepeat.set(Calendar.DAY_OF_MONTH,dayOfMonth)
-        }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
-        datePicker.show()
-
-        return LocalDateTime.now()
     }
 
 }

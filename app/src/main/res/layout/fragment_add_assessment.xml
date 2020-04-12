@@ -33,40 +33,35 @@
             android:background="@color/cardview_light_background"
             android:clickable="true">
 
-            <TextView
-                android:id="@+id/textView16"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/add_assessment_header"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Assessment Name:"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/add_assessment_name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/add_assessment_name" />
-
-            <EditText
-                android:id="@+id/add_assessment_name"
-                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:inputType="textPersonName"
-                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/noto_sans"
+                android:text="Add Assessment"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView16"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/textView17"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Max Mark:"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/add_assessment_max_mark"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/add_assessment_max_mark" />
+                app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_margin="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/add_assessment_header"
+                app:layout_constraintStart_toStartOf="parent"
+                android:hint="Assessment Name"
+                android:id="@+id/add_assessment_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/add_assessment_name_edit"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/textView22"
@@ -74,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="Weighting"
-                android:textSize="16sp"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 app:layout_constraintBottom_toBottomOf="@+id/seekbar_assessment_weighting"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/seekbar_assessment_weighting" />
@@ -83,37 +78,71 @@
                 android:id="@+id/button_save_assessment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="Save Assessment"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/add_assesment_mark" />
+                app:layout_constraintTop_toBottomOf="@+id/seekbar_assessment_weighting" />
 
-            <EditText
+<!--            <EditText-->
+<!--                android:id="@+id/add_assessment_max_mark"-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:ems="10"-->
+<!--                android:inputType="numberDecimal"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name" />-->
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_assessment_max_mark"
-                android:layout_width="100dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:ems="10"
-                android:inputType="numberDecimal"
+                android:layout_margin="8dp"
+                android:hint="Max Mark"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.41"
-                app:layout_constraintStart_toEndOf="@+id/textView17"
-                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name" />
+                app:layout_constraintStart_toEndOf="@+id/assessment_dash"
+                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_assessment_max_mark_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_assessment_mark"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="Mark"
+                app:layout_constraintEnd_toStartOf="@+id/assessment_dash"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_assessment_mark_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <SeekBar
                 android:id="@+id/seekbar_assessment_weighting"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="17dp"
                 android:layout_marginEnd="4dp"
                 android:max="100"
                 app:layout_constraintEnd_toStartOf="@+id/add_assessment_weighting_text"
                 app:layout_constraintStart_toEndOf="@+id/textView22"
-                app:layout_constraintTop_toBottomOf="@+id/add_assessment_max_mark" />
+                app:layout_constraintTop_toBottomOf="@+id/add_assessment_mark" />
 
             <TextView
                 android:id="@+id/add_assessment_max_weight"
@@ -136,29 +165,18 @@
                 app:layout_constraintEnd_toStartOf="@+id/add_assessment_max_weight"
                 app:layout_constraintTop_toTopOf="@+id/add_assessment_max_weight" />
 
+
+
             <TextView
-                android:id="@+id/textView24"
+                android:id="@+id/assessment_dash"
+                style="@style/TextAppearance.MaterialComponents.Headline4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Achieved Mark"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/add_assesment_mark"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/add_assesment_mark" />
-
-            <EditText
-                android:id="@+id/add_assesment_mark"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:ems="10"
-                android:inputType="numberDecimal"
+                android:text="/"
+                app:layout_constraintBottom_toBottomOf="@+id/add_assessment_mark"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.25"
-                app:layout_constraintStart_toEndOf="@+id/textView24"
-                app:layout_constraintTop_toBottomOf="@+id/seekbar_assessment_weighting" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/add_assessment_mark" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

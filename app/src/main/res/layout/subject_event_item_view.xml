@@ -27,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:textStyle="bold"
             android:layout_toRightOf="@+id/subject_event_view_icon"
             android:layout_marginLeft="15dp"/>
@@ -37,9 +38,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/subject_event_view_title"
             android:layout_marginLeft="15dp"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_marginTop="3dp"
             android:layout_toRightOf="@+id/subject_event_view_icon"
-            android:text=""
+            android:text="@string/placeholder_string"
             android:textSize="13sp"/>
 
         <TextView
@@ -50,7 +52,7 @@
             android:textStyle="bold"
             android:gravity="center"
             android:textSize="14sp"
-            tools:text="DAY"
+            tools:text="@string/placeholder_string"
             android:layout_alignParentRight="true"
             />
 

@@ -1,17 +1,57 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+<!--    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/colorPrimary</item>-->
+<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
+<!--        <item name="colorAccent">@color/colorAccent</item>-->
+<!--    </style>-->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
+        <item name="colorOnSecondary">@color/secondaryTextColor</item>
+        <item name="materialButtonStyle">@style/Widget.MyApp.MyButton</item>
+        <item name="android:textViewStyle">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MyApp.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MyApp.Body2</item>
+        <item name="actionBarStyle">@style/MyActionBar</item>
+<!--        <item name="actionMenuTextColor">@color/primaryTextColor</item>-->
+<!--        <item name="android:textColorPrimary">@color/primaryTextColor</item>-->
     </style>
 
+    <style name="MyActionBar" parent="Widget.MaterialComponents.Light.ActionBar.Solid">
+        <item name="background">@color/primaryColor</item>
+        <item name="titleTextStyle">@style/myTitleStyle</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textSize">12sp</item>
+    </style>
+    <style name="TextAppearance.MyApp.Body2" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="Widget.MyApp.MyButton" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/secondaryColor</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
+    </style>
+
+    <style name="myTitleStyle" parent="TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">@color/primaryTextColor</item>
+
+    </style>
+
+
+    
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

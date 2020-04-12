@@ -12,9 +12,9 @@ import com.example.studentlifeapp.R
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
-    private val splashTimeOut= 2000L
-    private lateinit var auth: FirebaseAuth
-    private var loggedIn:Boolean = false
+//    private val splashTimeOut= 2000L
+//    private lateinit var auth: FirebaseAuth
+//    private var loggedIn:Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,19 +24,32 @@ class SplashActivity : AppCompatActivity() {
         //making this activity full screen
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
-        auth = FirebaseAuth.getInstance()
-        val listener = FirebaseAuth.AuthStateListener {
-            val currentUser = auth.currentUser
-            if (currentUser != null){
-                loggedIn = true
-            }
-            val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
-            Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this@SplashActivity, nextActivity))
-            finish()
-
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+        if (currentUser != null){
+            startActivity(Intent(this@SplashActivity,MainActivity::class.java))
+            Toast.makeText(this,"Welcome Back",Toast.LENGTH_SHORT).show()
+        }else{
+            startActivity(Intent(this@SplashActivity, Login::class.java))
         }
-        auth.addAuthStateListener(listener)
+//        val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
+//        Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
+//        startActivity(Intent(this@SplashActivity, nextActivity))
+
+//        val listener = FirebaseAuth.AuthStateListener {
+//            val currentUser = auth.currentUser
+//            if (currentUser != null){
+//                loggedIn = true
+//            }
+//            val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
+//            Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
+//            startActivity(Intent(this@SplashActivity, nextActivity))
+//
+//        }
+//        auth.addAuthStateListener(listener)
+//        auth.removeAuthStateListener(listener)
+        finish()
+
 
 
     }

@@ -89,6 +89,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
+        setSupportActionBar(subjectToolbar)
         subject = intent.getJsonExtra("subject",Subject::class.java)!!
 //        val allEvents = intent.getJsonExtra("events",EventsParser::class.java)!!.events
 //        val studyGenerator = StudyGenerator(subject, subject.subjectStart, subject.subjectEnd, allEvents)
@@ -101,14 +102,16 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
 
         //TODO: sort out animation for activity opening
         val eventsGroup = formatEvents(events)
-        supportActionBar?.title = subject?.name
+        supportActionBar?.title = "Subject Details"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         viewAdapter = SubjectEventsAdapter(eventsGroup){event:Pair<String,List<Event>> ->eventClicked(event)}
 
-        subject_title_view_name.text = subject?.name
-        subject_info_view_name.text = subject?.summary
+        val formatter2= DateTimeFormatter.ofPattern("EEE, dd MMM")
+        subject_title_view_name.text = getString(R.string.subject_details_name,subject?.name)
+        subject_details_date.text = getString(R.string.date_span, formatter2.format(subject.subjectStart),formatter2.format(subject.subjectEnd))
+        subject_info_view_details.text = subject?.summary
 
         recyclerView = subject_events_recyclerView.apply {
             setHasFixedSize(true)
@@ -180,20 +183,20 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         row.layoutParams = layoutParams
         val nameText = TextView(this)
         nameText.text = assessment.name
-        nameText.setPadding(4,0,4,0)
+        nameText.setPadding(4,4,4,4)
         val weightingText = TextView(this)
         weightingText.text = assessment.weighting.toString()
-        weightingText.setPadding(4,0,4,0)
+        weightingText.setPadding(4,4,4,4)
         val maxMarkText = TextView(this)
         maxMarkText.text = assessment.maxMark.toString()
-        maxMarkText.setPadding(4,0,4,0)
+        maxMarkText.setPadding(4,4,4,4)
         val markText = TextView(this)
         markText.text = assessment.mark.toString()
-        markText.setPadding(4,0,4,0)
+        markText.setPadding(4,4,4,4)
         val percentageText = TextView(this)
         val decFormat = DecimalFormat("#.00")
         percentageText.text = decFormat.format(assessment.calculatePercentage())
-        percentageText.setPadding(4,0,4,0)
+        percentageText.setPadding(4,4,4,4)
         row.addView(nameText)
         row.addView(weightingText)
         row.addView(maxMarkText)

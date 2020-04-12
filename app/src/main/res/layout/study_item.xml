@@ -23,12 +23,11 @@
             android:layout_marginTop="16dp" />
         <TextView
             android:id="@+id/study_item_title"
-            android:text="Study Title"
-            android:textSize="16sp"
+            android:text="@string/placeholder_string"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_marginTop="12dp"
-            android:textStyle="bold"
             android:layout_toRightOf="@+id/study_item_icon"
             android:layout_marginLeft="16dp"/>
 
@@ -41,8 +40,8 @@
             android:layout_marginLeft="3dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/study_item_icon"
-            android:text="Duration"
-            android:textSize="13sp" />
+            android:text="@string/placeholder_string"
+            style="@style/TextAppearance.MaterialComponents.Caption" />
 
         <TextView
             android:id="@+id/study_item_time"
@@ -52,8 +51,8 @@
             android:textStyle="bold"
             android:gravity="center"
             android:textSize="14sp"
-            tools:text="15 \nMins"
-            android:layout_alignParentRight="true"
+            android:text="@string/study_duration"
+            android:layout_alignParentEnd="true"
             />
 
     </RelativeLayout>

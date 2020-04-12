@@ -36,8 +36,8 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val studyName = view.findViewById<EditText>(R.id.add_study_name)
-        val endDate = view.findViewById<EditText>(R.id.add_study_end_date)
+        val studyName = view.findViewById<EditText>(R.id.add_study_name_edit)
+        val endDate = view.findViewById<EditText>(R.id.add_study_end_date_edit)
         val radioGroup = view.findViewById<RadioGroup>(R.id.study_lunch_radioGroup)
         val weekendStudy = view.findViewById<Switch>(R.id.weekend_study_switch)
         var endDateString:String = ""
@@ -51,7 +51,7 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
                 selectedDate.set(Calendar.MONTH,month)
                 selectedDate.set(Calendar.DAY_OF_MONTH,dayOfMonth)
                 endDateString = format.format(selectedDate.time)
-                add_study_end_date.setText(endDateString)
+                add_study_end_date_edit.setText(endDateString)
             }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }

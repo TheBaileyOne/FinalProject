@@ -52,7 +52,7 @@
                 android:maxHeight="10dp"
                 android:textSize="8sp"
                 android:layout_marginBottom="1dp"
-                android:text="+(number)events"/>
+                android:text="+%1$d events"/>
         </LinearLayout>
 
 

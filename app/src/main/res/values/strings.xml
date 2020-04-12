@@ -5,7 +5,6 @@
     <string name="activity_main_bottom_screen_subjects">Subjects</string>
     <string name="activity_main_bottom_screen_studyMode">Study Mode</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_study_mode">StudyMode</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
@@ -25,6 +24,8 @@
     <string name="subject_percent_string">%1$.2f%%</string>
     <string name="placeholder_string">%1$s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="study_duration">%1$d  Mins</string>
+    <string name="subject_details_name">%1$s Details:</string>
+    <string name="date_span">%1$s - %2$s</string>
 </resources>

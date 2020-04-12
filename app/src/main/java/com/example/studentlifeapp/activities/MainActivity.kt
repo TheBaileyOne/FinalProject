@@ -27,6 +27,7 @@ import com.example.studentlifeapp.toTimeStamp
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 //TODO: Add a side navigation draw with access to user settings (Account managing)
@@ -43,9 +44,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //TODO: Login/authentication
-        //TODO: get events data
-        //initialize views
+        setSupportActionBar(mainToolbar)
+
         viewPager=findViewById(R.id.view_pager)
         viewPager.offscreenPageLimit = 4
         bottomNavigationView=findViewById(R.id.bottom_navigation_view)
@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     //scrolls ViewPager to show the screen
     private fun scrollToScreen(mainScreen:MainScreen){
         val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
-        Toast.makeText(this, "Screen Positition: $screenPosition", Toast.LENGTH_SHORT).show()
         if(screenPosition != viewPager.currentItem){
             viewPager.currentItem = screenPosition
 

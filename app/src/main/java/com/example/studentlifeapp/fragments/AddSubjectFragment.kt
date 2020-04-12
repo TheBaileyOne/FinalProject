@@ -63,7 +63,7 @@ class AddSubjectFragment : Fragment() {
 //Todo fix like everything. opening up the fragment means it doesnt change when you change navigation view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_add_subject, container, false)
-        val setStart = view.findViewById<EditText>(R.id.add_subject_start)
+        val setStart = view.findViewById<EditText>(R.id.add_subject_start_edit)
         var startDate:String
         setStart.setOnClickListener {
             val now = Calendar.getInstance()
@@ -73,11 +73,11 @@ class AddSubjectFragment : Fragment() {
                 selectedDate.set(Calendar.MONTH,month)
                 selectedDate.set(Calendar.DAY_OF_MONTH,dayOfMonth)
                 startDate = format.format(selectedDate.time)
-                add_subject_start.setText(startDate)
+                add_subject_start_edit.setText(startDate)
             }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }
-        val setEnd = view.findViewById<EditText>(R.id.add_subject_end)
+        val setEnd = view.findViewById<EditText>(R.id.add_subject_end_edit)
         var endDate:String
         setEnd.setOnClickListener {
             val now = Calendar.getInstance()
@@ -87,7 +87,7 @@ class AddSubjectFragment : Fragment() {
                 selectedDate.set(Calendar.MONTH,month)
                 selectedDate.set(Calendar.DAY_OF_MONTH,dayOfMonth)
                 endDate = format.format(selectedDate.time)
-                add_subject_end.setText(endDate)
+                add_subject_end_edit.setText(endDate)
             }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }
@@ -98,14 +98,14 @@ class AddSubjectFragment : Fragment() {
     }
 
     private fun addSubject(){
-        if (add_study_name.text.isEmpty() || add_subject_start.text.isEmpty()||add_subject_end.text.isEmpty()){
+        if (add_subject_name_edit.text.isNullOrBlank() || add_subject_start_edit.text.isNullOrBlank()||add_subject_end_edit.text.isNullOrBlank()){
             Toast.makeText(context,"Please fill in all compulsory fields", Toast.LENGTH_SHORT).show()
         }else{
             val db = DatabaseManager()
-            subjectName = add_study_name.text.toString()
+            subjectName = add_subject_name_edit.text.toString()
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
-            subjectStart = LocalDateTime.parse("${add_subject_start.text} 00:00", formatter)
-            subjectEnd = LocalDateTime.parse("${add_subject_end.text} 23:59", formatter)
+            subjectStart = LocalDateTime.parse("${add_subject_start_edit.text} 00:00", formatter)
+            subjectEnd = LocalDateTime.parse("${add_subject_end_edit.text} 23:59", formatter)
             val subjectDetails = add_subject_summary.text.toString()
             val subject = Subject(subjectName,subjectDetails, subjectStart = subjectStart, subjectEnd = subjectEnd)
 

@@ -35,13 +35,12 @@
         <TextView
             android:id="@+id/event_view_title"
             android:text="Event Title"
-            android:textSize="16sp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textStyle="bold"
             android:layout_toRightOf="@+id/event_view_icon"
-            android:layout_marginLeft="15dp"/>
+            android:layout_marginStart="16dp"/>
 
         <ImageView
             android:id="@+id/event_view_location_icon"
@@ -51,28 +50,29 @@
             android:layout_marginLeft="3dp"
             android:layout_marginTop="0dp"
             android:layout_toRightOf="@+id/event_view_icon"
-            app:srcCompat="@drawable/ic_location" />
+            app:srcCompat="@drawable/ic_location"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/event_view_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/event_view_title"
-            android:layout_marginLeft="6dp"
             android:layout_marginTop="3dp"
-            android:layout_toRightOf="@+id/event_view_location_icon"
+            android:layout_toEndOf="@id/event_view_icon"
+            android:layout_marginStart="16dp"
             android:text="Location"
-            android:textSize="13sp"/>
+            style="@style/TextAppearance.MaterialComponents.Caption"/>
 
         <TextView
             android:id="@+id/event_view_time"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginTop="3dp"
-            android:textStyle="bold"
             android:gravity="center"
             android:textSize="14sp"
             tools:text="12:00 \n-\n13:00"
+            style="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:layout_alignParentRight="true"
             />
 

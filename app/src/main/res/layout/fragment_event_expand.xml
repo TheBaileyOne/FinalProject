@@ -9,7 +9,7 @@
     android:clickable="true"
     android:focusable="true">
     <FrameLayout
-        android:id="@+id/event_expand_back"
+        android:id="@+id/add_study_expand_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <FrameLayout
