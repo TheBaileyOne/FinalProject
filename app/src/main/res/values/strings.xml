@@ -28,4 +28,7 @@
     <string name="study_duration">%1$d  Mins</string>
     <string name="subject_details_name">%1$s Details:</string>
     <string name="date_span">%1$s - %2$s</string>
+    <string name="time_and_date">%1$s on %2$s</string>
+    <string name="event_details_string">%1$s Details:</string>
+    <string name="event_occurrences">%1$s Occurrences</string>
 </resources>

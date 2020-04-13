@@ -12,7 +12,7 @@ import com.example.studentlifeapp.R
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
-//    private val splashTimeOut= 2000L
+    private val splashTimeOut= 500L
 //    private lateinit var auth: FirebaseAuth
 //    private var loggedIn:Boolean = false
 
@@ -26,31 +26,12 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        if (currentUser != null){
-            startActivity(Intent(this@SplashActivity,MainActivity::class.java))
-            Toast.makeText(this,"Welcome Back",Toast.LENGTH_SHORT).show()
-        }else{
-            startActivity(Intent(this@SplashActivity, Login::class.java))
-        }
-//        val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
-//        Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
-//        startActivity(Intent(this@SplashActivity, nextActivity))
-
-//        val listener = FirebaseAuth.AuthStateListener {
-//            val currentUser = auth.currentUser
-//            if (currentUser != null){
-//                loggedIn = true
-//            }
-//            val nextActivity = if(!loggedIn) Login::class.java else MainActivity::class.java
-//            Toast.makeText(this, "current user: $currentUser", Toast.LENGTH_SHORT).show()
-//            startActivity(Intent(this@SplashActivity, nextActivity))
-//
-//        }
-//        auth.addAuthStateListener(listener)
-//        auth.removeAuthStateListener(listener)
-        finish()
-
-
+        var intent:Intent = if(currentUser!=null)Intent(this@SplashActivity,MainActivity::class.java)
+                            else(Intent(this@SplashActivity, Login::class.java) )
+        Handler().postDelayed({
+            startActivity(intent)
+            finish()
+        },splashTimeOut)
 
     }
 }

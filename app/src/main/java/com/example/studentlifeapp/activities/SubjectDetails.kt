@@ -16,14 +16,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.*
-import com.example.studentlifeapp.fragments.AddAssessmentFragment
-import com.example.studentlifeapp.fragments.AddEventFragment
-import com.example.studentlifeapp.fragments.EventExpandFragment
-import com.example.studentlifeapp.fragments.GenerateStudiesFragment
+import com.example.studentlifeapp.fragments.*
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.util.getJsonExtra
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.tolocalDateTime
+import com.example.studentlifeapp.util.Utils
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +32,8 @@ import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.DecimalFormat
 
-class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?): RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
+class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?):
+    RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
     override fun onBindViewHolder(viewHolder: SubjectEventsViewHolder, position: Int) {
         viewHolder.bind(events[position])
@@ -73,7 +72,8 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
     }
 }
 
-class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener, AddAssessmentFragment.OnAssessmentSavedListener {
+class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener, AddAssessmentFragment.OnAssessmentSavedListener,
+    Utils.EventDetailClickListener{
     //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: SubjectEventsAdapter
@@ -244,6 +244,9 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
         }
+        else{
+            onEventClicked("SUBJECT_DETAILS", event.second[0])
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -351,7 +354,12 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             }
     }
 
-
+    override fun onEventClicked(tag: String, event: Event) {
+        val fragmentManager = this.supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = EventDetailsFragment(event)
+        fragmentTransaction.replace(R.id.subject_detail_fragment, fragment).addToBackStack("eventDetailsFrag").commit()
+    }
 
 
 }

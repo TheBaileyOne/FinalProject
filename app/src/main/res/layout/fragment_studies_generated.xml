@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/event_expand"
+    android:id="@+id/studies_generated"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.EventExpandFragment"
@@ -10,7 +10,7 @@
     android:clickable="true"
     android:focusable="true">
     <FrameLayout
-        android:id="@+id/study_expand_back"
+        android:id="@+id/studies_generated_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -21,32 +21,31 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginVertical="16dp"
         android:background="@color/cardview_light_background"
-        app:layout_constraintBottom_toBottomOf="@+id/study_expand_back"
-        app:layout_constraintEnd_toEndOf="@+id/study_expand_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/study_expand_back">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/textView15"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:text="Generated Study Events:"
-            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/studies_generated_frame"
             app:layout_constraintTop_toTopOf="@id/studies_generated_frame" />
 
         <TextView
             android:id="@+id/textView14"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:text="Long Press to select events to remove"
             android:textStyle="italic"
-            style="@style/TextAppearance.MaterialComponents.Caption"
             app:layout_constraintStart_toStartOf="@id/studies_generated_frame"
             app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
@@ -62,8 +61,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/studies_generated_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:text="Save Studies"
@@ -72,8 +71,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/studies_generated_remove"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="8dp"
             android:text="Remove Selected"

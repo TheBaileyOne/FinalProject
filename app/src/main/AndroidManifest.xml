@@ -26,7 +26,6 @@
         <activity android:name=".activities.Login" />
         <activity
             android:name=".activities.SplashActivity"
-            android:excludeFromRecents="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,18 +33,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.MainActivity"/>
 
         <receiver
             android:name=".TimerExpiredReceiver"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".activities.SubjectDetails" />
+        <activity
+            android:name=".activities.SubjectDetails"
+            android:label="SubjectDetails"/>
         <activity
             android:name=".activities.StudyMode"
             android:label="@string/title_activity_study_mode"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activities.MainActivity" />
 
         <meta-data
             android:name="preloaded_fonts"

@@ -62,9 +62,18 @@ class AddSubjectFragment : Fragment() {
     }
 //Todo fix like everything. opening up the fragment means it doesnt change when you change navigation view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_subject, container, false)
+        return inflater.inflate(R.layout.fragment_add_subject, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        add_subject_background.setOnClickListener {
+            activity?.onBackPressed()
+        }
+
         val setStart = view.findViewById<EditText>(R.id.add_subject_start_edit)
         var startDate:String
+
         setStart.setOnClickListener {
             val now = Calendar.getInstance()
             val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
@@ -94,7 +103,6 @@ class AddSubjectFragment : Fragment() {
         view.button_save_subject.setOnClickListener{
             addSubject()
         }
-        return view
     }
 
     private fun addSubject(){

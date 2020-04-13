@@ -16,14 +16,12 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.fragments.AddEventFragment
-import com.example.studentlifeapp.fragments.AddSubjectFragment
-import com.example.studentlifeapp.fragments.CourseFragment
-import com.example.studentlifeapp.fragments.TimetableFragment
+import com.example.studentlifeapp.fragments.*
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
 import com.example.studentlifeapp.toTimeStamp
+import com.example.studentlifeapp.util.Utils
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -33,16 +31,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 //TODO: Add a side navigation draw with access to user settings (Account managing)
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,AddSubjectFragment.OnSubjectSavedListener{
+    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,
+    AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener{
 //AddEventFragment.OnEventSavedListener
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var mainPagerAdapter:MainPagerAdapter
     private var events = mutableListOf<Event>()
+    private var navShowing = true
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if(!navShowing)showBottomNav(true)
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(0,0)
         setContentView(R.layout.activity_main)
         setSupportActionBar(mainToolbar)
 
@@ -133,13 +139,17 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         showBottomNav(false)
     }
 
+
+
     fun showBottomNav(show:Boolean){
         val bottomNav = findViewById<View>(R.id.bottom_navigation_view)
         if(show){
             bottomNav.visibility = View.VISIBLE
+            navShowing=true
         }
         else{
             bottomNav.visibility = View.GONE
+            navShowing=false
         }
     }
 
@@ -149,11 +159,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     fun getEvents() = events
-//
-//    fun onGenerateStudy(subject:Subject){
-//        val studyGen = StudyGenerator(subject, events = events)
-//        studyGen.startGenerator()
-//    }
+
 
     override fun onSubjectSaved(subject: Subject) {
         showBottomNav(true)
@@ -185,29 +191,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return false
     }
 
-//    override fun onEventSaved(events: MutableList<Event>) {
-//        val db = DatabaseManager()
-//        for (event in events) {
-//            var eventRef: String
-//            val docData = hashMapOf(
-//                "title" to event.title,
-//                "type" to event.type,
-//                "start_time" to event.startTime.toTimeStamp(),
-//                "end_time" to event.endTime.toTimeStamp(),
-//                "note" to event.note,
-//                "eventId" to event.eventId
-//                //TODO: add notifications and location and times
-//            )
-//            db.getDatabase().collection("events").add(docData)
-//                .addOnSuccessListener { documentReference ->
-////                    eventRef = documentReference.id
-//                    Log.d(ContentValues.TAG, "Document written with ID: ${documentReference.id}")
-//                }
-//                .addOnFailureListener { e ->
-//                    Log.w(ContentValues.TAG, "Error adding document", e)
-//                }
-//        }
-//    }
+    override fun onEventClicked(tag: String, event: Event) {
+        val fragmentManager = this.supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = EventDetailsFragment(event)
+//        fragment.setOnSubjectSavedListener(this)
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("eventDetailsFrag").commit()
+        showBottomNav(false)
+    }
 
 
 }

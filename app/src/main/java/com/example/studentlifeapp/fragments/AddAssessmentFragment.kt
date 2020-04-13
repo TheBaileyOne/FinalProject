@@ -35,6 +35,9 @@ class AddAssessmentFragment(private val remainingWeight: Int = 100) : Fragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val seekBar = view.findViewById<SeekBar>(R.id.seekbar_assessment_weighting)
+        assessment_expand_back.setOnClickListener {
+            activity?.onBackPressed()
+        }
         seekBar.max = remainingWeight
         add_assessment_max_weight.text = getString(R.string.max_weight_string, remainingWeight)
 //        add_assessment_max_weight.text = "/$remainingWeight%"

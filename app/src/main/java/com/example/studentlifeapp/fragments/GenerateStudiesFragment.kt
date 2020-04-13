@@ -17,6 +17,7 @@ import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.util.StudyGenerator
 import kotlinx.android.synthetic.main.fragment_generate_studies.*
 import kotlinx.android.synthetic.main.fragment_generate_studies.view.*
+import kotlinx.android.synthetic.main.fragment_studies_generated.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -43,6 +44,9 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         var endDateString:String = ""
         val format = SimpleDateFormat("dd MMM, YYYY", Locale.UK)
         var time = LocalTime.of(13,0)
+        add_study_expand_back.setOnClickListener {
+            activity?.onBackPressed()
+        }
         endDate.setOnClickListener {
             val now = Calendar.getInstance()
             val datePicker = DatePickerDialog(context!!,DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
@@ -63,7 +67,7 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         }
 
         view.button_save_study.setOnClickListener{
-            if (studyName.text.isEmpty()|| endDate.text.isEmpty()){
+            if (studyName.text.isNullOrEmpty()|| endDate.text.isNullOrBlank()){
                 Toast.makeText(context, "Fill in all fields", Toast.LENGTH_SHORT).show()
             }
             else{

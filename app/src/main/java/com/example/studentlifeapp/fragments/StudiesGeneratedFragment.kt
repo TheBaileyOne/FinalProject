@@ -120,6 +120,7 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
     private val studyAdapter = StudiesGeneratedAdapter(studies)
     private lateinit var selectedStudy: MutableList<Event>
 
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (outState != null) tracker?.onSaveInstanceState(outState)
@@ -132,6 +133,9 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        studies_generated_back.setOnClickListener {
+            activity?.onBackPressed()
+        }
         studies_generated_recyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
         studies_generated_recyclerView.adapter = studyAdapter
         studies_generated_recyclerView.addItemDecoration((DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)))

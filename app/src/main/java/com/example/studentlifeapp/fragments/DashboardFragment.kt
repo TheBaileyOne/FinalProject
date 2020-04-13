@@ -20,6 +20,7 @@ import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.util.Utils
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
@@ -29,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.LocalDateTime
+import java.lang.ClassCastException
 
 class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf(), val onClick:(Event)->Unit):RecyclerView.Adapter<DashEventsAdapter.DashViewHolder>(){
 //  private var events: MutableList<Event> = mutableListOf()
@@ -97,9 +99,19 @@ class DashboardFragment : Fragment() {
     private var next2Events = mutableListOf<Event>()
     private lateinit var listener: ListenerRegistration
     var  viewManager: RecyclerView.LayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+    private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
 
     //ensure fragment actually attaches, and that activity implements interface
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Utils.EventDetailClickListener){
+            eventDetailClickListener = context
+        }else{
+            throw ClassCastException(
+                "$context must implement EventDetailClickListener"
+            )
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -157,15 +169,6 @@ class DashboardFragment : Fragment() {
 
         listener = dashEventsListener()
 
-//        viewManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-//        upcomingAdapter = DashEventsAdapter(upcomingEvents){event:Event -> eventClicked(event)}
-//        upcomingRecyclerView = deadlines_recycler_view.apply {
-//            layoutManager = viewManager
-//            adapter = upcomingAdapter
-//        }
-//        upcomingRecyclerView.addItemDecoration(DividerItemDecoration(context,RecyclerView.VERTICAL))
-//        upcomingAdapter.notifyDataSetChanged()
-
         button_dash_study.setOnClickListener{
             upcomingAdapter.setEvents(mutableListOf(Event("View Test", EventType.EXAM, LocalDateTime.now())))
             upcomingAdapter.notifyDataSetChanged()
@@ -183,6 +186,7 @@ class DashboardFragment : Fragment() {
 
     private fun eventClicked(event:Event){
         Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
+        eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
 
     private fun dashEventsListener():ListenerRegistration{
@@ -245,7 +249,7 @@ class DashboardFragment : Fragment() {
                     secondDay == null -> {
                         secondDay = event.startTime.toLocalDate()
                         dbNext2.add(event)
-                        dashboard_next_events.visibility = View.VISIBLE
+                        dashboard_next_events_2.visibility = View.VISIBLE
                         text_view_next_day_2.text = getString(R.string.placeholder_string, dateFormatter.format(event.startTime))
                     }
                     event.startTime.toLocalDate().isEqual(secondDay) -> {

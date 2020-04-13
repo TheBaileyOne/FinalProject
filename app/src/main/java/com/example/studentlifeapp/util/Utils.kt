@@ -1,7 +1,10 @@
 package com.example.studentlifeapp.util
 
-class Utils {
-    //TODO function for making study timetable for each subject
+import com.example.studentlifeapp.data.Event
 
+class Utils {
+    interface EventDetailClickListener{
+        fun onEventClicked(tag:String, event:Event)
+    }
 
 }

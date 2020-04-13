@@ -2,7 +2,8 @@ package com.example.studentlifeapp.fragments
 
  import android.content.ContentValues
 import android.content.ContentValues.TAG
-import android.os.Bundle
+ import android.content.Context
+ import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
 import androidx.fragment.app.Fragment
@@ -23,7 +24,8 @@ import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.setTextColorRes
-import com.google.firebase.Timestamp
+ import com.example.studentlifeapp.util.Utils
+ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -48,7 +50,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.format.TextStyle
-import java.util.*
+ import java.lang.ClassCastException
+ import java.util.*
 
 //TODO: include FAB button or another thing to add an event
 class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdapter.EventsViewHolder>(){
@@ -117,7 +120,18 @@ class TimetableFragment : Fragment() {
     private var storeBool:Boolean = false
     private var events = dbEvents.groupBy{ it.startTime.toLocalDate()}.toMutableMap()
     private lateinit var listener: ListenerRegistration
+    private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Utils.EventDetailClickListener){
+            eventDetailClickListener = context
+        }else{
+            throw ClassCastException(
+                "$context must implement EventDetailClickListener"
+            )
+        }
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         user = FirebaseAuth.getInstance().currentUser!!.uid
         db = FirebaseFirestore.getInstance().collection("users").document(user).collection("events")
@@ -127,6 +141,7 @@ class TimetableFragment : Fragment() {
     //what to do when event clicked
     private fun eventClicked(event: Event){
         Toast.makeText(activity,"Clicked: ${event.title}", Toast.LENGTH_LONG).show()
+        eventDetailClickListener.onEventClicked("TIMETABLE", event)
 
     }
     override fun onPause() {
@@ -318,11 +333,6 @@ class TimetableFragment : Fragment() {
 
     }
 
-    private fun updateAdapterAll(){
-//        for (eventGroup in importedEvents){
-//            updateAdapterForDate(eventGroup.key)
-//        }
-    }
     private fun dbListener(): ListenerRegistration {
         val dbEvents = mutableListOf<Event>()
 
@@ -347,19 +357,11 @@ class TimetableFragment : Fragment() {
                 )
             }
             this.dbEvents.addAll(dbEvents)
-//            events = if (storeBool){
-//                tempStore?.addAll(dbEvents)
-//                tempStore.groupBy { it.startTime.toLocalDate()}.toMutableMap()
-//            } else{
             events = dbEvents.groupBy { it.startTime.toLocalDate() }.toMutableMap()
-//            }
             Log.d(TAG, "Events updated, number of Events: ${dbEvents.size}")
-//            tempStore = dbEvents
             dbEvents.clear()
             calendarView.notifyCalendarChanged()
-//            storeBool = false
-
-//            (activity as MainActivity).setEvents(dbEvents)
+            updateAdapterForDate(today)
 
         }
     }
