@@ -14,7 +14,7 @@
     <item
         android:id="@+id/bottom_navigation_item_subjects"
         android:icon="@drawable/ic_school"
-        android:title="@string/activity_main_bottom_screen_subjects"/>
+        android:title="@string/activity_main_bottom_screen_course"/>
     <item
         android:id="@+id/bottom_navigation_item_studyMode"
         android:icon="@drawable/ic_local_library"

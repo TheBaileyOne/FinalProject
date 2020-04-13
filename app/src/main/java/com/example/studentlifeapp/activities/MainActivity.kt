@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 //TODO: Add a side navigation draw with access to user settings (Account managing)
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
-    CourseFragment.SubClickedListener, CourseFragment.SubAddClickedListener,
+    SubjectsTabFragment.SubClickedListener, SubjectsTabFragment.SubAddClickedListener,
     AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener{
 //AddEventFragment.OnEventSavedListener
     private lateinit var viewPager: ViewPager
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
 
         //set items to be displayed
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
+        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.COURSE, MainScreen.STUDYMODE))
 //        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
 
         //show default screen
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 val timetableFrag = mainPagerAdapter.getItem(0)
                 val subjectsFrag = mainPagerAdapter.getItem(1)
                 (timetableFrag as TimetableFragment).clearTimetable()
-                (subjectsFrag as CourseFragment).onLogout()
+                (subjectsFrag as SubjectsTabFragment).onLogout()
 
 
                 FirebaseAuth.getInstance().signOut()

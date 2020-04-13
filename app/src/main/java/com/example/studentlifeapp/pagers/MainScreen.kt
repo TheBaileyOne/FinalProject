@@ -17,8 +17,8 @@ enum class MainScreen(@IdRes val menuItemId: Int,
         R.string.activity_main_bottom_screen_dashboard, DashboardFragment()),
     TIMETABLE(R.id.bottom_navigation_item_timeTable,R.drawable.ic_date_range,
         R.string.activity_main_bottom_screen_timeTable, TimetableFragment()),
-    SUBJECTS(R.id.bottom_navigation_item_subjects,R.drawable.ic_school,
-        R.string.activity_main_bottom_screen_subjects, CourseFragment()),
+    COURSE(R.id.bottom_navigation_item_subjects,R.drawable.ic_school,
+        R.string.activity_main_bottom_screen_course, CourseFragment()),
     STUDYMODE(R.id.bottom_navigation_item_studyMode,R.drawable.ic_local_library,
         R.string.activity_main_bottom_screen_studyMode,StudyModeFragment())
 }
