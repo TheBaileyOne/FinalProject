@@ -91,11 +91,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         setContentView(R.layout.activity_subject_details)
         setSupportActionBar(subjectToolbar)
         subject = intent.getJsonExtra("subject",Subject::class.java)!!
-//        val allEvents = intent.getJsonExtra("events",EventsParser::class.java)!!.events
-//        val studyGenerator = StudyGenerator(subject, subject.subjectStart, subject.subjectEnd, allEvents)
-//        AsyncTask.execute {
-//            studyGenerator.startGenerator()
-//        }
         subjectRef = subject.getId()
         eventsListener = subDbEventsListener()
         assessmentListener = subDbAssessmentsListener()

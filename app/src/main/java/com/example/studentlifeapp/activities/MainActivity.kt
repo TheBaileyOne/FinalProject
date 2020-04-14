@@ -165,9 +165,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         showBottomNav(true)
         Log.d("onSubSaved","Listener called. \nSubject: ${subject.name}\nSubject Reference: ${subject.getId()}")
         val intent = Intent(this, SubjectDetails::class.java).apply{
-            putExtraJson(subject)
+            putExtraJson("subject",subject)
             putExtra("subRef", subject.getId())
         }
+//        val intent = Intent(this, SubjectDetails::class.java).apply{
+//            putExtraJson(subject)
+//            putExtra("subRef", subject.getId())
+//        }
         val fm = this.supportFragmentManager
         startActivity(intent)
 

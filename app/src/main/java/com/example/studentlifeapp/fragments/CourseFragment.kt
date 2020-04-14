@@ -106,6 +106,7 @@ class CourseFragment : Fragment() {
                     subject.setId(docChange.document.id)
                     subjects.add(subject)
                 }
+                viewModel.setSubjects(subjects.toMutableList())
             }
     }
 
