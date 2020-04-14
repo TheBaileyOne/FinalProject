@@ -32,4 +32,7 @@
     <string name="time_and_date">%1$s on %2$s</string>
     <string name="event_details_string">%1$s Details:</string>
     <string name="event_occurrences">%1$s Occurrences</string>
+    <string name="required_credits">Required Credits: %1$.2f</string>
+    <string name="average_percent">Average: %1$.2f%%</string>
+    <string name="mark_out_of">%1$.1f/%2$.0f</string>
 </resources>

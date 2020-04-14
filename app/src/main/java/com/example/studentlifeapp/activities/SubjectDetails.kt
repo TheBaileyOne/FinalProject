@@ -187,24 +187,25 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         val weightingText = TextView(this)
         weightingText.text = assessment.weighting.toString()
         weightingText.setPadding(4,4,4,4)
-        val maxMarkText = TextView(this)
-        maxMarkText.text = assessment.maxMark.toString()
-        maxMarkText.setPadding(4,4,4,4)
+        weightingText.textAlignment = View.TEXT_ALIGNMENT_CENTER
+//        val maxMarkText = TextView(this)
+//        maxMarkText.text = assessment.maxMark.toString()
+//        maxMarkText.setPadding(4,4,4,4)
         val markText = TextView(this)
-        markText.text = assessment.mark.toString()
+        markText.text = getString(R.string.mark_out_of,assessment.mark,assessment.maxMark)
         markText.setPadding(4,4,4,4)
+        markText.textAlignment = View.TEXT_ALIGNMENT_CENTER
         val percentageText = TextView(this)
         val decFormat = DecimalFormat("#.00")
         percentageText.text = decFormat.format(assessment.calculatePercentage())
         percentageText.setPadding(4,4,4,4)
+        percentageText.textAlignment = View.TEXT_ALIGNMENT_CENTER
         row.addView(nameText)
         row.addView(weightingText)
-        row.addView(maxMarkText)
         row.addView(markText)
         row.addView(percentageText)
         table_subject_grades.addView(row)
         rows.add(row)
-
     }
 
     private fun tableTitleDisplay(visible: Boolean){

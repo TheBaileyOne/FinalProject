@@ -1,14 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.CourseTabFragment">
+    android:layout_width="match_parent"
+    android:background="@color/primaryGrey">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".fragments.CourseTabFragment"
+        android:orientation="vertical"
+        android:background="@color/cardview_light_background"
+        android:layout_margin="8dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Select subjects to include in classification calculation"
+            style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="16dp"
+            android:textStyle="italic"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:stretchColumns="0,1,2,3"
+            android:id="@+id/course_grade_table"
+            android:layout_margin="8dp"
+            android:textAlignment="center">
+            <TableRow
+                android:id="@+id/course_grade_table_header"
+                android:textAlignment="center">
+                <TextView android:text="Subject"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/primaryTextColor"
+                    android:background="@color/primaryDarkColor"
+                    android:layout_marginHorizontal="1dp"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                <TextView android:text="Credits"
+                    android:background="@color/primaryDarkColor"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginHorizontal="1dp"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                <TextView android:text="Score"
+                    android:background="@color/primaryDarkColor"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginHorizontal="1dp"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                <TextView android:text="Include?"
+                    android:background="@color/primaryDarkColor"
+                    android:textColor="@color/primaryTextColor"
+                    android:layout_marginHorizontal="1dp"
+                    android:textAlignment="center"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+            </TableRow>
+        </TableLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Classification Calculator"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="4dp"
+            style="@style/TextAppearance.MaterialComponents.Headline5"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/required_credits"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginVertical="4dp"/>
+        <SeekBar
+            android:id="@+id/seekbar_credits"
+            style="@style/Widget.AppCompat.SeekBar.Discrete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="140"
+            android:progress="20"
+            android:layout_margin="8dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ignore lowest 20 credits?"
+                android:layout_margin="8dp"
+                android:layout_gravity="center"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/ignore_credit_checkbox"/>
 
+        </LinearLayout>
+        <TextView
+            android:id="@+id/course_grade_average"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:text="@string/average_percent"
+            android:textAlignment="textEnd"
+            android:layout_margin="8dp"/>
+        <TextView
+            android:id="@+id/course_grade_classification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:text="Classification: %1$s"
+            android:textAlignment="textEnd"
+            android:layout_margin="8dp"/>
+
+
+
+    </LinearLayout>
 </FrameLayout>
