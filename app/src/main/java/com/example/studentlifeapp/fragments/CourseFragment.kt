@@ -8,6 +8,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,15 +29,19 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.android.synthetic.main.list_item.*
 import java.lang.ClassCastException
+import java.lang.Exception
 
 class CoursePagerAdapter(fragment: Fragment):FragmentStateAdapter(fragment){
+    val fragments:MutableList<Fragment> = mutableListOf()
     override fun getItemCount(): Int = 2
 
     override fun createFragment(position: Int): Fragment {
-        return when(position){
+        val fragment =  when(position){
             1 -> CourseTabFragment()
             else -> SubjectsTabFragment()
         }
+        fragments.add(fragment)
+        return fragment
     }
 
 
@@ -44,10 +51,26 @@ class CoursePagerAdapter(fragment: Fragment):FragmentStateAdapter(fragment){
 class CourseFragment : Fragment() {
     private lateinit var courseAdapter: CoursePagerAdapter
     private lateinit var viewPager: ViewPager2
+    private lateinit var courseTabFragment:CourseTabFragment
+    private lateinit var subjectsTabFragment :SubjectsTabFragment
+    private lateinit var listener:ListenerRegistration
+    private var subjects = mutableListOf<Subject>()
+    private lateinit var viewModel: SubjectsViewModel
+
+    override fun onStart() {
+        super.onStart()
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        return inflater.inflate(R.layout.fragment_course, container, false)
+        val view = inflater.inflate(R.layout.fragment_course, container, false)
+//        viewModel.setSubjects(subjects)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+        viewModel.setSubjects(subjects)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,9 +86,34 @@ class CourseFragment : Fragment() {
                 else -> "Error"
             }
         }.attach()
-
-
+        listener = subDbListener()
 
     }
+    private fun subDbListener(): ListenerRegistration {
+        val db = DatabaseManager()
+        return db.getDatabase().collection("subjects")
+            .addSnapshotListener{snapshot, e ->
+                if (e!= null){
+                    return@addSnapshotListener
+                }
+                for (docChange in snapshot!!.documentChanges){
+                    val subject = Subject(
+                        name = docChange.document.getString("name")!!,
+                        summary = docChange.document.getString("summary")!!,
+                        subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
+                        subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime()
+                    )
+                    subject.setId(docChange.document.id)
+                    subjects.add(subject)
+                }
+            }
+    }
 
+}
+class SubjectsViewModel : ViewModel(){
+    val subjects: MutableLiveData<MutableList<Subject>> = MutableLiveData()
+    fun getSubjects() = subjects.value
+    fun setSubjects(subjects:MutableList<Subject>){
+        this.subjects.value = subjects
+    }
 }

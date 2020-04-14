@@ -6,6 +6,10 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,8 +38,6 @@ class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectViewHolder {
-//        val inflater = LayoutInflater.from(parent.context)
-//        return SubjectViewHolder(inflater,parent)
         return SubjectViewHolder(parent.inflate(R.layout.list_item))
     }
 
@@ -72,17 +74,13 @@ class SubjectsTabFragment : Fragment() {
 
     private lateinit var subClickListener: SubClickedListener
     private lateinit var subAddClickListener: SubAddClickedListener
-    //    private val subjects = importSubjects()
-    private var subjects = mutableListOf<Subject>()
-    private lateinit var listener: ListenerRegistration
-    private val subjectAdapter = SubjectsAdapter(subjects){subject:Subject->subjectClicked(subject)}
+    private lateinit var viewModel: SubjectsViewModel
+    private val subjectAdapter = SubjectsAdapter(mutableListOf<Subject>()){ subject:Subject->subjectClicked(subject)}
     lateinit var menuItem: MenuItem
-    private val dbSubjects:MutableList<Subject> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-//        retainInstance = true
     }
 
     //ensure fragment actually attaches, and that activity implements interface
@@ -106,20 +104,8 @@ class SubjectsTabFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        listener.remove()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        listener.remove()
-        Log.d("SubClose", "Fragment closed")
-//        subjects.clear()
-    }
-
     fun onLogout(){
-        subjects.clear()
+//        subjects.clear()
     }
 
 
@@ -133,24 +119,14 @@ class SubjectsTabFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
 
         inflater.inflate(R.menu.menu_add, menu)
-//        menuItem = menu.findItem(R.id.action_add)
         super.onCreateOptionsMenu(menu, inflater)
 
     }
 
-//    fun setMenuItemEnabled(enabled:Boolean){
-//        menuItem.setEnabled(enabled)
-//    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.action_add -> {
-//                Toast.makeText(context, "add button selected",Toast.LENGTH_SHORT).show()
-//                val fragmentManager = activity?.supportFragmentManager
-//                val fragmentTransaction = fragmentManager?.beginTransaction()
-//                val fragment = AddSubject()
-////                fragment.setOnSubjectSavedListener(this)
-//                fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)?.commit()
                 subAddClickListener.subAddClick()
                 return true
             }
@@ -166,50 +142,20 @@ class SubjectsTabFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        subjects_recyclerView.apply{
-//            layoutManager = LinearLayoutManager(activity)
-//            adapter = SubjectsAdapter()
-//        }
-        listener = subDbListener()
 
         subjects_recyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
         subjects_recyclerView.adapter=subjectAdapter
         subjects_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         subjectAdapter.notifyDataSetChanged()
+
+        viewModel = activity?.run{
+            ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+        viewModel.subjects.observe(this, Observer<MutableList<Subject>>{subjects ->
+            subjectAdapter.refreshList(subjects)
+        })
     }
 
-    override fun onResume() {
-        super.onResume()
-//        Toast.makeText(context,"Fragment refreshed",Toast.LENGTH_SHORT).show()
-        Log.d("Subject Refresh", "SubjectFragment, Subjects: ${subjects.size}")
-        subjectAdapter.refreshList(subjects)
-    }
 
-    private fun subDbListener(): ListenerRegistration {
-        val db = DatabaseManager()
-//        Log.d("SubDbListener", "Listener called. Subjects = $subjects")
-//        val dbSubjects:MutableList<Subject> = mutableListOf()
-        return db.getDatabase().collection("subjects")
-            .addSnapshotListener{snapshot, e ->
-                if (e!= null){
-//                    Log.w(ContentValues.TAG, "snapshot listen failed.",e)
-                    return@addSnapshotListener
-                }
-                for (docChange in snapshot!!.documentChanges){
-//                    Log.d("SubChange", "${docChange.document.getString("name")}")
-                    val subject = Subject(
-                        name = docChange.document.getString("name")!!,
-                        summary = docChange.document.getString("summary")!!,
-                        subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
-                        subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime()
-                    )
-                    subject.setId(docChange.document.id)
-//                    dbSubjects.add(subject)
-                    subjects.add(subject)
-                }
-//                Log.d("SubChange","Subjects: $subjects")
-                subjectAdapter.refreshList(subjects)
-            }
-    }
 
 }
