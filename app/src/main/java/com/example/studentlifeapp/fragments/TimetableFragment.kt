@@ -97,8 +97,7 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
                 EventType.REMINDER -> formatter.format(event.startTime)
                 else -> "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
             }
-//            containerView.setOnClickListener{clickListener(event)}
-
+//            event_view.strokeColor = itemView.context.getColorCompat(event.colour)
         }
 
     }

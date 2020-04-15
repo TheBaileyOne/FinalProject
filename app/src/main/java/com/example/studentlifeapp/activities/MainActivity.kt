@@ -91,14 +91,15 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.option_logout-> {
-
-                val timetableFrag = mainPagerAdapter.getItem(0)
-                val subjectsFrag = mainPagerAdapter.getItem(1)
-                (timetableFrag as TimetableFragment).clearTimetable()
-                (subjectsFrag as SubjectsTabFragment).onLogout()
+//
+//                val timetableFrag = mainPagerAdapter.getItem(1)
+//                val subjectsFrag = mainPagerAdapter.getItem(2)
+//                (timetableFrag as TimetableFragment).clearTimetable()
+//                (subjectsFrag as SubjectsTabFragment).onLogout()
 
 
                 FirebaseAuth.getInstance().signOut()
+                viewModelStore.clear()
                 Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this,Login::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

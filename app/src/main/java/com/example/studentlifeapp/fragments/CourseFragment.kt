@@ -58,11 +58,6 @@ class CourseFragment : Fragment() {
     private var subjects = mutableListOf<Subject>()
     private lateinit var viewModel: SubjectsViewModel
 
-    override fun onStart() {
-        super.onStart()
-
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_course, container, false)
@@ -72,6 +67,12 @@ class CourseFragment : Fragment() {
         } ?: throw Exception("Invalid Activity")
         viewModel.setSubjects(subjects)
         return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        subjects.clear()
+        viewModel.setSubjects(mutableListOf())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -103,7 +104,7 @@ class CourseFragment : Fragment() {
                         summary = docChange.document.getString("summary")!!,
                         subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
                         subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime(),
-                        percentage = docChange.document.getDouble("percentage")!!
+                        percentage = if (docChange.document.getDouble("percentage")!=null) docChange.document.getDouble("percentage")!! else 0.0
                     )
                     subject.setId(docChange.document.id)
                     when (docChange.type) {
@@ -121,6 +122,7 @@ class CourseFragment : Fragment() {
                     }
                 }
                 viewModel.setSubjects(subjects.toMutableList())
+
             }
     }
 

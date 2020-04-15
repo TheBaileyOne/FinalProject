@@ -125,6 +125,15 @@ class DashboardFragment : Fragment() {
         return view
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        upcomingEvents.clear()
+        reminderEvents.clear()
+        todayEvents.clear()
+        tomorrowEvents.clear()
+        next2Events.clear()
+        nextEvents.clear()
+    }
 
 
 

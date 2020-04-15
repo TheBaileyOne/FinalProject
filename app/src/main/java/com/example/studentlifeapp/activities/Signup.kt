@@ -66,8 +66,7 @@ class Signup : AppCompatActivity() {
                         val documentReference:DocumentReference = db.collection("users").document(userID)
                         var user = hashMapOf(
                             "name" to name,
-                            "email" to email,
-                            "password" to password)
+                            "email" to email)
                         documentReference.set(user)
                             .addOnSuccessListener { documentReference ->
                                 Log.d("TAG", "DocumentSnapshot added with ID: $userID")

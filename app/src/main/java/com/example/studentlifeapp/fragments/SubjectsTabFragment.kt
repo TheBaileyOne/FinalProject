@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.list_item.*
 import java.lang.ClassCastException
 
+//class SubjectsAdapter(private var viewModel: SubjectsViewModel, val onClick: (Subject) ->Unit):
 class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):
     RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
 
@@ -75,7 +76,8 @@ class SubjectsTabFragment : Fragment() {
     private lateinit var subClickListener: SubClickedListener
     private lateinit var subAddClickListener: SubAddClickedListener
     private lateinit var viewModel: SubjectsViewModel
-    private val subjectAdapter = SubjectsAdapter(mutableListOf<Subject>()){ subject:Subject->subjectClicked(subject)}
+    private val subjectAdapter = SubjectsAdapter(mutableListOf()){ subject:Subject->subjectClicked(subject)}
+//    private val subjectAdapter = SubjectsAdapter(mutableListOf<Subject>()){ subject:Subject->subjectClicked(subject)}
     lateinit var menuItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,8 +106,12 @@ class SubjectsTabFragment : Fragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        subjectAdapter.refreshList(mutableListOf())
+    }
+
     fun onLogout(){
-//        subjects.clear()
     }
 
 
