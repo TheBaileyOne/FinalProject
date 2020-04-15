@@ -117,8 +117,7 @@ class SubjectsTabFragment : Fragment() {
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-
-        inflater.inflate(R.menu.menu_add, menu)
+//        inflater.inflate(R.menu.menu_add, menu)
         super.onCreateOptionsMenu(menu, inflater)
 
     }
@@ -154,6 +153,10 @@ class SubjectsTabFragment : Fragment() {
         viewModel.subjects.observe(this, Observer<MutableList<Subject>>{subjects ->
             subjectAdapter.refreshList(subjects)
         })
+
+        add_subject_button.setOnClickListener{
+            subAddClickListener.subAddClick()
+        }
     }
 
 

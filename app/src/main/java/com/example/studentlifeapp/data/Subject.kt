@@ -3,14 +3,15 @@ package com.example.studentlifeapp.data
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.studentlifeapp.toTimeStamp
-import kotlinx.android.parcel.RawValue
+import com.example.studentlifeapp.util.Utils
+import com.example.studentlifeapp.util.calculateClassification
 import org.threeten.bp.LocalDateTime
-import java.io.Serializable
 import java.lang.Exception
 
 class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),
-              val subjectStart: LocalDateTime = LocalDateTime.now(),val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
-              val credits:Int = 20, val assements: MutableList<String> = mutableListOf(), var percentage:Double = 0.0, var remainingWeight:Int = 100){
+              val subjectStart: LocalDateTime = LocalDateTime.now(), val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
+              val credits:Int = 20, val assessments: MutableList<String> = mutableListOf(), var percentage:Double = 0.0,
+              var remainingWeight:Int = 100){
     private var id: String = ""
     fun setId(id:String){
         this.id = id
@@ -59,7 +60,7 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
             .addOnSuccessListener {documentReference ->
                 assessmentRef = documentReference.id
                 Log.d(TAG,  "Document written with ID: ${documentReference.id}")
-                assements.add(assessmentRef)
+                assessments.add(assessmentRef)
                 db.addSubReference(assessmentRef, id, "assessmentRef")
 //                db.addSubjectAssessment(assessmentRef, id)
             }
@@ -70,7 +71,7 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
 }
 
 enum class Classification{
-    FIRST, UPPER_SECOND, LOWER_SECOND, PASS, FAIL
+    FIRST, UPPER_SECOND, LOWER_SECOND, PASS, FAIL, INVALID
 }
 
 data class Assessment(
@@ -84,7 +85,7 @@ data class Assessment(
     //sort out for database implementation.
 ){
     private var percentage = calculatePercentage()
-    var classification:Classification = calculateClassification()
+    var classification:Classification = calculateClassification(percentage)
     val subAssesments = mutableListOf<Assessment>()
     fun calculatePercentage():Double {
         return (mark/maxMark)*100
@@ -98,25 +99,6 @@ data class Assessment(
 ////        this.mark = mark
 //    }
 
-    fun calculateClassification():Classification{
-        return if (percentage in 70.0..100.0){
-            Classification.FIRST
-        }
-        else if (percentage>=60){
-            Classification.UPPER_SECOND
-        }
-        else if (percentage>=50){
-            Classification.LOWER_SECOND
-        }
-        else if (percentage>=40){
-            Classification.PASS
-        }
-        else if (percentage<40 && percentage>=0){
-            Classification.FAIL
-        }
-        else{
-            throw Exception("Invalid percentage")
-        }
-    }
+
 
 }

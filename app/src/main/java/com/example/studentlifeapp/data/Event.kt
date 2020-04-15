@@ -14,7 +14,8 @@ data class Event(
     val location: Location? = null,
     val note: String? = null,
 //    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
-    val eventId: String = title
+    val eventId: String = title,
+    var eventRef:String = ""
 ): Serializable
 {
     var colour: Int = setColour()
@@ -33,6 +34,10 @@ data class Event(
     }
     private fun setCustomColour(colour: Int) {
         this.colour = colour
+    }
+
+    fun setRef(ref:String){
+        eventRef = ref
     }
 
 }

@@ -24,6 +24,7 @@ import com.example.studentlifeapp.tolocalDateTime
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_course.*
@@ -101,10 +102,23 @@ class CourseFragment : Fragment() {
                         name = docChange.document.getString("name")!!,
                         summary = docChange.document.getString("summary")!!,
                         subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
-                        subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime()
+                        subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime(),
+                        percentage = docChange.document.getDouble("percentage")!!
                     )
                     subject.setId(docChange.document.id)
-                    subjects.add(subject)
+                    when (docChange.type) {
+                        DocumentChange.Type.ADDED -> {
+                            subjects.add(subject)
+                        }
+                        DocumentChange.Type.MODIFIED -> {
+                            val subToReplace = subjects.indexOf(subjects.find { it.getId() ==subject.getId()})
+                            subjects[subToReplace] = subject
+                        }
+                        else -> {
+                            val subToReplace = subjects.indexOf(subjects.find { it.getId() ==subject.getId()})
+                            subjects.removeAt(subToReplace)
+                        }
+                    }
                 }
                 viewModel.setSubjects(subjects.toMutableList())
             }

@@ -304,7 +304,12 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                 subjectPercentage += assessment.getWeightedPercentage()
                                 displayTotalPercentage(true)
                                 subject_percent.text = getString(R.string.subject_percent_string,subjectPercentage.toFloat())
-
+                                subject.percentage = subjectPercentage
+//                                val dataPercent = hashMapOf("percentage" to subject.percentage)
+                                db.getDatabase().collection("subjects").document(subjectRef).update("percentage", subject.percentage)
+                                    .addOnFailureListener{e->
+                                        Log.w(TAG,"Error Adding Document")
+                                    }
                             }
                         }
                         .addOnFailureListener{e ->

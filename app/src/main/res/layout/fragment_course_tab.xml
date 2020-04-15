@@ -36,25 +36,25 @@
                     android:background="@color/primaryDarkColor"
                     android:layout_marginHorizontal="1dp"
                     android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
                 <TextView android:text="Credits"
                     android:background="@color/primaryDarkColor"
                     android:textColor="@color/primaryTextColor"
                     android:layout_marginHorizontal="1dp"
                     android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
                 <TextView android:text="Score"
                     android:background="@color/primaryDarkColor"
                     android:textColor="@color/primaryTextColor"
                     android:layout_marginHorizontal="1dp"
                     android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
                 <TextView android:text="Include?"
                     android:background="@color/primaryDarkColor"
                     android:textColor="@color/primaryTextColor"
                     android:layout_marginHorizontal="1dp"
                     android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
             </TableRow>
         </TableLayout>
         <TextView
@@ -65,6 +65,7 @@
             android:layout_marginVertical="4dp"
             style="@style/TextAppearance.MaterialComponents.Headline5"/>
         <TextView
+            android:id="@+id/required_credits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/required_credits"
@@ -76,10 +77,9 @@
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="140"
-            android:progress="20"
             android:layout_margin="8dp"/>
         <LinearLayout
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -96,11 +96,11 @@
 
         </LinearLayout>
         <TextView
-            android:id="@+id/course_grade_average"
+            android:id="@+id/course_grade_obtained"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:text="@string/average_percent"
+            android:text="@string/obtained_percent"
             android:textAlignment="textEnd"
             android:layout_margin="8dp"/>
         <TextView
@@ -108,7 +108,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.MaterialComponents.Headline6"
-            android:text="Classification: %1$s"
+            android:text="@string/classification"
             android:textAlignment="textEnd"
             android:layout_margin="8dp"/>
 
