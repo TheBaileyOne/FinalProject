@@ -80,13 +80,9 @@ class StudyModeFragment : Fragment() {
     private lateinit var viewAdapter: StudyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private var events = mutableListOf<Event>()
-//    private var events = mutableListOf<Event>()
-//    private lateinit var listener: ListenerRegistration
-//    private lateinit var studies: List<Event>
     private lateinit var eventViewModel:EventsViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view: View = inflater.inflate(R.layout.fragment_study_mode, container, false)
 
         eventViewModel = activity?.run{
@@ -97,23 +93,10 @@ class StudyModeFragment : Fragment() {
 
     }
     //TODO: Sort out list reloading, and make list fit in screen better
-    override fun onPause() {
-        super.onPause()
-//        listener.remove()
-    }
-
-    override fun onStop() {
-        super.onStop()
-//        listener.remove()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        listener = studyDbListener()
 
-//        studies = events.filter{
-//            it.type == EventType.STUDY
-//        }
         view.studyButtonManual.setOnClickListener{
             Log.d("studyButton","Selected")
             val intent = Intent(context, StudyMode::class.java)
@@ -127,7 +110,6 @@ class StudyModeFragment : Fragment() {
         })
         viewManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         viewAdapter = StudyAdapter(events){study:Event ->studyClicked(study)}
-//        viewAdapter = StudyAdapter(studies){study:Event ->studyClicked(study)}
 
         recyclerView = study_recyclerView.apply {
             setHasFixedSize(true)
@@ -147,37 +129,6 @@ class StudyModeFragment : Fragment() {
         intent.putExtra("study_name",study.title)
         startActivity(intent)
     }
-
-//    private fun studyDbListener():ListenerRegistration{
-//        val db = DatabaseManager().getDatabase().collection("events")
-//        val timestamp = LocalDateTime.now().minusHours(23).toTimeStamp()
-//        val dbOrder = db.orderBy("start_time")
-//        val dbQuery = dbOrder.whereGreaterThanOrEqualTo("start_time", timestamp)
-//        val dbQuery2 = dbQuery.whereEqualTo("type","STUDY")
-//        val dbEvents: MutableList<Event> = mutableListOf()
-//        return dbQuery2.addSnapshotListener{snapshot, e ->
-//            if (e != null) {
-//                Log.w(ContentValues.TAG, "Listen failed.", e)
-//                return@addSnapshotListener
-//            }
-//            for(docChange in snapshot!!.documentChanges){
-//                dbEvents.add(
-//                    Event(
-//                        title = docChange.document.getString("title")!!,
-//                        type = EventType.valueOf(docChange.document.getString("type")!!),
-//                        startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
-//                        endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
-//                        note = docChange.document.getString("note"),
-//                        eventId = docChange.document.getString("eventId")!!
-//                    )
-//                )
-//            }
-//            events = dbEvents.sortedBy{it.startTime}.toMutableList()
-//            viewAdapter.refreshList(events)
-//        }
-//
-//    }
-
 }
 
 class SetStudyModeFragment: PreferenceFragmentCompat(){

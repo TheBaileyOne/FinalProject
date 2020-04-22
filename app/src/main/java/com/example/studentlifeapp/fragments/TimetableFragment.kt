@@ -116,10 +116,6 @@ class TimetableFragment : Fragment() {
     private val eventAdapter = EventAdapter{event:Event-> eventClicked(event)}
     private lateinit var user: String
     private lateinit var db: CollectionReference
-//    private val dbEvents = mutableListOf<Event>()
-//    private var tempStore = mutableListOf<Event>()
-//    private var storeBool:Boolean = false
-//    private var groupedEvents = dbEvents.groupBy{ it.startTime.toLocalDate()}.toMutableMap()
     private lateinit var groupedEvents:MutableMap<LocalDate, List<Event>>
     private lateinit var listener: ListenerRegistration
     private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
@@ -152,29 +148,9 @@ class TimetableFragment : Fragment() {
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
 
     }
-    override fun onPause() {
-        super.onPause()
-//        listener.remove()
-    }
 
-    override fun onStop() {
-        super.onStop()
-//        listener.remove()
-    }
-
-    fun clearTimetable(){
-//        dbEvents.clear()
-        groupedEvents.clear()
-        calendarView.notifyCalendarChanged()
-//        listener.remove()
-        Log.d("Clear","events cleared")
-
-    }
     override fun onViewCreated(view: View, savedInstanceState:Bundle?){
         super.onViewCreated(view,savedInstanceState)
-        Log.d("User", "Current User: ${FirebaseAuth.getInstance().currentUser?.email}")
-//        Log.d("User","User events = ${dbEvents.size}")
-//        listener = dbListener()
 
         calendar_recyclerView.layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL,false)
         calendar_recyclerView.adapter = eventAdapter
@@ -186,15 +162,6 @@ class TimetableFragment : Fragment() {
             calendarView.notifyCalendarChanged()
             updateAdapterForDate(today)
         })
-//        fab_add.setOnClickListener {
-//            val fragmentTransaction = fragmentManager?.beginTransaction()
-//            val fragment = AddEventFragment()
-//            fragment.setOnEventSavedListener(activity as MainActivity)
-//            fragmentTransaction?.replace(R.id.view_pager_container, fragment)?.addToBackStack(null)
-//                ?.commit()
-//            (activity as MainActivity).showBottomNav(false)
-//            storeBool = true
-//        }
 
         val daysOfWeek = daysOfWeekFromLocale()
         val currentMonth = YearMonth.now()
@@ -346,39 +313,5 @@ class TimetableFragment : Fragment() {
         eventAdapter.notifyDataSetChanged()
 
     }
-
-//    private fun dbListener(): ListenerRegistration {
-//        val dbEvents = mutableListOf<Event>()
-//
-//        return db.addSnapshotListener{ value, e ->
-//            if (e!= null){
-//                Log.w(TAG, "snapshot listen failed.",e)
-//                return@addSnapshotListener
-//            }
-//            val source = if (value != null && value.metadata.hasPendingWrites()) "local" else "server"
-//
-//            for (docChange in value!!.documentChanges){
-//                Log.d("Doc Change", "$source doc of type: ${docChange.type}")
-//                val event = Event(
-//                    title = docChange.document.getString("title")!!,
-//                    type = EventType.valueOf(docChange.document.getString("type")!!),
-//                    startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
-//                    endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
-//                    note = docChange.document.getString("note"),
-//                    eventId = docChange.document.getString("eventId")!!
-//                )
-//                dbEvents.add(event)
-//                event.setRef(docChange.document.id)
-//
-//            }
-//            this.dbEvents.addAll(dbEvents)
-//            events = dbEvents.groupBy { it.startTime.toLocalDate() }.toMutableMap()
-//            Log.d(TAG, "Events updated, number of Events: ${dbEvents.size}")
-//            dbEvents.clear()
-//            calendarView.notifyCalendarChanged()
-//            updateAdapterForDate(today)
-//
-//        }
-//    }
 
 }

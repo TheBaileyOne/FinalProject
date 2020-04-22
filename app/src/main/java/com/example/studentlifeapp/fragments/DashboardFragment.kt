@@ -40,7 +40,6 @@ import java.lang.ClassCastException
 class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf(), val onClick:(Event)->Unit):RecyclerView.Adapter<DashEventsAdapter.DashViewHolder>(){
 //  private var events: MutableList<Event> = mutableListOf()
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    private val formatter2=DateTimeFormatter.ofPattern("EEE\ndd\nMMM")
     private val formatter3=DateTimeFormatter.ofPattern("EEE, dd MMM")
     fun setEvents(newEvents:MutableList<Event>){
         events = newEvents
@@ -63,33 +62,14 @@ class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf()
         fun bind(event:Event){
             event_view_title.text = event.title
             event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
-//            event_view_icon.visibility = View.INVISIBLE
-//            if (event.location?.basicDisplay() != null){
-//                event_view_location.text = event.location?.basicDisplay()
-//                event_view_location_icon.visibility = View.VISIBLE
-//            }else{
-//                event_view_location.text = ""
-//                event_view_location_icon.visibility = View.INVISIBLE
-//            }
             event_view_location_icon.visibility = View.GONE
             event_view_location.text = formatter3.format(event.startTime)
             event_view_time.text = "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
-//            event_view_icon_text.visibility = View.VISIBLE
-//            event_view_icon_text.text = formatter2.format(event.startTime)
-
         }
     }
 }
 
-
-
 class DashboardFragment : Fragment() {
-//    interface EventClickedListener{
-//        fun eventClicked(event: Event)
-//    }
-
-//    private lateinit var  eventClickListener: EventClickedListener
-//    private lateinit var upcomingRecyclerView: RecyclerView
     private lateinit var upcomingAdapter: DashEventsAdapter
     private lateinit var reminderAdapter: DashEventsAdapter
     private lateinit var todayAdapter: DashEventsAdapter
@@ -103,7 +83,6 @@ class DashboardFragment : Fragment() {
     private var nextEvents = mutableListOf<Event>()
     private var next2Events = mutableListOf<Event>()
     private lateinit var listener: ListenerRegistration
-    var  viewManager: RecyclerView.LayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
     private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
     private lateinit var eventViewModel:EventsViewModel
     private var events = mutableListOf<Event>()
@@ -150,12 +129,6 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        setRecyclerView(upcomingAdapter, deadlines_recycler_view)
-//        setRecyclerView(tomorrowAdapter,tomorrow_recycler_view)
-//        setRecyclerView(reminderAdapter,reminder_recycler_view)
-//        setRecyclerView(nextAdapter,next_day_recycler_view)
-//        setRecyclerView(next2Adapter,next_day_recycler_view_2)
 
         deadlines_recycler_view.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
         deadlines_recycler_view.adapter = upcomingAdapter
@@ -208,18 +181,12 @@ class DashboardFragment : Fragment() {
         Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
-//TODO: Implement livedata for events that gets passed between this, timetable, and studymode. have listeners in each thing to update the dataset
-    //TODO: Change it so that timetable fragment gets the data, and have sort function in this one.
 
     private fun dashEventsListener():ListenerRegistration{
         val db = DatabaseManager().getDatabase().collection("events")
-        val timestamp = LocalDateTime.now().minusHours(23).toTimeStamp()
         val dbOrder = db.orderBy("start_time")
-//        val dbQuery = dbOrder.whereGreaterThanOrEqualTo("start_time", timestamp)
-        var replaceLists = true
         var dbEvents = mutableListOf<Event>()
         return dbOrder.addSnapshotListener{snapshot, e ->
-//        return dbQuery.addSnapshotListener{snapshot, e ->
             if (e!=null){
                 Log.w(TAG, "Dashboard Listen Failed", e)
                 return@addSnapshotListener
@@ -247,8 +214,6 @@ class DashboardFragment : Fragment() {
                     else{
                         Log.d("ERROR", "Modified event should be found in the list.")
                     }
-//                    eventViewModel.updateEvent(event)
-                    replaceLists = false
                 }
                 else if (docChange.type == DocumentChange.Type.REMOVED){
                     if(events.any{it.eventRef == event.eventRef}){
@@ -259,8 +224,6 @@ class DashboardFragment : Fragment() {
                     else{
                         Log.d("ERROR", "Modified event should be found in the list.")
                     }
-//                    eventViewModel.deleteEvent(event)
-                    replaceLists = false
                 }
             }
 
@@ -342,21 +305,4 @@ class EventsViewModel : ViewModel(){
     fun setEvents(events:MutableList<Event>){
         this.events.value = events
     }
-//    fun addEvent(event:Event){
-//        events.value?.add(event)
-//    }
-//    fun updateEvent(event:Event){
-//        if(events.value?.any{it.eventRef == event.eventRef}!!){
-//            val foundEvent = events.value!!.find { it.eventRef == event.eventRef}!!
-//            val index = events.value!!.indexOf(foundEvent)
-//            events.value!![index] = event
-//        }
-//    }
-//    fun deleteEvent(event:Event){
-//        if(events.value?.any{it.eventRef == event.eventRef}!!){
-//            val foundEvent = events.value!!.find { it.eventRef == event.eventRef}!!
-//            val index = events.value!!.indexOf(foundEvent)
-//            events.value!!.removeAt(index)
-//        }
-//    }
 }
