@@ -59,7 +59,7 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
             }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }
-        radioGroup.setOnCheckedChangeListener{group, checkedId->
+        radioGroup.setOnCheckedChangeListener{ _, checkedId->
             when(checkedId){
                 R.id.study_lunch12 -> time = LocalTime.of(12,0)
                 R.id.study_lunch13 -> time = LocalTime.of(13,0)
@@ -81,7 +81,6 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
     }
 
     private fun generateStudy(name:String, endDate:LocalDate, lunchTime:LocalTime, weekendStudy:Boolean){
-//        val studyGenerator = StudyGenerator(subject.subjectStart, subject.subjectEnd, events)
         val studyGenerator = StudyGenerator(name,endDate = endDate, events = events, lunchTime = lunchTime, weekendStudy = weekendStudy)
         val studies = studyGenerator.getStudies()
         val fragment = StudiesGeneratedFragment(studies)
@@ -90,12 +89,6 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         fragmentTransaction.replace(R.id.subject_detail_fragment, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
-//        Log.d("Study generator","${studies.size} study events added.")
-//        for (i in studies.indices){
-//            Log.d("Study [${i}]","Start: ${studies[i].startTime}, End: ${studies[i].endTime}")
-//        }
-
-        //subject.addEvents(studies)
     }
 
 }

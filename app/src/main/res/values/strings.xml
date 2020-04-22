@@ -38,4 +38,5 @@
     <string name="classification">Classification: %1$s</string>
     <string name="string_fail">Unit Failed</string>
     <string name="remaining_marks">To get a %1$s in this subject you need to get %2$.0f%% average in your remaining assessments</string>
+    <string name="about_app">This app was developed for my university final year project. Multiple third party libraries were utilised for development, find them listed below:</string>
 </resources>

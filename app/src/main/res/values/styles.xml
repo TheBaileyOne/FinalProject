@@ -15,10 +15,13 @@
         <item name="colorSecondaryVariant">@color/secondaryDarkColor</item>
         <item name="colorOnSecondary">@color/secondaryTextColor</item>
         <item name="materialButtonStyle">@style/Widget.MyApp.MyButton</item>
-        <item name="android:textViewStyle">@style/TextAppearance.MaterialComponents.Body2</item>
-        <item name="textAppearanceBody1">@style/TextAppearance.MyApp.Body1</item>
-        <item name="textAppearanceBody2">@style/TextAppearance.MyApp.Body2</item>
+        <item name="android:timePickerDialogTheme">@style/DialogStyle</item>
+<!--        <item name="android:textViewStyle">@style/TextAppearance.MaterialComponents.Body2</item>-->
+<!--        <item name="textAppearanceBody1">@style/TextAppearance.MyApp.Body1</item>-->
+<!--        <item name="textAppearanceBody2">@style/TextAppearance.MyApp.Body2</item>-->
         <item name="actionBarStyle">@style/MyActionBar</item>
+<!--        <item name="android:datePickerDialogTheme">@style/Theme.AppCompat.Light</item>-->
+        <item name="android:datePickerDialogTheme">@style/DialogStyle</item>
 <!--        <item name="actionMenuTextColor">@color/primaryTextColor</item>-->
 <!--        <item name="android:textColorPrimary">@color/primaryTextColor</item>-->
     </style>
@@ -35,6 +38,20 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name = "DialogStyle" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:headerBackground">@color/primaryColor</item>
+<!--        <item name="android:headerYearTextAppearance">@style/TextAppearance.MaterialComponents.Headline4</item>-->
+<!--        <item name="android:headerMonthTextAppearance">@style/TextAppearance.MaterialComponents.Headline3</item>-->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorAccent">@color/primaryColor</item>
+        <item name="materialButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+    <style name = "DialogButtonStyle" parent="Widget.MaterialComponents.Button">
+
+        <item name="backgroundTint">@color/cardview_light_background</item>
+        <item name="colorButtonNormal">@color/cardview_light_background</item>
+        <item name="android:textColor">@color/secondaryTextColor</item>
+    </style>
     <style name="Widget.MyApp.MyButton" parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/secondaryColor</item>
         <item name="android:textColor">@color/secondaryTextColor</item>

@@ -88,6 +88,13 @@ class StudyModeFragment : Fragment() {
         eventViewModel = activity?.run{
             ViewModelProviders.of(this).get(EventsViewModel::class.java)
         }?: throw Exception("Invalid Activity")
+        view.studyButtonManual.setOnClickListener{
+            Log.d("studyButton","Selected")
+            //TODO: pass length for timer/pass Study object length
+            val intent = Intent(context, StudyMode::class.java)
+            startActivity(intent)
+
+        }
 
         return view
 
@@ -97,12 +104,12 @@ class StudyModeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.studyButtonManual.setOnClickListener{
-            Log.d("studyButton","Selected")
-            val intent = Intent(context, StudyMode::class.java)
-            startActivity(intent)
-
-        }
+//        view.studyButtonManual.setOnClickListener{
+//            Log.d("studyButton","Selected")
+//            val intent = Intent(context, StudyMode::class.java)
+//            startActivity(intent)
+//
+//        }
         eventViewModel.events.observe(this, Observer { eventsModel ->
             events = eventsModel.filter{ it.type == EventType.STUDY && (it.startTime.isAfter(LocalDateTime.now()) || it.startTime.isEqual(LocalDateTime.now()))}.toMutableList()
             events.sortBy { it.startTime }

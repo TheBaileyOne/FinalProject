@@ -92,13 +92,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.option_logout-> {
-//
-//                val timetableFrag = mainPagerAdapter.getItem(1)
-//                val subjectsFrag = mainPagerAdapter.getItem(2)
-//                (timetableFrag as TimetableFragment).clearTimetable()
-//                (subjectsFrag as SubjectsTabFragment).onLogout()
-
-
                 FirebaseAuth.getInstance().signOut()
                 viewModelStore.clear()
                 Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
@@ -107,6 +100,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 startActivity(intent)
                 finish()
                 return true}
+            R.id.option_about_app ->{
+                val fragmentManager = this.supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                val fragment = AboutAppFragment()
+                fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+                showBottomNav(false)
+            }
         }
         return super.onOptionsItemSelected(item)
     }

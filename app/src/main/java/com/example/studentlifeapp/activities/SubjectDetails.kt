@@ -304,7 +304,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_edit,menu)
         return true
     }
     fun addStudies(studies:MutableList<Event>){

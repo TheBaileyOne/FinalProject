@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
+    tools:context=".fragments.AboutAppFragment"
+    android:orientation="vertical"
+    android:background="@color/cardview_light_background">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="About App"
+        style="@style/TextAppearance.MaterialComponents.Headline4"
+        android:layout_marginVertical="16dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="@string/about_app"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:layout_marginTop="8dp"
+        android:text="&#8226; CalendarView, Kizito Nwose:"
+        style="@style/TextAppearance.MaterialComponents.Body1"/>
+    <TextView
+        android:textColorLink="@color/secondaryDarkColor"
+        android:clickable="true"
+        android:autoLink="web"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="https://github.com/kizitonwose/CalendarView"
+        android:layout_marginLeft="8dp"/>
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="&#8226; MaterialProgressBar, Hai Zhang:"
+        android:textStyle="italic" />
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:text="https://github.com/zhanghai/MaterialProgressBar"
+        android:textColorLink="@color/secondaryDarkColor" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:layout_marginTop="8dp"
+        android:text="&#8226; MaterialSeekBarPreference, MrBIMC:"
+        style="@style/TextAppearance.MaterialComponents.Body1"/>
+    <TextView
+        android:textColorLink="@color/secondaryDarkColor"
+        android:clickable="true"
+        android:autoLink="web"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:text="https://github.com/MrBIMC/MaterialSeekBarPreference"
+        android:layout_marginLeft="8dp"/>
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="&#8226; ThreeTenBp, Jake Wharton:"
+        android:textStyle="italic" />
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:text="https://github.com/JakeWharton/ThreeTenABP"
+        android:textColorLink="@color/secondaryDarkColor" />
+
+
+</LinearLayout>
