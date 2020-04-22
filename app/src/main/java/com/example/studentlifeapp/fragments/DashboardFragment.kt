@@ -11,6 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,10 +21,12 @@ import com.example.studentlifeapp.*
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
+import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.util.Utils
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
@@ -100,6 +105,8 @@ class DashboardFragment : Fragment() {
     private lateinit var listener: ListenerRegistration
     var  viewManager: RecyclerView.LayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
     private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
+    private lateinit var eventViewModel:EventsViewModel
+    private var events = mutableListOf<Event>()
 
     //ensure fragment actually attaches, and that activity implements interface
     override fun onAttach(context: Context) {
@@ -122,6 +129,10 @@ class DashboardFragment : Fragment() {
         tomorrowAdapter  = DashEventsAdapter(tomorrowEvents){event:Event -> eventClicked(event)}
         nextAdapter = DashEventsAdapter(nextEvents){event:Event -> eventClicked(event)}
         next2Adapter  = DashEventsAdapter(next2Events){event:Event -> eventClicked(event)}
+        eventViewModel = activity?.run {
+            ViewModelProviders.of(this).get(EventsViewModel::class.java)
+        } ?: throw Exception ("Invalid Activity")
+        eventViewModel.setEvents(events)
         return view
     }
 
@@ -197,12 +208,69 @@ class DashboardFragment : Fragment() {
         Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
+//TODO: Implement livedata for events that gets passed between this, timetable, and studymode. have listeners in each thing to update the dataset
+    //TODO: Change it so that timetable fragment gets the data, and have sort function in this one.
 
     private fun dashEventsListener():ListenerRegistration{
         val db = DatabaseManager().getDatabase().collection("events")
         val timestamp = LocalDateTime.now().minusHours(23).toTimeStamp()
         val dbOrder = db.orderBy("start_time")
-        val dbQuery = dbOrder.whereGreaterThanOrEqualTo("start_time", timestamp)
+//        val dbQuery = dbOrder.whereGreaterThanOrEqualTo("start_time", timestamp)
+        var replaceLists = true
+        var dbEvents = mutableListOf<Event>()
+        return dbOrder.addSnapshotListener{snapshot, e ->
+//        return dbQuery.addSnapshotListener{snapshot, e ->
+            if (e!=null){
+                Log.w(TAG, "Dashboard Listen Failed", e)
+                return@addSnapshotListener
+            }
+            for(docChange in snapshot!!.documentChanges) {
+                val event = Event(
+                    title = docChange.document.getString("title")!!,
+                    type = EventType.valueOf(docChange.document.getString("type")!!),
+                    startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
+                    endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
+                    note = docChange.document.getString("note"),
+                    eventId = docChange.document.getString("eventId")!!
+                )
+                event.setRef(docChange.document.id)
+                if(docChange.type == DocumentChange.Type.ADDED){
+                    dbEvents.add(event)
+//                    eventViewModel.addEvent(event)
+                    events.add(event)
+                }else if (docChange.type == DocumentChange.Type.MODIFIED){
+                    if(events.any{it.eventRef == event.eventRef}){
+                        val foundEvent = events.find { it.eventRef == event.eventRef}!!
+                        val index = events.indexOf(foundEvent)
+                        events[index] = event
+                    }
+                    else{
+                        Log.d("ERROR", "Modified event should be found in the list.")
+                    }
+//                    eventViewModel.updateEvent(event)
+                    replaceLists = false
+                }
+                else if (docChange.type == DocumentChange.Type.REMOVED){
+                    if(events.any{it.eventRef == event.eventRef}){
+                        val foundEvent = events.find { it.eventRef == event.eventRef}!!
+                        val index = events.indexOf(foundEvent)
+                        events.removeAt(index)
+                    }
+                    else{
+                        Log.d("ERROR", "Modified event should be found in the list.")
+                    }
+//                    eventViewModel.deleteEvent(event)
+                    replaceLists = false
+                }
+            }
+
+            eventViewModel.setEvents(events)
+            arrangeEventLists(eventViewModel.getEvents()!!)
+        }
+
+    }
+
+    private fun arrangeEventLists(events: MutableList<Event>){
         val dbUpcoming = mutableListOf<Event>()
         val dbToday = mutableListOf<Event>()
         val dbTomorrow = mutableListOf<Event>()
@@ -213,27 +281,13 @@ class DashboardFragment : Fragment() {
         var firstDay: LocalDate? = null
         var secondDay: LocalDate? = null
         val dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
-        return dbQuery.addSnapshotListener{snapshot, e ->
-//        return dbQuery.whereIn("type", mutableListOf("EXAM", "COURSEWORK")).addSnapshotListener{snapshot, e ->
-            if (e!=null){
-                Log.w(TAG, "Dashboard Listen Failed", e)
-                return@addSnapshotListener
-            }
-            for(docChange in snapshot!!.documentChanges) {
-
-                val event = Event(
-                    title = docChange.document.getString("title")!!,
-                    type = EventType.valueOf(docChange.document.getString("type")!!),
-                    startTime = (docChange.document.get("start_time") as Timestamp).tolocalDateTime(),
-                    endTime = (docChange.document.get("end_time") as Timestamp).tolocalDateTime(),
-                    note = docChange.document.getString("note"),
-                    eventId = docChange.document.getString("eventId")!!
-                )
-                Log.d("Dash","Event: ${event.title}, Type: ${event.type}, date:${event.startTime.toLocalDate()}")
+        for (event in events){
+            if(event.startTime.toLocalDate().isAfter(LocalDate.now()) or event.startTime.toLocalDate().isEqual(LocalDate.now())){
                 if (event.type == EventType.EXAM || event.type == EventType.COURSEWORK) {
                     dbUpcoming.add(event)
                     placeholder_deadlines.visibility = View.GONE
-                } else if (event.type == EventType.REMINDER) {
+                }
+                else if (event.type == EventType.REMINDER) {
                     dbReminder.add(event)
                     placeholder_reminders.visibility = View.GONE
                 }
@@ -266,28 +320,43 @@ class DashboardFragment : Fragment() {
                     }
                 }
             }
-            nextEvents = dbNext.toMutableList()
-            next2Events= dbNext2.toMutableList()
-            reminderEvents = dbReminder.toMutableList()
-            todayEvents = dbToday.toMutableList()
-            tomorrowEvents = dbTomorrow.toMutableList()
-            upcomingEvents = dbUpcoming.toMutableList()
-
-            updateRecyclerView(upcomingAdapter,upcomingEvents,deadlines_recycler_view)
-            updateRecyclerView(todayAdapter,todayEvents, today_recycler_view)
-            updateRecyclerView(tomorrowAdapter,tomorrowEvents,tomorrow_recycler_view)
-            updateRecyclerView(reminderAdapter,reminderEvents,reminder_recycler_view)
-            updateRecyclerView(nextAdapter,nextEvents,next_day_recycler_view)
-            updateRecyclerView(next2Adapter,next2Events,next_day_recycler_view_2)
-            dbNext.clear()
-            dbNext2.clear()
-            dbReminder.clear()
-            dbToday.clear()
-            dbTomorrow.clear()
-            dbUpcoming.clear()
-
-
         }
-
+        nextEvents = dbNext.toMutableList()
+        next2Events= dbNext2.toMutableList()
+        reminderEvents = dbReminder.toMutableList()
+        todayEvents = dbToday.toMutableList()
+        tomorrowEvents = dbTomorrow.toMutableList()
+        upcomingEvents = dbUpcoming.toMutableList()
+        updateRecyclerView(upcomingAdapter,upcomingEvents,deadlines_recycler_view)
+        updateRecyclerView(todayAdapter,todayEvents, today_recycler_view)
+        updateRecyclerView(tomorrowAdapter,tomorrowEvents,tomorrow_recycler_view)
+        updateRecyclerView(reminderAdapter,reminderEvents,reminder_recycler_view)
+        updateRecyclerView(nextAdapter,nextEvents,next_day_recycler_view)
+        updateRecyclerView(next2Adapter,next2Events,next_day_recycler_view_2)
     }
+}
+
+class EventsViewModel : ViewModel(){
+    val events: MutableLiveData<MutableList<Event>> = MutableLiveData()
+    fun getEvents() = events.value
+    fun setEvents(events:MutableList<Event>){
+        this.events.value = events
+    }
+//    fun addEvent(event:Event){
+//        events.value?.add(event)
+//    }
+//    fun updateEvent(event:Event){
+//        if(events.value?.any{it.eventRef == event.eventRef}!!){
+//            val foundEvent = events.value!!.find { it.eventRef == event.eventRef}!!
+//            val index = events.value!!.indexOf(foundEvent)
+//            events.value!![index] = event
+//        }
+//    }
+//    fun deleteEvent(event:Event){
+//        if(events.value?.any{it.eventRef == event.eventRef}!!){
+//            val foundEvent = events.value!!.find { it.eventRef == event.eventRef}!!
+//            val index = events.value!!.indexOf(foundEvent)
+//            events.value!!.removeAt(index)
+//        }
+//    }
 }

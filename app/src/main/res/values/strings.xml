@@ -36,4 +36,6 @@
     <string name="obtained_percent">Obtained: %1$.2f%%</string>
     <string name="mark_out_of">%1$.1f/%2$.0f</string>
     <string name="classification">Classification: %1$s</string>
+    <string name="string_fail">Unit Failed</string>
+    <string name="remaining_marks">To get a %1$s in this subject you need to get %2$.0f%% average in your remaining assessments</string>
 </resources>

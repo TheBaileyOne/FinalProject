@@ -9,10 +9,10 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.data.AcademicYear
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.toTimeStamp
@@ -40,6 +40,7 @@ class AddSubjectFragment : Fragment() {
     lateinit var subjectStart: LocalDateTime
     lateinit var subjectEnd: LocalDateTime
     lateinit var optionsMenu:Menu
+    private var academicYear:AcademicYear = AcademicYear.FIRST_YEAR
 
     //TODO: make it so that main activity opens this fragment instead so listener can be used
 
@@ -100,6 +101,24 @@ class AddSubjectFragment : Fragment() {
             }, now.get(Calendar.YEAR), now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH))
             datePicker.show()
         }
+        val spinner = view.findViewById<Spinner>(R.id.academic_year_spinner)
+        val values = enumValues<AcademicYear>()
+        spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
+        spinner?.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                TODO("Something to do with an error")
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//                val type = parent?.getItemAtPosition(position)
+//                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
+                val year = parent?.getItemAtPosition(position)
+                academicYear = year as AcademicYear
+                Toast.makeText(context,"Type: $year",Toast.LENGTH_SHORT).show()
+            }
+        }
         view.button_save_subject.setOnClickListener{
             addSubject()
         }
@@ -116,13 +135,19 @@ class AddSubjectFragment : Fragment() {
             subjectEnd = LocalDateTime.parse("${add_subject_end_edit.text} 23:59", formatter)
             val subjectDetails = add_subject_summary.text.toString()
             val subject = Subject(subjectName,subjectDetails, subjectStart = subjectStart, subjectEnd = subjectEnd)
+            val credits = if (add_subject_credits_edit.text.isNullOrBlank()) 20 else add_subject_credits_edit.text.toString().toInt()
+            subject.credits = credits
+            subject.academicYear = academicYear
+
 
             var subRef:String?
             val docData = hashMapOf(
                 "name" to subject.name,
                 "summary" to subject.summary,
                 "subject_start" to subject.subjectStart.toTimeStamp(),
-                "subject_end" to subject.subjectEnd.toTimeStamp()
+                "subject_end" to subject.subjectEnd.toTimeStamp(),
+                "credits" to  subject.credits,
+                "academic_year" to subject.academicYear
             )
             db.getDatabase().collection("subjects").add(docData)
                 .addOnSuccessListener {documentReference ->

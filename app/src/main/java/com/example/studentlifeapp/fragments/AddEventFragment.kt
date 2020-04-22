@@ -12,19 +12,21 @@ import android.widget.*
 
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.activities.SubjectDetails
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.data.Location
+import com.example.studentlifeapp.toTimeStamp
 import kotlinx.android.synthetic.main.fragment_add_event.*
 import kotlinx.android.synthetic.main.fragment_add_event.view.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
-import org.threeten.bp.temporal.TemporalUnit
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment() {
+class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private val editEvent:Event? = null) : Fragment() {
 
 
 
@@ -39,6 +41,8 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
     //TODO: Notifications
     private val format = SimpleDateFormat("dd MMM, YYYY", Locale.UK)
     private val timeFormat = SimpleDateFormat ("HH:mm", Locale.UK)
+    private val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM, YYYY")
+    private val timeFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     lateinit var eventName:String
     lateinit var eventStartTime: LocalDateTime
     lateinit var eventEndTime:LocalDateTime
@@ -47,6 +51,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
     lateinit var eventType: EventType
     lateinit var durationValue: String
     lateinit var eventId: String
+    private var editing: Boolean = false
 //    val repeatTimes:MutableList = mutableListOf<LocalDateTime>()
 //    lateinit var event:Event
     val events:MutableList<Event> = mutableListOf()
@@ -57,10 +62,11 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
 
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_event, container, false)
-//        val nameText = view.findViewById<EditText>(R.id.add_event_name_edit)
-//        nameText.hint = "e.g. Geography101: lecture"
-        //Event Type Spinner
+        return inflater.inflate(R.layout.fragment_add_event, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val spinner = view.findViewById<Spinner>(R.id.event_type_spinner_options)
         val values = enumValues<EventType>()
         spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
@@ -165,21 +171,58 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null) : Fragment
                 }
             }
         }
-        view.button_add_event.setOnClickListener{
-            addEvent()
-//            Toast.makeText(context,"Event Saved", Toast.LENGTH_SHORT)
 
+        if(editEvent!=null){
+            add_event_name_edit.setText(editEvent.title)
+            add_event_date.setText(dateFormatter.format(editEvent.startTime.toLocalDate()))
+            add_event_time.setText(timeFormatter.format(editEvent.startTime.toLocalTime()))
+            add_event_end_date.setText(dateFormatter.format(editEvent.endTime.toLocalDate()))
+            add_event_time_end.setText(timeFormatter.format(editEvent.endTime.toLocalTime()))
+            textView7.visibility = View.GONE
+            add_event_repeat_num.visibility = View.GONE
+            spinner_repeat.visibility = View.GONE
+            add_event_notes.setText(editEvent.note)
+            spinner.setSelection(values.indexOf(editEvent.type))
+            editing = true
         }
-
-        return view
+        view.button_add_event.setOnClickListener{
+            if (editing&&editEvent!=null) updateEvent() else addEvent()
+        }
     }
 
-    fun dateDialogSet(editText:EditText?){
-        TODO("Put reusable code in")
-    }
+    private fun updateEvent() {
+        if(add_event_name_edit.text.isNullOrBlank()|| add_event_date.text.isEmpty() ||
+            add_event_time.text.isEmpty() || add_event_end_date.text.isEmpty() || add_event_time_end.text.isEmpty()){
+            Toast.makeText(context,"Please fill in all compulsory fields",Toast.LENGTH_SHORT).show()
+        }else{
+            val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
+            editEvent!!.title = add_event_name_edit.text.toString()
+            editEvent.startTime = LocalDateTime.parse("${add_event_date.text} ${add_event_time.text}",formatter)
+            editEvent.endTime = LocalDateTime.parse("${add_event_end_date.text} ${add_event_time_end.text}",formatter)
+            editEvent.note = add_event_notes.text.toString()
+            editEvent.eventId = "${editEvent.type.name}: ${editEvent.title}"
 
-    fun timeDialogSet(editText:EditText?){
-        TODO("Put reusable code in")
+
+            val data = mapOf(
+                "title" to editEvent.title,
+                "type" to editEvent.type,
+                "start_time" to editEvent.startTime.toTimeStamp(),
+                "end_time" to editEvent.endTime.toTimeStamp(),
+                "note" to editEvent.note,
+                "eventId" to editEvent.eventId)
+            var string = ""
+            DatabaseManager().getDatabase().collection("events").document(editEvent.eventRef)
+                .update(data).addOnSuccessListener {
+                    string = "${editEvent.title} updated"
+                }.addOnFailureListener{
+                    string = "Save error"
+                }
+            Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
+            if (activity is SubjectDetails){
+                (activity as SubjectDetails).updateSubEvents()
+            }
+            activity!!.onBackPressed()
+        }
     }
 
     private fun addEvent(){

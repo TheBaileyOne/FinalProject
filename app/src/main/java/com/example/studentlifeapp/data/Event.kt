@@ -6,15 +6,15 @@ import java.io.Serializable
 
 
 data class Event(
-    val title: String,
-    val type: EventType = EventType.EVENT,
-    val startTime: LocalDateTime,
-    val endTime: LocalDateTime = startTime,
-    val notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
-    val location: Location? = null,
-    val note: String? = null,
+    var title: String,
+    var type: EventType = EventType.EVENT,
+    var startTime: LocalDateTime,
+    var endTime: LocalDateTime = startTime,
+    var notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
+    var location: Location? = null,
+    var note: String? = null,
 //    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
-    val eventId: String = title,
+    var eventId: String = title,
     var eventRef:String = ""
 ): Serializable
 {

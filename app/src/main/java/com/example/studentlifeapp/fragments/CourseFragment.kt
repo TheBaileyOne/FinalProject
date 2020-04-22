@@ -18,6 +18,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.AcademicYear
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.tolocalDateTime
@@ -104,7 +105,10 @@ class CourseFragment : Fragment() {
                         summary = docChange.document.getString("summary")!!,
                         subjectStart = (docChange.document.get("subject_start")as Timestamp).tolocalDateTime(),
                         subjectEnd = (docChange.document.get("subject_end")as Timestamp).tolocalDateTime(),
-                        percentage = if (docChange.document.getDouble("percentage")!=null) docChange.document.getDouble("percentage")!! else 0.0
+                        percentage = if (docChange.document.getDouble("percentage")!=null) docChange.document.getDouble("percentage")!! else 0.0,
+                        credits = if(docChange.document.getDouble("credits")!=null) docChange.document.getDouble("credits")!!.toInt() else 20,
+                        academicYear = if(docChange.document.getString("academic_year")!=null) AcademicYear.valueOf(docChange.document.getString("academic_year")!!)
+                                        else AcademicYear.FIRST_YEAR
                     )
                     subject.setId(docChange.document.id)
                     when (docChange.type) {

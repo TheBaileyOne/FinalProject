@@ -12,15 +12,33 @@ import android.widget.Toast
 
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
+import com.example.studentlifeapp.activities.SubjectDetails
+import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import kotlinx.android.synthetic.main.fragment_event_details.*
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import java.lang.ClassCastException
 
 class EventDetailsFragment(val event: Event) : Fragment() {
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
     private val formatter2= DateTimeFormatter.ofPattern("EEE, dd MMM")
+    private lateinit var eventEditListener: EventEditListener
 
+    interface EventEditListener{
+        fun eventEditClicked(event:Event)
+    }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is EventEditListener){
+            eventEditListener = context
+        }else{
+            throw ClassCastException(
+                "$context must implement EventEditListener"
+            )
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -28,25 +46,52 @@ class EventDetailsFragment(val event: Event) : Fragment() {
         return inflater.inflate(R.layout.fragment_event_details, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         event_details_back.setOnClickListener {
             activity?.onBackPressed()
         }
-        event_details_title.text = getString(R.string.event_details_string, event.title)
-        event_details_type.text = getString(R.string.placeholder_string, event.type.name)
-        event_details_start.text = getString(R.string.time_and_date,formatter.format(event.startTime),formatter2.format(event.startTime))
-        event_details_end.text = getString(R.string.time_and_date,formatter.format(event.endTime),formatter2.format(event.endTime))
-        event_details_notes.text = getString(R.string.placeholder_string,event.note)
+        setValues()
 
 //        if (activity is MainActivity){
 //            activity.showBottomNav(true)
 //        }
 
         button_edit_event.setOnClickListener{
-            Toast.makeText(context, "Edit text pressed", Toast.LENGTH_SHORT).show()
+            eventEditListener.eventEditClicked(event)
+
+//            val fragment = AddEventFragment(LocalDateTime.now(), event)
+//            val fragmentManager = activity!!.supportFragmentManager
+//            val fragmentTransaction = fragmentManager.beginTransaction()
+//            val viewReplace = if (activity is SubjectDetails) R.id.subject_detail_fragment
+//                                    else R.id.view_pager_container
+//            fragmentTransaction.replace(viewReplace,fragment)
+//            fragmentTransac
+        }
+        button_delete_event.setOnClickListener{
+            val eventRef = event.eventRef
+            DatabaseManager().getDatabase().collection("events").document(eventRef).delete()
+                .addOnSuccessListener {
+                    if (activity is SubjectDetails){
+                        (activity as SubjectDetails).deleteSubEvent(eventRef)
+                    }
+                    activity!!.onBackPressed()
+                }
+
+
+//            Toast.makeText(context, "${event.title} deleted", Toast.LENGTH_SHORT).show()
+
         }
 
+    }
+
+    private fun setValues(){
+        event_details_title.text = getString(R.string.event_details_string, event.title)
+        event_details_type.text = getString(R.string.placeholder_string, event.type.name)
+        event_details_start.text = getString(R.string.time_and_date,formatter.format(event.startTime),formatter2.format(event.startTime))
+        event_details_end.text = getString(R.string.time_and_date,formatter.format(event.endTime),formatter2.format(event.endTime))
+        event_details_notes.text = getString(R.string.placeholder_string,event.note)
     }
 
 

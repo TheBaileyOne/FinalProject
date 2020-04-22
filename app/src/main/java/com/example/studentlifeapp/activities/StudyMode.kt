@@ -142,6 +142,7 @@ class StudyMode : AppCompatActivity() {
 
     private fun startTimer(){
         timerState = TimerState.RUNNING
+        val context = this
 
         timer = object:CountDownTimer(secondsRemaining*1000, 1000){
             override fun onFinish() = onTimerFinished()
@@ -149,6 +150,11 @@ class StudyMode : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining = millisUntilFinished/1000
                 updateCountdownUI()
+                val progress = (timerLengthSeconds - secondsRemaining).toInt()
+                if(progress % 30 == 0){
+                    NotificationUtil.recommendBreak(context)
+                    Log.d("TAG", "Break Notification")
+                }
             }
         }.start()
     }

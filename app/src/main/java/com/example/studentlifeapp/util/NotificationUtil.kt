@@ -90,6 +90,22 @@ class NotificationUtil {
 
         }
 
+        fun recommendBreak(context:Context){
+            val pauseIntent = Intent(context, TimerNotificationActionReceiver::class.java)
+            pauseIntent.action = AppConstants.ACTION_PAUSE
+            val pausePendingIntent = PendingIntent.getBroadcast(context,
+                0, pauseIntent,PendingIntent.FLAG_UPDATE_CURRENT)
+            val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
+            notificationBuilder.setContentTitle("Take a break!")
+                .setContentText("Take a five minute break, stretch, grab some water?!")
+                .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java))
+                .setOngoing(true)
+                .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
+            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, "Study Break", true)
+            notificationManager.notify(TIMER_ID,notificationBuilder.build())
+        }
+
         fun hideTimerNotification(context: Context){
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.cancel(TIMER_ID)

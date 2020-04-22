@@ -32,7 +32,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     SubjectsTabFragment.SubClickedListener, SubjectsTabFragment.SubAddClickedListener,
-    AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener{
+    AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener,
+    EventDetailsFragment.EventEditListener, AddEventFragment.OnEventSavedListener{
 //AddEventFragment.OnEventSavedListener
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
@@ -203,6 +204,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //        fragment.setOnSubjectSavedListener(this)
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("eventDetailsFrag").commit()
         showBottomNav(false)
+    }
+
+    override fun eventEditClicked(event: Event) {
+//        onBackPressed()
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = AddEventFragment(null, event)
+        fragment.setOnEventSavedListener(this)
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+    }
+
+    override fun onEventSaved(events: MutableList<Event>) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
 

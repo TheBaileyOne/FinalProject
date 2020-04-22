@@ -55,11 +55,6 @@ class CourseTabFragment : Fragment() {
                     updateTotal()
                 }
 
-
-//                TODO: get the 4th(3) value in the row
-//                TODO: add status listeners, if clicked, related subject in list, if not removed
-//                TODO: The list can be fixed size and just replace the value in it with 0 or percentage
-
             }
 
         })

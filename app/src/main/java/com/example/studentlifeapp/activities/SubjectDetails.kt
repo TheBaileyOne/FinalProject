@@ -73,14 +73,14 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
 }
 
 class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener, AddAssessmentFragment.OnAssessmentSavedListener,
-    Utils.EventDetailClickListener{
+    Utils.EventDetailClickListener, EventDetailsFragment.EventEditListener{
     //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: SubjectEventsAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
     private lateinit var subject: Subject
     private lateinit var subjectRef:String
-    private val events = mutableListOf<Event>()
+    private var events = mutableListOf<Event>()
     private val rows = mutableListOf<TableRow>()
     private var subjectPercentage = 0.0
     private lateinit var eventsListener: ListenerRegistration
@@ -115,6 +115,10 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         }
         recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
+
+//        if(subject.remainingWeight>0){
+//            getRemainingPercent()
+//        }
 
         //add event button clicked
         subject_info_view_button_addEvent.setOnClickListener{
@@ -169,7 +173,12 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             fragmentTransaction.commit()
 //            val assessment = Assessment("Test",70.0,100.0,50.0, EventType.EXAM)
 //            addRow(assessment)
+//            if(subject.remainingWeight<100){
+//                getRemainingPercent()
+//            }
         }
+
+
     }
 
     private fun addRow(assessment: Assessment){
@@ -201,6 +210,45 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         row.addView(percentageText)
         table_subject_grades.addView(row)
         rows.add(row)
+    }
+
+    private fun getRemainingPercent(){
+        var required:Double = 0.0
+        var classification = ""
+        var string = R.string.remaining_marks
+        remaining_marks_text.visibility = View.VISIBLE
+        val weight = (subject.remainingWeight.toDouble()/100)
+        Log.d("Calculation","${(70-subject.percentage/weight)}")
+        when {
+            (70-subject.percentage)/weight<100 -> {
+                required = (70-subject.percentage)/weight
+                classification = "First"
+            }
+            (60-subject.percentage)/weight<100 -> {
+                required = (60-subject.percentage)/weight
+                classification = "2:1"
+            }
+            (50-subject.percentage)/weight<100 -> {
+                required = (50-subject.percentage)/weight
+                classification = "2:2"
+            }
+            (40-subject.percentage)/weight<100 -> {
+                required = (40-subject.percentage)/weight
+                classification = "Pass"
+            }
+            else -> {
+                string = R.string.string_fail
+            }
+        }
+        if (string == R.string.remaining_marks){
+            remaining_marks_text.text = getString(string, classification, required)
+
+        }else{
+            remaining_marks_text.text = getString(string)
+        }
+
+
+
     }
 
     private fun tableTitleDisplay(visible: Boolean){
@@ -310,15 +358,78 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                     .addOnFailureListener{e->
                                         Log.w(TAG,"Error Adding Document")
                                     }
+                                if(subject.remainingWeight>0){
+                                    getRemainingPercent()
+                                }
                             }
                         }
                         .addOnFailureListener{e ->
                             Log.w(TAG, "get collection fail, Error: $e")
                         }
                 }
+
             }
 
     }
+
+    fun updateSubEvents(){
+        val dbEvents = mutableListOf<Event>()
+        DatabaseManager().getDatabase().collection("subjects").document(subjectRef).collection("eventRef").get()
+            .addOnSuccessListener {eventRefs ->
+                Log.d(TAG, "updateSubEvents listener success")
+                for (refs in eventRefs){
+                    val eventId = refs.getString("ref")!!
+                    DatabaseManager().getDatabase().collection("events").document(eventId).get()
+                        .addOnSuccessListener {document ->
+                            if (document.exists()){
+                                val addEvent = Event(
+                                    title = document.getString("title")!!,
+                                    type = EventType.valueOf(document.getString("type")!!),
+                                    startTime = (document.get("start_time") as Timestamp).tolocalDateTime(),
+                                    endTime = (document.get("end_time") as Timestamp).tolocalDateTime(),
+                                    note = document.getString("note"),
+                                    eventId = document.getString("eventId")!!)
+                                dbEvents.add(addEvent)
+                                addEvent.setRef(document.id)
+                                val eventsGroup = formatEvents(dbEvents)
+                                viewAdapter.refreshList(eventsGroup)
+                            }else{
+                                DatabaseManager().getDatabase().collection("subjects").document(subjectRef)
+                                    .collection("eventRef").document(document.id).delete()
+                            }
+                        }
+                        .addOnFailureListener{e->
+                            Log.d(TAG, "Error getting event: $e")
+                        }
+                }
+                val eventsGroup = formatEvents(dbEvents)
+                viewAdapter.refreshList(eventsGroup)
+                dbEvents.clear()
+
+            }
+            .addOnFailureListener{e ->
+                Log.d(TAG, "Error getting eventRefs: $e")
+            }
+
+    }
+
+    fun deleteSubEvent(eventRef:String){
+        DatabaseManager().getDatabase().collection("subjects").document(subjectRef)
+            .collection("eventRef").whereEqualTo("ref", eventRef).get()
+            .addOnSuccessListener {documents ->
+                for (doc in documents)
+                    DatabaseManager().getDatabase().collection("subjects").document(subjectRef)
+                        .collection("eventRef").document(doc.id).delete()
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Subject Event Deleted")
+                            updateSubEvents()
+                        }
+            }
+//        TODO: Fix this method, and make sure that the timetable and dashboard update events effectively
+
+    }
+
+
 
     private fun subDbEventsListener():ListenerRegistration{
         val db = DatabaseManager()
@@ -335,18 +446,26 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                     val eventId = docChange.document.getString("ref")!!
                     db.getDatabase().collection("events").document(eventId).get()
                         .addOnSuccessListener {event ->
-                            Log.d(TAG, "Event Retrieved")
-                            if(event!=null){
-                                dbEvents.add(Event(
-                                title = event.getString("title")!!,
-                                type = EventType.valueOf(event.getString("type")!!),
-                                startTime = (event.get("start_time") as Timestamp).tolocalDateTime(),
-                                endTime = (event.get("end_time") as Timestamp).tolocalDateTime(),
-                                note = event.getString("note"),
-                                eventId = event.getString("eventId")!!))
-                                }
+
+                            Log.d(TAG, "Event Retrieved updateEvent")
+                            if(event.exists()){
+//                            if(event!=null){
+                                val addEvent = Event(
+                                    title = event.getString("title")!!,
+                                    type = EventType.valueOf(event.getString("type")!!),
+                                    startTime = (event.get("start_time") as Timestamp).tolocalDateTime(),
+                                    endTime = (event.get("end_time") as Timestamp).tolocalDateTime(),
+                                    note = event.getString("note"),
+                                    eventId = event.getString("eventId")!!)
+                                dbEvents.add(addEvent)
+                                addEvent.setRef(event.id)
+                            }else{
+                                db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
+                                    .document(event.id).delete()
+                            }
                             val eventsGroup = formatEvents(dbEvents)
                             viewAdapter.refreshList(eventsGroup)
+                            events = dbEvents.toMutableList()
                         }
                         .addOnFailureListener{e ->
                             Log.w(TAG, "get collection fail, Error: $e")
@@ -360,6 +479,14 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = EventDetailsFragment(event)
         fragmentTransaction.replace(R.id.subject_detail_fragment, fragment).addToBackStack("eventDetailsFrag").commit()
+    }
+
+    override fun eventEditClicked(event: Event) {
+        val fragmentManager = this.supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = AddEventFragment(null, event)
+        fragment.setOnEventSavedListener(this)
+        fragmentTransaction.replace(R.id.subject_detail_fragment, fragment).addToBackStack(null).commit()
     }
 
 

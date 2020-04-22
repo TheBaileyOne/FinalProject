@@ -10,14 +10,15 @@ import java.lang.Exception
 
 class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),
               val subjectStart: LocalDateTime = LocalDateTime.now(), val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
-              val credits:Int = 20, val assessments: MutableList<String> = mutableListOf(), var percentage:Double = 0.0,
-              var remainingWeight:Int = 100){
+              var credits:Int = 20, val assessments: MutableList<String> = mutableListOf(), var percentage:Double = 0.0,
+              var remainingWeight:Int = 100, var academicYear: AcademicYear = AcademicYear.FIRST_YEAR){
     private var id: String = ""
     fun setId(id:String){
         this.id = id
     }
 
     fun getId() = id
+
     fun addEvents(newEvents: MutableList<Event>){
         Log.d("Subject.addEvents" ,"events: $newEvents")
         val db = DatabaseManager()
@@ -72,6 +73,11 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
 
 enum class Classification{
     FIRST, UPPER_SECOND, LOWER_SECOND, PASS, FAIL, INVALID
+}
+
+enum class AcademicYear{
+    FIRST_YEAR,SECOND_YEAR,THIRD_YEAR,FOURTH_YEAR,FIFTH_YEAR
+//    TODO: Implement years and credits for subjects, edit the database. Update table to show academiyear
 }
 
 data class Assessment(

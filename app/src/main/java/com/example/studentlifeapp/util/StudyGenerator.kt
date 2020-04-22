@@ -12,13 +12,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import kotlin.math.ceil
 
-//class StudyGenerator(val subject: Subject, private val name:String = subject.name, private val startDate: LocalDateTime = subject.subjectStart,
-//                     private val endDate: LocalDateTime = subject.subjectEnd, val events:List<Event>,
-//                     private val studyLength:Long = 1L, private val dayInterval:Long = 2L,
-//                     private val lunchTime: LocalTime = LocalTime.of(13,0),
-//                     private val timeBeg:LocalTime = LocalTime.of(9,0),
-//                     private val timeEnd:LocalTime = LocalTime.of(19,0)
-//){
+
 class StudyGenerator(private val name:String, private val startDate: LocalDateTime = LocalDateTime.now(),
                      private val endDate: LocalDate, val events:List<Event>,
                      private var studyLength:Long = 1L, private val dayInterval:Long = 1L,
@@ -40,7 +34,7 @@ class StudyGenerator(private val name:String, private val startDate: LocalDateTi
         generateStudy()
         return studyList
     }
-//TODO: Make it so that approx 14 hours of study are done a week, try 2 hours a day, or 3 if weekend disabled
+
     private fun generateStudy(){
         var day = LocalDate.now()
         while (day<=endDate){
@@ -60,11 +54,6 @@ class StudyGenerator(private val name:String, private val startDate: LocalDateTi
                     do {
                         Log.d("Today Events", "$day: ${todayEvents.size}")
                         val firstOverlap = checkOverlapEvents(todayEvents, time)
-                        //                    val firstOverlap = todayEvents.find{checkOverlap(time,it.startTime.toLocalTime(),it.endTime.toLocalTime())}
-                        //                    val firstOverlap = todayEvents.find{(time.isBefore(it.endTime.toLocalTime())
-                        //                            && (time.isAfter(it.startTime.toLocalTime())) || time == it.startTime.toLocalTime())
-                        //                            || (time.plusHours(studyLength).isBefore(it.endTime.toLocalTime())
-                        //                            && time.plusHours(studyLength).isAfter(it.startTime.toLocalTime()))}
                         when {
                             firstOverlap != null -> {
                                 time = firstOverlap.endTime.toLocalTime()
@@ -93,8 +82,6 @@ class StudyGenerator(private val name:String, private val startDate: LocalDateTi
                                         LocalDateTime.of(day, time.plusHours(eventLength))
                                     )
                                 )
-                                //TODO: variable studyLength seems to be unnecessary
-                                //                            freeTime = true
                                 dayTime -= eventLength
                             }
                         }
