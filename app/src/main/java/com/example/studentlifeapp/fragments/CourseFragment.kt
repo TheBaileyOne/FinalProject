@@ -53,8 +53,6 @@ class CoursePagerAdapter(fragment: Fragment):FragmentStateAdapter(fragment){
 class CourseFragment : Fragment() {
     private lateinit var courseAdapter: CoursePagerAdapter
     private lateinit var viewPager: ViewPager2
-    private lateinit var courseTabFragment:CourseTabFragment
-    private lateinit var subjectsTabFragment :SubjectsTabFragment
     private lateinit var listener:ListenerRegistration
     private var subjects = mutableListOf<Subject>()
     private lateinit var viewModel: SubjectsViewModel
@@ -62,7 +60,6 @@ class CourseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_course, container, false)
-//        viewModel.setSubjects(subjects)
         viewModel = activity?.run {
             ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
         } ?: throw Exception("Invalid Activity")

@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/event_expand"
+    android:id="@+id/transaction_expand"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.EventExpandFragment"
@@ -10,9 +10,10 @@
     android:clickable="true"
     android:focusable="true">
     <FrameLayout
-        android:id="@+id/assessment_expand_back"
+        android:id="@+id/transaction_expand_back"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:clickable="true"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,7 +42,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/noto_sans"
-                android:text="Add Assessment"
+                android:text="Add Transaction"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -53,66 +54,18 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/add_transaction_header"
                 app:layout_constraintStart_toStartOf="parent"
-                android:hint="Assessment Name"
+                android:hint="Transaction Name"
                 android:id="@+id/add_transaction_name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/add_transactio_name_edit"
+                    android:id="@+id/add_transaction_name_edit"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textView22"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Weighting"
-                style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                app:layout_constraintBottom_toBottomOf="@+id/seekbar_assessment_weighting"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/seekbar_assessment_weighting" />
 
-            <Button
-                android:id="@+id/button_save_assessment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="Save Assessment"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seekbar_assessment_weighting" />
 
-<!--            <EditText-->
-<!--                android:id="@+id/add_assessment_max_mark"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:ems="10"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name" />-->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/add_assessment_max_mark"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:hint="Max Mark"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/assessment_dash"
-                app:layout_constraintTop_toBottomOf="@+id/add_transaction_name">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/add_assessment_max_mark_edit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
-            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_transaction_date"
@@ -120,63 +73,117 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="Mark"
-                app:layout_constraintEnd_toStartOf="@+id/assessment_dash"
+                android:hint="Date"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_transaction_name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/add_transaction_date_edit"
+                    android:focusable="false"
+                    android:clickable="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"/>
+                    android:inputType="date" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
-            <SeekBar
-                android:id="@+id/seekbar_assessment_weighting"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/add_transaction_amount"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="17dp"
-                android:layout_marginEnd="4dp"
-                android:max="100"
-                app:layout_constraintEnd_toStartOf="@+id/add_assessment_weighting_text"
-                app:layout_constraintStart_toEndOf="@+id/textView22"
-                app:layout_constraintTop_toBottomOf="@+id/add_transaction_date" />
-
-            <TextView
-                android:id="@+id/add_assessment_max_weight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="@string/max_weight_string"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/seekbar_assessment_weighting"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/seekbar_assessment_weighting" />
-
-            <TextView
-                android:id="@+id/add_assessment_weighting_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/add_assessment_max_weight"
-                app:layout_constraintEnd_toStartOf="@+id/add_assessment_max_weight"
-                app:layout_constraintTop_toTopOf="@+id/add_assessment_max_weight" />
-
-
-
-            <TextView
-                android:id="@+id/assessment_dash"
-                style="@style/TextAppearance.MaterialComponents.Headline4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="/"
-                app:layout_constraintBottom_toBottomOf="@+id/add_transaction_date"
+                android:layout_margin="8dp"
+                android:hint="Amount"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/add_transaction_date" />
+                app:layout_constraintTop_toBottomOf="@+id/transaction_type_group">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/add_transaction_amount_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <RadioGroup
+                android:id="@+id/transaction_type_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/add_transaction_date"
+                android:layout_margin="8dp">
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/radio_expense"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:text="Expense"
+                    />
+
+                <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/radio_income"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Income" />
+            </RadioGroup>
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@string/repeat_every"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/spinner_transaction_repeat"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/spinner_transaction_repeat" />
+
+            <EditText
+                android:id="@+id/add_transaction_repeat_num"
+                android:layout_width="54dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="8dp"
+                android:ems="10"
+                android:hint="e.g.3"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="@+id/spinner_transaction_repeat"
+                app:layout_constraintStart_toEndOf="@+id/textView7"
+                app:layout_constraintTop_toTopOf="@+id/spinner_transaction_repeat"
+                app:layout_constraintVertical_bias="0.75" />
+
+            <FrameLayout
+                android:id="@+id/spinner_transaction_repeat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="18dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/spinner_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/add_transaction_repeat_num"
+                app:layout_constraintTop_toBottomOf="@id/add_transaction_amount">
+
+                <Spinner
+                    android:id="@+id/spinner_transaction_repeat_options"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp" />
+
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/button_add_transaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Transaction"
+                android:layout_margin="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/spinner_transaction_repeat" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

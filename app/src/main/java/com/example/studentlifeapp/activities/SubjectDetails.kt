@@ -171,11 +171,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
-//            val assessment = Assessment("Test",70.0,100.0,50.0, EventType.EXAM)
-//            addRow(assessment)
-//            if(subject.remainingWeight<100){
-//                getRemainingPercent()
-//            }
         }
 
 
@@ -192,9 +187,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         weightingText.text = assessment.weighting.toString()
         weightingText.setPadding(4,4,4,4)
         weightingText.textAlignment = View.TEXT_ALIGNMENT_CENTER
-//        val maxMarkText = TextView(this)
-//        maxMarkText.text = assessment.maxMark.toString()
-//        maxMarkText.setPadding(4,4,4,4)
         val markText = TextView(this)
         markText.text = getString(R.string.mark_out_of,assessment.mark,assessment.maxMark)
         markText.setPadding(4,4,4,4)
@@ -359,6 +351,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                     }
                                 if(subject.remainingWeight>0){
                                     getRemainingPercent()
+                                }else{
+                                    remaining_marks_text.visibility = View.GONE
                                 }
                             }
                         }

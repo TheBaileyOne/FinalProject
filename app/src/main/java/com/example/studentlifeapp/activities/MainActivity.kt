@@ -33,8 +33,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     SubjectsTabFragment.SubClickedListener, SubjectsTabFragment.SubAddClickedListener,
     AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener,
-    EventDetailsFragment.EventEditListener, AddEventFragment.OnEventSavedListener{
-//AddEventFragment.OnEventSavedListener
+    EventDetailsFragment.EventEditListener, AddEventFragment.OnEventSavedListener,
+    MoneyTabFragment.TransactionAddClickListener {
+
+
     private lateinit var viewPager: ViewPager
     private lateinit var bottomNavigationView: BottomNavigationView
     private lateinit var mainPagerAdapter:MainPagerAdapter
@@ -46,6 +48,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         if(!navShowing)showBottomNav(true)
 
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +62,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         mainPagerAdapter = MainPagerAdapter(supportFragmentManager)
 
         //set items to be displayed
-        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.COURSE, MainScreen.STUDYMODE))
+        mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.COURSE,
+            MainScreen.STUDYMODE,MainScreen.MONEYMANAGER))
 //        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
 
         //show default screen
@@ -93,6 +97,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         when(item.itemId){
             R.id.option_logout-> {
                 FirebaseAuth.getInstance().signOut()
+
                 viewModelStore.clear()
                 Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this,Login::class.java)
@@ -213,10 +218,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val fragment = AddEventFragment(null, event)
         fragment.setOnEventSavedListener(this)
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+        showBottomNav(false)
     }
 
     override fun onEventSaved(events: MutableList<Event>) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun transactionAddClick() {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = AddTransactionFragment()
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+        showBottomNav(false)
     }
 
 

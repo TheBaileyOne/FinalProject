@@ -59,13 +59,13 @@ class AddAssessmentFragment(private val remainingWeight: Int = 100) : Fragment()
         })
 
         button_save_assessment.setOnClickListener {
-            if(add_assessment_mark_edit.text.isNullOrBlank() || add_assessment_name_edit.text.isNullOrBlank() || add_assessment_max_mark_edit.text.isNullOrBlank()){
+            if(add_transaction_date_edit.text.isNullOrBlank() || add_transactio_name_edit.text.isNullOrBlank() || add_assessment_max_mark_edit.text.isNullOrBlank()){
                 Toast.makeText(context, "Fill in Empty fields", Toast.LENGTH_SHORT).show()
             }
             else {
-                val name = add_assessment_name_edit.text.toString()
+                val name = add_transactio_name_edit.text.toString()
                 val maxMark = add_assessment_max_mark_edit.text.toString().toDouble()
-                val mark = add_assessment_mark_edit.text.toString().toDouble()
+                val mark = add_transaction_date_edit.text.toString().toDouble()
                 val weight = setWeight.toDouble()
                 val assessment = Assessment(name, mark, maxMark, weight, EventType.EXAM)
                 callback.onAssessmentSaved(assessment)

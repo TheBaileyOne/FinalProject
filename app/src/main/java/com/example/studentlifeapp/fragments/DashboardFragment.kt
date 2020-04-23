@@ -117,6 +117,7 @@ class DashboardFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        events.clear()
         upcomingEvents.clear()
         reminderEvents.clear()
         todayEvents.clear()
@@ -227,7 +228,7 @@ class DashboardFragment : Fragment() {
                 }
             }
 
-            eventViewModel.setEvents(events)
+            eventViewModel.setEvents(events.toMutableList())
             arrangeEventLists(eventViewModel.getEvents()!!)
         }
 

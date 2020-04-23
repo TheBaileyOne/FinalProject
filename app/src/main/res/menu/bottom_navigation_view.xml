@@ -19,4 +19,8 @@
         android:id="@+id/bottom_navigation_item_studyMode"
         android:icon="@drawable/ic_local_library"
         android:title="@string/activity_main_bottom_screen_studyMode"/>
+    <item
+        android:id="@+id/bottom_navigation_item_moneyManager"
+        android:icon="@drawable/ic_money"
+        android:title="@string/activity_main_bottom_screen_studyMode"/>
 </menu>

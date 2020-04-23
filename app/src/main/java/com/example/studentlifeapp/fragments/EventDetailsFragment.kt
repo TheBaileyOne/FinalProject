@@ -59,15 +59,9 @@ class EventDetailsFragment(val event: Event) : Fragment() {
 //        }
 
         button_edit_event.setOnClickListener{
+            activity?.onBackPressed()
             eventEditListener.eventEditClicked(event)
 
-//            val fragment = AddEventFragment(LocalDateTime.now(), event)
-//            val fragmentManager = activity!!.supportFragmentManager
-//            val fragmentTransaction = fragmentManager.beginTransaction()
-//            val viewReplace = if (activity is SubjectDetails) R.id.subject_detail_fragment
-//                                    else R.id.view_pager_container
-//            fragmentTransaction.replace(viewReplace,fragment)
-//            fragmentTransac
         }
         button_delete_event.setOnClickListener{
             val eventRef = event.eventRef
@@ -76,7 +70,7 @@ class EventDetailsFragment(val event: Event) : Fragment() {
                     if (activity is SubjectDetails){
                         (activity as SubjectDetails).deleteSubEvent(eventRef)
                     }
-                    activity!!.onBackPressed()
+                    activity?.onBackPressed()
                 }
 
 

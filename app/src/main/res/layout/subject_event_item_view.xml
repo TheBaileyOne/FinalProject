@@ -1,64 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:id="@+id/event_view"
-    android:layout_marginHorizontal="16dp"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <ImageView
             android:id="@+id/subject_event_view_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/subject_event_view_title"
-            android:text="Event Title"
-            android:textSize="16sp"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:textStyle="bold"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_toRightOf="@+id/subject_event_view_icon"
-            android:layout_marginLeft="15dp"/>
+            android:text="Event Title"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/subject_event_view_day"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/subject_event_view_icon"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/subject_event_view_timeList"
+            style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/subject_event_view_title"
-            android:layout_marginLeft="15dp"
-            style="@style/TextAppearance.MaterialComponents.Caption"
-            android:layout_marginTop="3dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_toRightOf="@+id/subject_event_view_icon"
             android:text="@string/placeholder_string"
-            android:textSize="13sp"/>
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@+id/subject_event_view_day"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/subject_event_view_icon"
+            app:layout_constraintTop_toBottomOf="@+id/subject_event_view_title" />
 
         <TextView
             android:id="@+id/subject_event_view_day"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginTop="3dp"
-            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
             android:gravity="center"
             android:textSize="14sp"
-            tools:text="@string/placeholder_string"
-            android:layout_alignParentRight="true"
-            />
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/placeholder_string" />
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-
-</FrameLayout>
+</com.google.android.material.card.MaterialCardView>

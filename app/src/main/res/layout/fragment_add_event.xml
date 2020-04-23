@@ -162,7 +162,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="*Repeat every: "
+        android:text="@string/repeat_every"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@+id/spinner_repeat"
         app:layout_constraintStart_toStartOf="parent"
