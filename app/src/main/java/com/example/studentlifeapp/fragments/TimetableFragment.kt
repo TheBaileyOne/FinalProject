@@ -3,6 +3,7 @@ package com.example.studentlifeapp.fragments
  import android.content.ContentValues
 import android.content.ContentValues.TAG
  import android.content.Context
+ import android.graphics.PorterDuff
  import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -86,14 +87,46 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
         fun bind(event: Event, clickListener: (Event) -> Unit) {
 
             event_view_title.text = event.title
-            event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
-            if (event.location?.basicDisplay() != null){
-                event_view_location.text = event.location?.basicDisplay()
-                event_view_location_icon.visibility = View.VISIBLE
-            }else{
-                event_view_location.text = ""
-                event_view_location_icon.visibility = View.INVISIBLE
+
+            when(event.type){
+                EventType.STUDY ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_study)
+                }
+                EventType.LECTURE ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_lecture)
+                }
+                EventType.EXAM ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_exam)
+                }
+                EventType.EVENT ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_event)
+                }
+                EventType.JOBSHIFT ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_work)
+                }
+                EventType.CLASS->{
+                    event_view_icon.setImageResource(R.drawable.icons8_tutorial)
+                }
+                EventType.COURSEWORK->{
+                    event_view_icon.setImageResource(R.drawable.icons8_coursework)
+                }
+                EventType.REMINDER->{
+                    event_view_icon.setImageResource(R.drawable.icons8_reminder)
+                }
+                EventType.SOCIETY->{
+                    event_view_icon.setImageResource(R.drawable.icons8_society)
+                }
             }
+
+            event_view_icon.setColorFilter(itemView.context.getColorCompat(event.colour),PorterDuff.Mode.SRC_IN)
+
+//            if (event.location?.basicDisplay() != null){
+//                event_view_location.text = event.location?.basicDisplay()
+//                event_view_location_icon.visibility = View.VISIBLE
+//            }else{
+//                event_view_location.text = ""
+//                event_view_location_icon.visibility = View.INVISIBLE
+//            }
 
             event_view_time.text = when (event.type) {
                 EventType.REMINDER -> formatter.format(event.startTime)

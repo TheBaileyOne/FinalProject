@@ -1,6 +1,7 @@
 package com.example.studentlifeapp.activities
 
 import android.content.ContentValues.TAG
+import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -61,7 +62,38 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
                 "${timeFormatter.format(event.second[0].startTime)} - ${timeFormatter.format(event.second[0].endTime)}"
 
             subject_event_view_day.text = formatter.format(event.second[0].startTime.dayOfWeek)
-            subject_event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.second[0].colour))
+            when(event.second[0].type){
+                EventType.STUDY ->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_study)
+                }
+                EventType.LECTURE ->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_lecture)
+                }
+                EventType.EXAM ->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_exam)
+                }
+                EventType.EVENT ->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_event)
+                }
+                EventType.JOBSHIFT ->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_work)
+                }
+                EventType.CLASS->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_tutorial)
+                }
+                EventType.COURSEWORK->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_coursework)
+                }
+                EventType.REMINDER->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_reminder)
+                }
+                EventType.SOCIETY->{
+                    subject_event_view_icon.setImageResource(R.drawable.icons8_society)
+                }
+            }
+
+            subject_event_view_icon.setColorFilter(itemView.context.getColorCompat(event.second[0].colour),
+                PorterDuff.Mode.SRC_IN)
 
         }
     }

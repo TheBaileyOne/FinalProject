@@ -5,6 +5,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -15,6 +16,7 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.TimerExpiredReceiver
 import com.example.studentlifeapp.util.NotificationUtil
 import com.example.studentlifeapp.util.PrefUtil
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 import kotlinx.android.synthetic.main.activity_study_mode.*
 import kotlinx.android.synthetic.main.content_study_mode.*
@@ -186,21 +188,31 @@ class StudyMode : AppCompatActivity() {
     private fun updateButtons(){
         when (timerState){
             TimerState.RUNNING -> {
-                fab_start.isEnabled =false
-                fab_pause.isEnabled = true
-                fab_stop.isEnabled = true
+                toggleFabEnabled(fab_start,false)
+                toggleFabEnabled(fab_pause,true)
+                toggleFabEnabled(fab_stop,true)
             }
             TimerState.STOPPED -> {
-                fab_start.isEnabled =true
-                fab_pause.isEnabled = false
-                fab_stop.isEnabled = false
+                toggleFabEnabled(fab_start,true)
+                toggleFabEnabled(fab_pause,false)
+                toggleFabEnabled(fab_stop,false)
             }
             TimerState.PAUSED -> {
-                fab_start.isEnabled =true
-                fab_pause.isEnabled = false
-                fab_stop.isEnabled = true
+                toggleFabEnabled(fab_start,true)
+                toggleFabEnabled(fab_pause,false)
+                toggleFabEnabled(fab_stop,true)
             }
         }
+    }
+
+    private fun toggleFabEnabled(fab: FloatingActionButton, enabled:Boolean){
+        fab.isEnabled = enabled
+        if(enabled){
+            fab.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.colorAccent, null))
+        }else {
+            fab.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.secondaryDarkColor,null))
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

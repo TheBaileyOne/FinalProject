@@ -2,6 +2,7 @@ package com.example.studentlifeapp.fragments
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.net.sip.SipSession
 import android.os.Bundle
@@ -61,8 +62,40 @@ class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf()
         }
         fun bind(event:Event){
             event_view_title.text = event.title
-            event_view_icon.setBackgroundColor(itemView.context.getColorCompat(event.colour))
-            event_view_location_icon.visibility = View.GONE
+            when(event.type){
+                EventType.STUDY ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_study)
+                }
+                EventType.LECTURE ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_lecture)
+                }
+                EventType.EXAM ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_exam)
+                }
+                EventType.EVENT ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_event)
+                }
+                EventType.JOBSHIFT ->{
+                    event_view_icon.setImageResource(R.drawable.icons8_work)
+                }
+                EventType.CLASS->{
+                    event_view_icon.setImageResource(R.drawable.icons8_tutorial)
+                }
+                EventType.COURSEWORK->{
+                    event_view_icon.setImageResource(R.drawable.icons8_coursework)
+                }
+                EventType.REMINDER->{
+                    event_view_icon.setImageResource(R.drawable.icons8_reminder)
+                }
+                EventType.SOCIETY->{
+                    event_view_icon.setImageResource(R.drawable.icons8_society)
+                }
+            }
+
+            event_view_icon.setColorFilter(itemView.context.getColorCompat(event.colour),
+                PorterDuff.Mode.SRC_IN)
+
+//            event_view_location_icon.visibility = View.GONE
             event_view_location.text = formatter3.format(event.startTime)
             event_view_time.text = "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
         }

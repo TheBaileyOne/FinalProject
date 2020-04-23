@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">StudentLifeApp</string>
     <string name="activity_main_bottom_screen_dashboard">Dashboard</string>
-    <string name="activity_main_bottom_screen_timeTable">Time Table</string>
+    <string name="activity_main_bottom_screen_timeTable">Timetable</string>
     <string name="activity_main_bottom_screen_subjects">Subjects</string>
     <string name="activity_main_bottom_screen_course">Course</string>
     <string name="activity_main_bottom_screen_studyMode">Study Mode</string>
@@ -42,4 +42,5 @@
     <string name="money_manager">Money Manager</string>
     <string name="money_holder">£%1$.2f</string>
     <string name="repeat_every">*Repeat every:</string>
+    <string name="budgeting">Budgeting</string>
 </resources>

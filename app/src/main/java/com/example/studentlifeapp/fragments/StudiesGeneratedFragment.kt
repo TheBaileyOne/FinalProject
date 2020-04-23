@@ -73,13 +73,13 @@ class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adap
             itemView.isActivated = isActivated
             event_view_title.text = study.title
             event_view_icon.visibility = View.INVISIBLE
-            if (study.location?.basicDisplay() != null){
-                event_view_location.text = study.location?.basicDisplay()
-                event_view_location_icon.visibility = View.VISIBLE
-            }else{
-                event_view_location.text = ""
-                event_view_location_icon.visibility = View.INVISIBLE
-            }
+//            if (study.location?.basicDisplay() != null){
+//                event_view_location.text = study.location?.basicDisplay()
+//                event_view_location_icon.visibility = View.VISIBLE
+//            }else{
+//                event_view_location.text = ""
+//                event_view_location_icon.visibility = View.INVISIBLE
+//            }
 
             if (isActivated && newStudies.contains(study)){
 //                newStudies.remove(study)

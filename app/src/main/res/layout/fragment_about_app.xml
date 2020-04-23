@@ -43,6 +43,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:text="&#8226; Icons by Icons8:"
+        android:textStyle="italic" />
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:text="https://icons8.com"
+        android:textColorLink="@color/secondaryDarkColor" />
+
+    <TextView
+        style="@style/TextAppearance.MaterialComponents.Body1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:text="&#8226; MaterialProgressBar, Hai Zhang:"
         android:textStyle="italic" />
 
@@ -90,6 +108,7 @@
         android:clickable="true"
         android:text="https://github.com/JakeWharton/ThreeTenABP"
         android:textColorLink="@color/secondaryDarkColor" />
+
 
 
 </LinearLayout>

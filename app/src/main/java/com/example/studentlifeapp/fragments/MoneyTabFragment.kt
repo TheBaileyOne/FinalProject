@@ -43,6 +43,8 @@ import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.w3c.dom.Text
 import java.lang.ClassCastException
+import kotlin.math.abs
+import kotlin.math.floor
 
 
 class TransactionAdapter(private var transactions: MutableList<Transaction> = mutableListOf()):
@@ -81,7 +83,7 @@ class TransactionAdapter(private var transactions: MutableList<Transaction> = mu
 
                 }
             }
-            val formatter = DateTimeFormatter.ofPattern("dd\nMMM\nYYYY")
+            val formatter = DateTimeFormatter.ofPattern("dd\nMMM")
 
             val moneyString =transaction.amount.toString()
             event_view_title.text = moneyString
@@ -140,6 +142,7 @@ class MoneyTabFragment : Fragment() {
         DatabaseManager().getDatabase().get().addOnSuccessListener {document->
             if (document.getDouble("current_balance") != null){
                 updateBalance(document.getDouble("current_balance")!!)
+                calculateWeekly()
             }
         }
         return view
@@ -202,9 +205,8 @@ class MoneyTabFragment : Fragment() {
         money_info.setOnClickListener{
             val builder = AlertDialog.Builder(context)
             builder.setTitle("Money Manager Info")
-                .setMessage("Weekly budget is calculated based on our monthly income and expense.\n" +
-                        "\nThe weekly budget is a guideline of roughly how much you can afford to spend each week on things outside of bills. " +
-                        "\nFor example things like groceries, society activities, socialising\n" +
+                .setMessage("Weekly budget is calculated based on your monthly income and expense. It does not take into account income after a month.\n" +
+                        "\nThe weekly budget is a guideline of roughly how much you can afford to spend each week on things outside of bills. \n" +
                         "\nThe amount here is just a guideline and money spending decisions should be carefully considered yourself")
                 .setIcon(R.drawable.ic_info)
                 .setPositiveButton("OK"){dialog,_->
@@ -238,6 +240,7 @@ class MoneyTabFragment : Fragment() {
         monthlyMoney *= 0.95 //slightlty less to make it seem alow for error
         weeklyBudget = if (monthlyMoney>0)monthlyMoney/4.4
                         else 0.0
+        weeklyBudget = 5*(floor(abs(weeklyBudget/5)))
         money_tab_weekly.text = getString(R.string.money_holder, weeklyBudget.toFloat())
     }
 
@@ -335,6 +338,7 @@ class MoneyTabFragment : Fragment() {
                     }
                 }
                 viewModel.setTransactions(transactions.toMutableList())
+                calculateWeekly()
             }
     }
 
