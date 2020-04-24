@@ -9,7 +9,7 @@ import java.security.AccessControlContext
 
 class PrefUtil{
     companion object{
-        private const val TIMER_LENGTH_ID = "com.example.timer.timer_length"
+        private const val TIMER_LENGTH_ID = "com.example.studentlifeapp.timer_length"
         //length in minutes
         fun getTimerLength(context: Context):Int{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -22,7 +22,7 @@ class PrefUtil{
             editor.apply()
         }
 
-        private const val PREVIOUS_TIMER_LENGTH_SECONDS_ID = "com.example.timer.previous_timer_length"
+        private const val PREVIOUS_TIMER_LENGTH_SECONDS_ID = "com.example.studentlifeapp.previous_timer_length"
 
 
         fun getPreviousTimerLengthSeconds(context:Context):Long{
@@ -36,7 +36,7 @@ class PrefUtil{
             editor.apply()
         }
 
-        private const val TIMER_STATE_ID = "com.example.timer.timer_state"
+        private const val TIMER_STATE_ID = "com.example.studentlifeapp.timer_state"
 
         fun getTimerState(context: Context): StudyMode.TimerState{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -51,7 +51,7 @@ class PrefUtil{
             editor.apply()
         }
 
-        private const val SECONDS_REMAINING_ID = "com.example.timer.seconds_remaining"
+        private const val SECONDS_REMAINING_ID = "com.example.studentlifeapp.seconds_remaining"
 
 
         fun getSecondsRemaining(context:Context):Long{
@@ -65,7 +65,7 @@ class PrefUtil{
             editor.apply()
         }
 
-        private const val ALARM_SET_TIME_ID = "com.example.timer.background_time"
+        private const val ALARM_SET_TIME_ID = "com.example.studentlifeapp.background_time"
 
         fun getAlarmSetTime(context:Context): Long{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)

@@ -16,6 +16,7 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
+import com.example.studentlifeapp.data.Transaction
 import com.example.studentlifeapp.fragments.*
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     SubjectsTabFragment.SubClickedListener, SubjectsTabFragment.SubAddClickedListener,
     AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener,
     EventDetailsFragment.EventEditListener, AddEventFragment.OnEventSavedListener,
-    MoneyTabFragment.TransactionAddClickListener {
+    MoneyTabFragment.TransactionAddClickListener, MoneyTabFragment.TransactionClickedListener {
 
 
     private lateinit var viewPager: ViewPager
@@ -46,6 +47,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     override fun onBackPressed() {
         super.onBackPressed()
         if(!navShowing)showBottomNav(true)
+        supportActionBar?.show()
+        var title = mainPagerAdapter.getItems()[viewPager.currentItem].titleStringId
+        supportActionBar?.setTitle(title)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
     }
 
@@ -104,13 +109,19 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 startActivity(intent)
                 finish()
-                return true}
+                return true
+            }
             R.id.option_about_app ->{
                 val fragmentManager = this.supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val fragment = AboutAppFragment()
                 fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
                 showBottomNav(false)
+                return true
+            }
+            android.R.id.home -> {
+                onBackPressed()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
@@ -230,6 +241,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = AddTransactionFragment()
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+        showBottomNav(false)
+    }
+
+    override fun transactionClicked(transaction: Transaction) {
+        val fragmentManager = this.supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        val fragment = TransactionDetailsFragment(transaction)
+        fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("transactionDetailFrag").commit()
         showBottomNav(false)
     }
 

@@ -2,7 +2,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sample="http://schemas.android.com/apk/res-auto">
     <com.pavelsikun.seekbarpreference.SeekBarPreferenceCompat
-        android:key="com.example.timer.timer_length"
+        android:key="com.example.studentlifeapp.timer_length"
         android:title="Study Time Slider"
         android:summary="Select minutes to study"
         android:defaultValue="15"

@@ -3,6 +3,7 @@ package com.example.studentlifeapp.activities
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentlifeapp.R
@@ -21,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_study_mode.*
 import kotlinx.android.synthetic.main.content_study_mode.*
 import java.util.*
+import kotlin.system.exitProcess
 
 class StudyMode : AppCompatActivity() {
 
@@ -65,6 +68,9 @@ class StudyMode : AppCompatActivity() {
         setSupportActionBar(toolbar)
 //        supportActionBar?.setIcon(R.drawable.ic_timer)
         supportActionBar?.title = " Study Mode${if(studyName != null)" : $studyName" else ""}"
+//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(!(this.isTaskRoot))
+
 
         fab_start.setOnClickListener{
             startTimer()
@@ -152,11 +158,11 @@ class StudyMode : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining = millisUntilFinished/1000
                 updateCountdownUI()
-                val progress = (timerLengthSeconds - secondsRemaining).toInt()
-                if(progress % 30 == 0){
-                    NotificationUtil.recommendBreak(context)
-                    Log.d("TAG", "Break Notification")
-                }
+//                val progress = (timerLengthSeconds - secondsRemaining).toInt()
+//                if(progress % 30 == 0){
+////                    NotificationUtil.recommendBreak(context)
+//                    Log.d("TAG", "Break Notification")
+//                }
             }
         }.start()
     }
@@ -214,11 +220,22 @@ class StudyMode : AppCompatActivity() {
         }
 
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //Adds items to the action bar if present
-        menuInflater.inflate(R.menu.menu_study_mode, menu)
-        return true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> {
+//                if (this.isTaskRoot){
+//                    val mainIntent = Intent(this, MainActivity::class.java)
+////                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+////                    finish()
+//                    startActivity(mainIntent)
+//
+//                }else{
+                    onBackPressed()
+//                }
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

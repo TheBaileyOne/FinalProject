@@ -19,10 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.StudyMode
-import com.example.studentlifeapp.data.DatabaseManager
-import com.example.studentlifeapp.data.Event
-import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.importEvents
+import com.example.studentlifeapp.data.*
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.toTimeStamp
 import com.example.studentlifeapp.tolocalDateTime
@@ -88,10 +85,11 @@ class StudyModeFragment : Fragment() {
         eventViewModel = activity?.run{
             ViewModelProviders.of(this).get(EventsViewModel::class.java)
         }?: throw Exception("Invalid Activity")
+
         view.studyButtonManual.setOnClickListener{
             Log.d("studyButton","Selected")
-            //TODO: pass length for timer/pass Study object length
             val intent = Intent(context, StudyMode::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
 
         }
@@ -103,13 +101,21 @@ class StudyModeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        view.studyButtonManual.setOnClickListener{
-//            Log.d("studyButton","Selected")
-//            val intent = Intent(context, StudyMode::class.java)
-//            startActivity(intent)
-//
-//        }
+        when (PrefUtil.getTimerState(context!!)){
+            StudyMode.TimerState.RUNNING ->{
+                studyButtonManual.text = getString(R.string.view_study_timer)
+                fragment.visibility = View.GONE
+                study_recyclerView.visibility = View.GONE
+                textView13.text = getString(R.string.study_running)
+            }
+            StudyMode.TimerState.PAUSED -> {
+                studyButtonManual.text = getString(R.string.view_study_timer)
+                fragment.visibility = View.GONE
+                study_recyclerView.visibility = View.GONE
+                textView13.text = getString(R.string.study_running)
+            }
+            else -> true
+        }
         eventViewModel.events.observe(this, Observer { eventsModel ->
             events = eventsModel.filter{ it.type == EventType.STUDY && (it.startTime.isAfter(LocalDateTime.now()) || it.startTime.isEqual(LocalDateTime.now()))}.toMutableList()
             events.sortBy { it.startTime }
@@ -128,12 +134,37 @@ class StudyModeFragment : Fragment() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        when (PrefUtil.getTimerState(context!!)){
+            StudyMode.TimerState.RUNNING ->{
+                studyButtonManual.text = getString(R.string.view_study_timer)
+                fragment.visibility = View.GONE
+                study_recyclerView.visibility = View.GONE
+                textView13.text = getString(R.string.study_running)
+            }
+            StudyMode.TimerState.PAUSED -> {
+                studyButtonManual.text = getString(R.string.view_study_timer)
+                fragment.visibility = View.GONE
+                study_recyclerView.visibility = View.GONE
+                textView13.text = getString(R.string.study_running)
+            }
+            else -> {
+                fragment.visibility = View.VISIBLE
+                study_recyclerView.visibility = View.VISIBLE
+                textView13.text = getString(R.string.study_running)
+                studyButtonManual.text = getString(R.string.start_custom_study)
+            }
+        }
+    }
+
     private fun studyClicked(study:Event){
         val intent = Intent(context, StudyMode::class.java)
         val difference = ChronoUnit.MINUTES.between(study.startTime, study.endTime).toInt()
         Toast.makeText(context, "$difference mins", Toast.LENGTH_SHORT).show()
         intent.putExtra("timer_length", difference)
         intent.putExtra("study_name",study.title)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 }

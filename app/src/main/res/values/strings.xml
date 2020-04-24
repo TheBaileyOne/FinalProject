@@ -43,4 +43,9 @@
     <string name="money_holder">£%1$.2f</string>
     <string name="repeat_every">*Repeat every:</string>
     <string name="budgeting">Budgeting</string>
+    <string name="study_running">Study Currently Running, click below to view progress</string>
+    <string name="start_custom_study">Start Custom Study</string>
+    <string name="view_study_timer">View Study Timer</string>
+    <string name="select_study">Select study event or manually enter study time:</string>
+    <string name="transaction_details">Transaction Details</string>
 </resources>

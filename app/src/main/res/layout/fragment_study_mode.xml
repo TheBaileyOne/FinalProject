@@ -14,7 +14,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Select study event or manually enter study time:"
+        android:text="@string/select_study"
         style="@style/TextAppearance.MaterialComponents.Headline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -35,19 +35,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13"
         app:layout_constraintVertical_bias="0.0" />
-
-    <fragment
-        android:id="@+id/fragment"
-        android:name="com.example.studentlifeapp.fragments.SetStudyModeFragment"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/fragment"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+        <fragment
+            android:id="@+id/study_fragment"
+            android:name="com.example.studentlifeapp.fragments.SetStudyModeFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+    </FrameLayout>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -65,7 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:text="Start Study:\nManual"
+            android:text="@string/start_custom_study"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

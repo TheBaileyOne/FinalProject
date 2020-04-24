@@ -59,9 +59,14 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (activity is MainActivity){
+            (activity as MainActivity).supportActionBar?.title = "Edit Event"
+            (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         return inflater.inflate(R.layout.fragment_add_event, container, false)
     }
 
@@ -173,6 +178,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
         }
 
         if(editEvent!=null){
+            textView2.text = "Edit Event"
             add_event_name_edit.setText(editEvent.title)
             add_event_date.setText(dateFormatter.format(editEvent.startTime.toLocalDate()))
             add_event_time.setText(timeFormatter.format(editEvent.startTime.toLocalTime()))

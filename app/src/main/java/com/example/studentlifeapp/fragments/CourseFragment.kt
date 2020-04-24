@@ -79,6 +79,7 @@ class CourseFragment : Fragment() {
         courseAdapter = CoursePagerAdapter(this)
         viewPager = view.findViewById(R.id.course_view_pager)
         viewPager.adapter = courseAdapter
+        viewPager.isSaveEnabled = false
         TabLayoutMediator(tabLayout, viewPager){tab, position ->
             tab.text = when (position) {
                 0 -> "Subjects"

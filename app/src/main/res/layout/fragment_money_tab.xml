@@ -78,9 +78,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:text="Upcoming Expenses"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/next_income_recycler" />
+        app:layout_constraintTop_toBottomOf="@+id/next_income_recycler"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/upcoming_expenses_recycler"
@@ -104,6 +107,7 @@
         android:clickable="true"
         android:src="@drawable/ic_add"
         app:layout_constraintEnd_toEndOf="parent"
+        app:fabSize="mini"
         app:layout_constraintTop_toBottomOf="@+id/money_tab_weekly" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -114,6 +118,7 @@
         android:layout_marginTop="16dp"
         android:clickable="true"
         android:src="@drawable/ic_remove"
+        app:fabSize="mini"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/money_tab_weekly" />
 

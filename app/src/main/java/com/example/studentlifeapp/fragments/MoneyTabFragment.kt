@@ -2,52 +2,46 @@ package com.example.studentlifeapp.fragments
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputType
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studentlifeapp.R
+import com.example.studentlifeapp.*
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.RepeatType
 import com.example.studentlifeapp.data.Transaction
 import com.example.studentlifeapp.data.TransactionType
 import com.example.studentlifeapp.inflate
-import com.example.studentlifeapp.tolocalDateTime
-import com.example.studentlifeapp.util.addDecimalLimiter
-import com.example.studentlifeapp.util.decimalLimiter
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
+import io.grpc.internal.SharedResourceHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
-import kotlinx.android.synthetic.main.fragment_add_transaction.*
 import kotlinx.android.synthetic.main.fragment_money_tab.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
-import org.w3c.dom.Text
 import java.lang.ClassCastException
 import kotlin.math.abs
 import kotlin.math.floor
 
 
-class TransactionAdapter(private var transactions: MutableList<Transaction> = mutableListOf()):
+class TransactionAdapter(private var transactions: MutableList<Transaction> = mutableListOf(), val onClick: (Transaction) ->Unit):
     RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder>(){
 
 
@@ -66,20 +60,22 @@ class TransactionAdapter(private var transactions: MutableList<Transaction> = mu
         LayoutContainer {
 
         init{
-//            itemView.setOnClickListener {
-//                onClick(transactions[adapterPosition])
-//            }
+            itemView.setOnClickListener {
+                onClick(transactions[adapterPosition])
+            }
         }
         fun bind(transaction: Transaction){
             when (transaction.type){
                 TransactionType.EXPENSE -> {
                     event_view_icon.setImageResource(R.drawable.ic_remove)
-                    event_view_icon.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+//                    event_view_icon.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
+                    event_view_icon.setColorFilter(Color.rgb(220,20,60), PorterDuff.Mode.SRC_IN)
 
                 }
                 TransactionType.INCOME -> {
                     event_view_icon.setImageResource(R.drawable.ic_add)
-                    event_view_icon.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN)
+                    event_view_icon.setColorFilter(Color.rgb(50,205 ,50), PorterDuff.Mode.SRC_IN)
+//                    event_view_icon.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN)
 
                 }
             }
@@ -103,6 +99,10 @@ class MoneyTabFragment : Fragment() {
     interface TransactionAddClickListener{
         fun transactionAddClick()
     }
+
+    interface TransactionClickedListener{
+        fun transactionClicked(transaction: Transaction)
+    }
     private var balance = 0.0
     private var weeklyBudget = 0.0
     private var monthIncome = 0.0
@@ -111,13 +111,14 @@ class MoneyTabFragment : Fragment() {
     private var expenseTransactions = mutableListOf<Transaction>()
     private var incomeTransactions = mutableListOf<Transaction>()
 
-    private var expenseAdapter: TransactionAdapter = TransactionAdapter(expenseTransactions)
-    private var incomeAdapter: TransactionAdapter = TransactionAdapter(incomeTransactions)
+    private var expenseAdapter: TransactionAdapter = TransactionAdapter(expenseTransactions){transaction:Transaction -> transactionClicked(transaction) }
+    private var incomeAdapter: TransactionAdapter = TransactionAdapter(incomeTransactions){transaction:Transaction -> transactionClicked(transaction) }
     private lateinit var listener: ListenerRegistration
     private var transactions = mutableListOf<Transaction>()
 
 
     private lateinit var transactionAddClickListener: TransactionAddClickListener
+    private lateinit var transactionClickedListener: TransactionClickedListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -129,6 +130,15 @@ class MoneyTabFragment : Fragment() {
             )
 
         }
+        if (context is TransactionClickedListener){
+            transactionClickedListener = context
+        }else {
+            throw ClassCastException(
+                "$context must implement TransactionClickedListener"
+            )
+
+        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -151,15 +161,17 @@ class MoneyTabFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         transactions.clear()
+        expenseTransactions.clear()
+        incomeTransactions.clear()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         money_tab_current.text = getString(R.string.money_holder,balance.toFloat())
         money_tab_weekly.text = getString(R.string.money_holder,weeklyBudget.toFloat())
-
-        expenseAdapter = TransactionAdapter(expenseTransactions)
-        incomeAdapter = TransactionAdapter(incomeTransactions)
+//
+//        expenseAdapter = TransactionAdapter(expenseTransactions)
+//        incomeAdapter = TransactionAdapter(incomeTransactions)
         listener = transactionListener()
 
         next_income_recycler.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
@@ -172,6 +184,39 @@ class MoneyTabFragment : Fragment() {
         upcoming_expenses_recycler.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         expenseAdapter.notifyDataSetChanged()
 
+        viewModel.transactions.observe(this, Observer { viewTransactions->
+            viewTransactions.sortBy{it.date}
+            expenseTransactions.clear()
+            incomeTransactions.clear()
+            monthExpense = 0.0
+            monthIncome = 0.0
+
+            for(transaction in viewTransactions){
+                if (transaction.date.isAfter(LocalDateTime.now().plusDays(32))) {
+                    break
+                }
+                else if(transaction.date.isAfter(LocalDateTime.of(LocalDate.now(),LocalTime.of(23,58)))){
+                    when(transaction.type){
+
+                        TransactionType.EXPENSE ->{
+                            expenseTransactions.add(transaction)
+                            expenseAdapter.notifyDataSetChanged()
+                            monthExpense += transaction.amount
+                        }
+                        TransactionType.INCOME -> {
+                            incomeTransactions.add(transaction)
+                            incomeAdapter.notifyDataSetChanged()
+                            monthIncome += transaction.amount
+                        }
+                    }
+                }
+                expenseAdapter.refreshList(expenseTransactions)
+                incomeAdapter.refreshList(incomeTransactions)
+
+            }
+
+
+        })
 
         fab_money_tab_add.setOnClickListener{
             val textInput = EditText(context)
@@ -179,7 +224,8 @@ class MoneyTabFragment : Fragment() {
             builder.setPositiveButton("Add") { _, _->
                 val amount = textInput.text.toString().toDouble()
                 val transaction = Transaction(
-                    amount = amount, date = LocalDateTime.now(),type = TransactionType.INCOME
+                    amount = amount, date = LocalDateTime.now().minusMinutes(5),
+                    type = TransactionType.INCOME, completed = true
                 )
                 addTransaction(transaction)
             }
@@ -192,12 +238,12 @@ class MoneyTabFragment : Fragment() {
             builder.setPositiveButton("Minus") { _, _->
                 val amount = textInput.text.toString().toDouble()
                 val transaction = Transaction(
-                    amount = amount, date = LocalDateTime.now(), type = TransactionType.EXPENSE
+                    amount = amount, date = LocalDateTime.now().minusMinutes(5),
+                    type = TransactionType.EXPENSE, completed = true
                 )
                 addTransaction(transaction)
             }
             builder.show()
-
         }
         future_transaction_button.setOnClickListener{
             transactionAddClickListener.transactionAddClick()
@@ -218,6 +264,10 @@ class MoneyTabFragment : Fragment() {
 
     }
 
+    private fun transactionClicked(transaction:Transaction){
+        transactionClickedListener.transactionClicked(transaction)
+    }
+
     private fun addTransaction(transaction: Transaction){
         transaction.addToDatabase()
         if (transaction.completed){
@@ -233,15 +283,20 @@ class MoneyTabFragment : Fragment() {
         this.balance += amount
         money_tab_current.text = getString(R.string.money_holder, balance.toFloat())
         DatabaseManager().getDatabase().update("current_balance", balance)
+        if (balance<0){
+            money_tab_current.setTextColor(Color.rgb(220,20,60))
+        }else{
+            money_tab_current.setTextColorRes(R.color.secondaryTextColor)
+        }
     }
 
     private fun calculateWeekly(){
-        var monthlyMoney = balance + monthIncome - monthExpense
-        monthlyMoney *= 0.95 //slightlty less to make it seem alow for error
-        weeklyBudget = if (monthlyMoney>0)monthlyMoney/4.4
+        var monthlyMoney = (balance*0.25) + monthIncome - monthExpense
+        weeklyBudget = if (monthlyMoney>0&&balance>0)monthlyMoney/4.4
                         else 0.0
         weeklyBudget = 5*(floor(abs(weeklyBudget/5)))
         money_tab_weekly.text = getString(R.string.money_holder, weeklyBudget.toFloat())
+
     }
 
     private fun moneyInputBuilder(context:Context, textInput:EditText, title:String):AlertDialog.Builder{
@@ -283,26 +338,27 @@ class MoneyTabFragment : Fragment() {
                         repeatType = RepeatType.valueOf(doc.getString("repeat_type")!!)
                     )
                     transaction.transactionRef = doc.id
-                    transactions.add(transaction)
+
                     when(docChange.type){
                         DocumentChange.Type.ADDED ->{
-                            viewModel.getTransactions()?.add(transaction)
-                            //Display the transactions within the next month
-                            if (transaction.date.isAfter(LocalDateTime.now())
-                                && transaction.date.isBefore(LocalDateTime.now().plusDays(32))){
-                                when(transaction.type){
-                                    TransactionType.EXPENSE ->{
-                                        expenseTransactions.add(transaction)
-                                        expenseAdapter.notifyDataSetChanged()
-                                        monthExpense += transaction.amount
-                                    }
-                                    TransactionType.INCOME -> {
-                                        incomeTransactions.add(transaction)
-                                        incomeAdapter.notifyDataSetChanged()
-                                        monthIncome += transaction.amount
-                                    }
-                                }
-                            }
+                            transactions.add(transaction)
+//                            viewModel.getTransactions()?.add(transaction)
+//                            //Display the transactions within the next month
+//                            if (transaction.date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,58)))
+//                                && transaction.date.isBefore(LocalDateTime.now().plusDays(32))){
+//                                when(transaction.type){
+//                                    TransactionType.EXPENSE ->{
+//                                        expenseTransactions.add(transaction)
+//                                        expenseAdapter.notifyDataSetChanged()
+//                                        monthExpense += transaction.amount
+//                                    }
+//                                    TransactionType.INCOME -> {
+//                                        incomeTransactions.add(transaction)
+//                                        incomeAdapter.notifyDataSetChanged()
+//                                        monthIncome += transaction.amount
+//                                    }
+//                                }
+//                            }
                             if(!transaction.completed&&transaction.date.isBefore(LocalDateTime.now())){
                                 DatabaseManager().getDatabase().collection("transactions")
                                     .document(transaction.transactionRef).update("completed",true)
@@ -330,14 +386,26 @@ class MoneyTabFragment : Fragment() {
                             }
                         }
                         DocumentChange.Type.REMOVED->{
+//                            transactions.removeIf{it.transactionRef == transaction.transactionRef}
+                            val removeIndex = transactions.indexOf(transactions.find { it.transactionRef == transaction.transactionRef })
+                            val originalTransaction = transactions[removeIndex]
+//                            if (transaction.type== TransactionType.EXPENSE){
+//                                expenseTransactions.remove(originalTransaction)
+//                            }else{
+//                                incomeTransactions.remove(originalTransaction)
+//                            }
 
+                            transactions.remove(originalTransaction)
                         }
-                        else ->{
-
+                        DocumentChange.Type.MODIFIED->{
+                            val replaceIndex = transactions.indexOf(transactions.find { it.transactionRef == transaction.transactionRef })
+                            transactions[replaceIndex] = transaction
                         }
                     }
                 }
                 viewModel.setTransactions(transactions.toMutableList())
+                expenseAdapter.notifyDataSetChanged()
+                incomeAdapter
                 calculateWeekly()
             }
     }

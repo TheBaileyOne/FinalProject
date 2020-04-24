@@ -49,6 +49,7 @@ class MoneyManagerFragment : Fragment() {
         moneyManagerAdapter = MoneyManagerPagerAdapter(this)
         viewPager = view.findViewById(R.id.money_manager_pager)
         viewPager.adapter = moneyManagerAdapter
+        viewPager.isSaveEnabled = false
 
         TabLayoutMediator(tabLayout, viewPager){tab, position ->
             tab.text = when(position){

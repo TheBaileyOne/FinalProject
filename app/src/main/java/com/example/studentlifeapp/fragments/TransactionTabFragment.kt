@@ -1,5 +1,6 @@
 package com.example.studentlifeapp.fragments
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,14 +17,29 @@ import com.example.studentlifeapp.data.Transaction
 import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.fragment_transaction_tab.*
 import org.threeten.bp.LocalDateTime
+import java.lang.ClassCastException
 
 
 class TransactionTabFragment : Fragment() {
     private var transactions = mutableListOf<Transaction>()
 
-    private var transactionAdapter = TransactionAdapter(transactions)
+    private var transactionAdapter = TransactionAdapter(transactions){transaction:Transaction -> transactionClicked(transaction) }
+
+    private lateinit var transactionClickedListener: MoneyTabFragment.TransactionClickedListener
 
     private lateinit var viewModel: TransactionsViewModel
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MoneyTabFragment.TransactionClickedListener){
+            transactionClickedListener = context
+        }else {
+            throw ClassCastException(
+                "$context must implement TransactionClickedListener"
+            )
+
+        }
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -48,6 +64,7 @@ class TransactionTabFragment : Fragment() {
 
         viewModel.transactions.observe(this, Observer { viewTransactions ->
             viewTransactions.sortByDescending{it.date}
+            transactions.clear()
             for (transaction in viewTransactions){
                 if (transaction.date.isBefore(LocalDateTime.now())){
                     transactions.add(transaction)
@@ -56,6 +73,9 @@ class TransactionTabFragment : Fragment() {
             transactionAdapter.refreshList(transactions)
             transactionAdapter.notifyDataSetChanged()
         })
+    }
+    private fun transactionClicked(transaction:Transaction){
+        transactionClickedListener.transactionClicked(transaction)
     }
 
 }

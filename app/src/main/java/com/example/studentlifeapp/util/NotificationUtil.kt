@@ -1,10 +1,7 @@
 package com.example.studentlifeapp.util
 
 import android.annotation.TargetApi
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -13,8 +10,10 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.example.studentlifeapp.BuildConfig
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.TimerNotificationActionReceiver
+import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.activities.StudyMode
 import com.example.studentlifeapp.data.AppConstants
 import com.google.firebase.firestore.util.AsyncQueue
@@ -29,15 +28,19 @@ class NotificationUtil {
         //Have to use notification channels if building for oreo or later
         private const val TIMER_ID = 0
 
+
         fun showTimerExpired(context: Context){
             val startIntent = Intent(context,TimerNotificationActionReceiver::class.java )
             startIntent.action = AppConstants.ACTION_START
             val startPendingIntent = PendingIntent.getBroadcast(context,0,
                     startIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
+            val pendingIntent = PendingIntent.getActivity(context, 0,
+                newLauncherIntent(context),PendingIntent.FLAG_UPDATE_CURRENT)
             notificationBuilder.setContentTitle("Study Finished!")
                 .setContentText("Start again?")
                 .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java)) // when user clicks on notifcation will go to correct activity
+//                .setContentIntent(pendingIntent) // when user clicks on notifcation will go to correct activity
                 .addAction(R.drawable.ic_play, "Start", startPendingIntent)
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, CHANNEL_NAME_TIMER, true)
@@ -57,17 +60,21 @@ class NotificationUtil {
                 0, pauseIntent,PendingIntent.FLAG_UPDATE_CURRENT)
 
             val dateFormat = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT)
-
+            val pendingIntent = PendingIntent.getActivity(context, 0,
+                newLauncherIntent(context),PendingIntent.FLAG_UPDATE_CURRENT)
+//            val pendingIntent = PendingIntent.getActivity(context, 0,context.packageManager
+//                .getLaunchIntentForPackage(BuildConfig.APPLICATION_ID),PendingIntent.FLAG_UPDATE_CURRENT)
             val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
             notificationBuilder.setContentTitle("Studying")
                 .setContentText("End: ${dateFormat.format(Date(wakeUpTime))}")
+//                .setContentIntent(pendingIntent) // when user clicks on notifcation will go to correct activity
                 .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java)) // when user clicks on notifcation will go to correct activity
                 .setOngoing(true)
                 .addAction(R.drawable.ic_stop, "Stop", stopPendingIntent)
                 .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
 
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, CHANNEL_NAME_TIMER, true)
+            notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, CHANNEL_NAME_TIMER, false)
             notificationManager.notify(TIMER_ID, notificationBuilder.build())
 
         }
@@ -79,8 +86,11 @@ class NotificationUtil {
                 0 , resumeIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
+            val pendingIntent = PendingIntent.getActivity(context, 0,
+                newLauncherIntent(context),PendingIntent.FLAG_UPDATE_CURRENT)
             notificationBuilder.setContentTitle("Study paused")
                 .setContentText("Resume?")
+//                .setContentIntent(pendingIntent)
                 .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java)) // when user clicks on notifcation will go to correct activity
                 .setOngoing(true)
                 .addAction(R.drawable.ic_play, "Resume", resumePendingIntent)
@@ -90,21 +100,24 @@ class NotificationUtil {
 
         }
 
-        fun recommendBreak(context:Context){
-            val pauseIntent = Intent(context, TimerNotificationActionReceiver::class.java)
-            pauseIntent.action = AppConstants.ACTION_PAUSE
-            val pausePendingIntent = PendingIntent.getBroadcast(context,
-                0, pauseIntent,PendingIntent.FLAG_UPDATE_CURRENT)
-            val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
-            notificationBuilder.setContentTitle("Take a break!")
-                .setContentText("Take a five minute break, stretch, grab some water?!")
-                .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java))
-                .setOngoing(true)
-                .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, "Study Break", true)
-            notificationManager.notify(TIMER_ID,notificationBuilder.build())
-        }
+//        fun recommendBreak(context:Context){
+//            val pauseIntent = Intent(context, TimerNotificationActionReceiver::class.java)
+//            pauseIntent.action = AppConstants.ACTION_PAUSE
+//            val pausePendingIntent = PendingIntent.getBroadcast(context,
+//                0, pauseIntent,PendingIntent.FLAG_UPDATE_CURRENT)
+//            val notificationBuilder = getBasicNotificationBuilder(context, CHANNEL_ID_TIMER, true)
+//            val pendingIntent = PendingIntent.getActivity(context, 0,
+//                newLauncherIntent(context),PendingIntent.FLAG_UPDATE_CURRENT)
+//            notificationBuilder.setContentTitle("Take a break!")
+//                .setContentText("Take a five minute break, stretch, grab some water?!")
+////                .setContentIntent(pendingIntent)
+//                .setContentIntent(getPendingIntentWithStack(context, StudyMode::class.java))
+//                .setOngoing(true)
+//                .addAction(R.drawable.ic_pause, "Pause", pausePendingIntent)
+//            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//            notificationManager.createNotificationChannel(CHANNEL_ID_TIMER, "Study Break", true)
+//            notificationManager.notify(TIMER_ID,notificationBuilder.build())
+//        }
 
         fun hideTimerNotification(context: Context){
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -114,7 +127,8 @@ class NotificationUtil {
         private fun getBasicNotificationBuilder(context: Context, channelId: String, playSound: Boolean): NotificationCompat.Builder {
             val notificationSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             val notificationBuilder = NotificationCompat.Builder(context,channelId)
-                .setSmallIcon(R.drawable.ic_timer)
+//                .setSmallIcon(R.drawable.ic_timer)
+                .setSmallIcon(R.drawable.app_logo)
                 .setAutoCancel(true)
                 .setDefaults(0)
             if (playSound) notificationBuilder.setSound(notificationSound)
@@ -123,11 +137,12 @@ class NotificationUtil {
 
         private fun <T> getPendingIntentWithStack(context: Context,javaClass: Class <T>):PendingIntent{
             val resultIntent = Intent(context, javaClass)
-            resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+//            resultIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
             val stackBuilder = TaskStackBuilder.create(context)
-            stackBuilder.addParentStack(javaClass)
-            stackBuilder.addNextIntent(resultIntent)//activity we want to open
+                .addNextIntentWithParentStack(resultIntent)
+//            stackBuilder.addParentStack(javaClass)
+//            stackBuilder.addNextIntent(resultIntent)//activity we want to open
 
             return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
         }

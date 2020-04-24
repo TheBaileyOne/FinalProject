@@ -13,16 +13,17 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="Add Event"
-        style="@style/TextAppearance.MaterialComponents.Headline4"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_event_name"
-        android:layout_width="0dp"
-        android:hint="Title"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

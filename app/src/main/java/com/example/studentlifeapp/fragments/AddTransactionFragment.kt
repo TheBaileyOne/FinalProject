@@ -19,9 +19,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class AddTransactionFragment : Fragment() {
     private lateinit var repeatType:RepeatType
 
@@ -103,10 +101,11 @@ class AddTransactionFragment : Fragment() {
             val name = add_transaction_name_edit.text.toString()
             val amount = add_transaction_amount_edit.text.toString().toDouble()
             val date =  LocalDateTime.parse("${add_transaction_date_edit.text} 23:59", formatter)
-            val repeat= if (add_transaction_repeat_num.text.isNullOrBlank()) 0
+            val repeat= if (add_transaction_repeat_num.text.isNullOrBlank() || repeatType ==RepeatType.NEVER) 0
                                 else add_transaction_repeat_num.text.toString().toInt()
             val type = if(radio_income.isChecked) TransactionType.INCOME else TransactionType.EXPENSE
-            val completed = date.toLocalDate().isBefore(LocalDate.now())
+            val completed = repeat<=0
+//            date.toLocalDate().isBefore(LocalDate.now())
 
             val transaction = Transaction(name,amount, date, completed, type, repeat, repeatType)
             transaction.addToDatabase(activity)

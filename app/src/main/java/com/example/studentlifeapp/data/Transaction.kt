@@ -7,6 +7,7 @@ import org.threeten.bp.LocalDate
 import com.example.studentlifeapp.toTimeStamp
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
+import java.lang.Exception
 
 
 data class Transaction(
@@ -33,6 +34,25 @@ data class Transaction(
                 Log.w(TAG, "Transaction add error: $e")
                 activity?.onBackPressed()
             }
+    }
+
+    fun update(){
+        val data = mapOf("name" to name,
+            "amount" to amount,
+            "type" to type,
+            "date" to date.toTimeStamp(),
+            "completed" to completed,
+            "repeat_number" to repeatNumber,
+            "repeat_type" to repeatType)
+        DatabaseManager().getDatabase().collection("transactions").document(transactionRef).update(data)
+    }
+
+    fun delete(){
+        if (transactionRef.isNullOrBlank()){
+            throw Exception("no databse reference")
+        }else{
+            DatabaseManager().getDatabase().collection("transactions").document(transactionRef).delete()
+        }
     }
 }
 

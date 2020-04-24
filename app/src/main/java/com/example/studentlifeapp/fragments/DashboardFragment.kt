@@ -250,14 +250,15 @@ class DashboardFragment : Fragment() {
                     }
                 }
                 else if (docChange.type == DocumentChange.Type.REMOVED){
-                    if(events.any{it.eventRef == event.eventRef}){
-                        val foundEvent = events.find { it.eventRef == event.eventRef}!!
-                        val index = events.indexOf(foundEvent)
-                        events.removeAt(index)
-                    }
-                    else{
-                        Log.d("ERROR", "Modified event should be found in the list.")
-                    }
+//                    if(events.any{it.eventRef == event.eventRef}){
+//                        val foundEvent = events.find { it.eventRef == event.eventRef}!!
+//                        val index = events.indexOf(foundEvent)
+//                        events.removeAt(index)
+//                    }
+//                    else{
+//                        Log.d("ERROR", "Modified event should be found in the list.")
+//                    }
+                    events.removeIf{it.eventRef == event.eventRef}
                 }
             }
 
