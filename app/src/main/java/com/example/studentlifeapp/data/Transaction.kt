@@ -2,7 +2,9 @@ package com.example.studentlifeapp.data
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import org.threeten.bp.LocalDate
 import com.example.studentlifeapp.toTimeStamp
 import org.threeten.bp.LocalDateTime
@@ -28,10 +30,15 @@ data class Transaction(
             .addOnSuccessListener {
                 transactionRef = it.id
                 Log.d(TAG, "Transaction added")
+
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
                 activity?.onBackPressed()
             }
             .addOnFailureListener { e->
                 Log.w(TAG, "Transaction add error: $e")
+                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
                 activity?.onBackPressed()
             }
     }

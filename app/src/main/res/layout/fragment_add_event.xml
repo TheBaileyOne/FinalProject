@@ -88,7 +88,7 @@
 
     <EditText
         android:id="@+id/add_event_date"
-        android:layout_width="165dp"
+        android:layout_width="0dp"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
@@ -99,7 +99,7 @@
         android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/textView21"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/textView4"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/event_type_spinner" />
 
 
@@ -132,7 +132,7 @@
 
     <EditText
         android:id="@+id/add_event_end_date"
-        android:layout_width="165dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"

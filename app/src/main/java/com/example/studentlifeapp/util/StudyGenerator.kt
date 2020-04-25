@@ -91,7 +91,7 @@ class StudyGenerator(private val name:String, private val startDate: LocalDateTi
             } else {
                 studyList.add(
                     Event(
-                        "$name: Study",
+                        name,
                         EventType.STUDY,
                         LocalDateTime.of(day, timeBeg),
                         LocalDateTime.of(day, timeBeg.plusHours(dailyStudy))

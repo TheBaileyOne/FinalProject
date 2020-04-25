@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +33,7 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
+import java.lang.Exception
 import java.text.DecimalFormat
 
 class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?):
@@ -118,6 +121,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     private lateinit var eventsListener: ListenerRegistration
     private lateinit var assessmentListener: ListenerRegistration
 
+    private lateinit var  eventsViewModel: EventsViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_subject_details)
@@ -127,6 +132,11 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         eventsListener = subDbEventsListener()
         assessmentListener = subDbAssessmentsListener()
         displayTotalPercentage(false)
+        eventsViewModel = this.run {
+            ViewModelProviders.of(this).get(EventsViewModel::class.java)
+        }
+        eventsViewModel.setEvents(events)
+
 
         //TODO: sort out animation for activity opening
         val eventsGroup = formatEvents(events)
@@ -146,6 +156,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             layoutManager = viewManager
             adapter = viewAdapter
         }
+
+
         recyclerView.addItemDecoration(DividerItemDecoration(this, RecyclerView.VERTICAL))
         viewAdapter.notifyDataSetChanged()
 
@@ -308,7 +320,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         if (event.second.size>1){
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            val fragment = EventExpandFragment(event.second)
+            val fragment = EventExpandFragment(event.second[0].eventId, event.second[0].title)
             fragmentTransaction.add(R.id.subject_detail_fragment, fragment)
             fragmentTransaction.addToBackStack(null)
             fragmentTransaction.commit()
@@ -417,6 +429,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                     eventId = document.getString("eventId")!!)
                                 dbEvents.add(addEvent)
                                 addEvent.setRef(document.id)
+                                eventsViewModel.setEvents(dbEvents.toMutableList())
                                 val eventsGroup = formatEvents(dbEvents)
                                 viewAdapter.refreshList(eventsGroup)
                             }else{
@@ -428,6 +441,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                             Log.d(TAG, "Error getting event: $e")
                         }
                 }
+                eventsViewModel.setEvents(dbEvents.toMutableList())
                 val eventsGroup = formatEvents(dbEvents)
                 viewAdapter.refreshList(eventsGroup)
                 dbEvents.clear()
@@ -489,14 +503,20 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                 db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
                                     .document(event.id).delete()
                             }
-                            val eventsGroup = formatEvents(dbEvents)
-                            viewAdapter.refreshList(eventsGroup)
+//                            val eventsGroup = formatEvents(dbEvents)
+//                            viewAdapter.refreshList(eventsGroup)
+//                            events = dbEvents.toMutableList()
+
                             events = dbEvents.toMutableList()
+                            eventsViewModel.setEvents(events)
+                            val eventsGroup = formatEvents(events)
+                            viewAdapter.refreshList((eventsGroup))
                         }
                         .addOnFailureListener{e ->
                             Log.w(TAG, "get collection fail, Error: $e")
                         }
                 }
+
             }
     }
 
@@ -517,4 +537,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
 
 
 }
+
+
 

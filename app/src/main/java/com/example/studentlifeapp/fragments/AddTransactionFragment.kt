@@ -1,11 +1,11 @@
 package com.example.studentlifeapp.fragments
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 
 import com.example.studentlifeapp.R
@@ -13,7 +13,6 @@ import com.example.studentlifeapp.data.RepeatType
 import com.example.studentlifeapp.data.Transaction
 import com.example.studentlifeapp.data.TransactionType
 import kotlinx.android.synthetic.main.fragment_add_transaction.*
-import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
@@ -26,6 +25,7 @@ class AddTransactionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view =  inflater.inflate(R.layout.fragment_add_transaction, container, false)
+        setHasOptionsMenu(true)
         return view
     }
 
@@ -83,6 +83,8 @@ class AddTransactionFragment : Fragment() {
             addTransaction()
         }
         transaction_expand_back.setOnClickListener {
+            val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
             activity?.onBackPressed()
         }
 
@@ -90,6 +92,12 @@ class AddTransactionFragment : Fragment() {
 
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.option_about_app).isVisible = false
+        menu.findItem(R.id.option_logout).isVisible = false
+
+    }
     private fun addTransaction(){
         if(add_transaction_amount_edit.text.isNullOrBlank()||add_transaction_name_edit.text.isNullOrBlank()||
             add_transaction_date_edit.text.isNullOrBlank()|| (add_transaction_repeat_num.text.isNullOrBlank()&& repeatType != RepeatType.NEVER)){

@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +25,7 @@ import kotlinx.android.synthetic.main.fragment_event_expand.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.lang.ClassCastException
 
-class EventExpandAdapter(val events:List<Event>,val onClick: (Event) -> Unit): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
+class EventExpandAdapter(var events:List<Event>,val onClick: (Event) -> Unit): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
 //class EventExpandAdapter(val events:List<Event>): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
 
 
@@ -44,6 +46,12 @@ class EventExpandAdapter(val events:List<Event>,val onClick: (Event) -> Unit): R
     }
 
     override fun getItemCount(): Int = events.size
+
+    fun refreshList(newEvents:MutableList<Event>){
+        events = newEvents.toMutableList()
+        this.notifyDataSetChanged()
+
+    }
 
 
     //assigns or updates data in the view items (overwrites previous data if view reused)
@@ -103,16 +111,20 @@ class EventExpandAdapter(val events:List<Event>,val onClick: (Event) -> Unit): R
 
 }
 
-class EventExpandFragment(private val events: List<Event>) : Fragment(){
+class EventExpandFragment(private val groupRef:String, val title:String) : Fragment(){
+//class EventExpandFragment(private val events: List<Event>) : Fragment(){
 
     interface EventClickedListener{
         fun eventClicked(event:Event)
     }
+    private var events = mutableListOf<Event>()
 
     private lateinit var eventDetailClickListener: Utils.EventDetailClickListener
 //    private val eventAdapter = EventExpandAdapter(events)
 
     private val eventAdapter = EventExpandAdapter(events){event:Event->eventClicked(event)}
+
+    private lateinit var eventsViewModel: EventsViewModel
 
 
     override fun onAttach(context: Context) {
@@ -127,7 +139,11 @@ class EventExpandFragment(private val events: List<Event>) : Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_event_expand, container, false)
+        val view =  inflater.inflate(R.layout.fragment_event_expand, container, false)
+        eventsViewModel = activity?.run{
+            ViewModelProviders.of(this).get(EventsViewModel::class.java)
+        } ?:throw Exception("Invalid Activity")
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -135,15 +151,23 @@ class EventExpandFragment(private val events: List<Event>) : Fragment(){
         event_expand_back.setOnClickListener {
             activity?.onBackPressed()
         }
-        event_expand_title.text = getString(R.string.event_occurrences, events[0].title)
+        event_expand_title.text = getString(R.string.event_occurrences, title)
         event_expanded_recyclerView.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
         event_expanded_recyclerView.adapter=eventAdapter
         event_expanded_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
+
+        eventsViewModel.events.observe(this, Observer { viewEvents ->
+            viewEvents.sortBy { it.startTime }
+            events = viewEvents.filter { it.eventId == groupRef }.toMutableList()
+            eventAdapter.refreshList(events)
+        })
+
         eventAdapter.notifyDataSetChanged()
 
     }
     private fun eventClicked(event:Event){
         Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
+//        activity?.onBackPressed()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
 }

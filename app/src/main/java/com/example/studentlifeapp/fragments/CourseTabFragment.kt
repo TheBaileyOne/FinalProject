@@ -59,7 +59,7 @@ class CourseTabFragment : Fragment() {
 
         })
 
-        val max = 120
+        val max = 360
         val min = 20
         val step = 5
         seekbar_credits.max = (max-min)/step

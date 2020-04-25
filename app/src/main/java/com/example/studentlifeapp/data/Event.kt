@@ -27,7 +27,7 @@ data class Event(
             EventType.STUDY ->  R.color.Goldenrod
             EventType.EXAM ->  R.color.Tomato
             EventType.COURSEWORK ->  R.color.Blue
-            EventType.EVENT -> R.color.White
+            EventType.EVENT -> R.color.Black
             EventType.JOBSHIFT -> R.color.MediumPurple
             EventType.SOCIETY -> R.color.DeepPink
         }

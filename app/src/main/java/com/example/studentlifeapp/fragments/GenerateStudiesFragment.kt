@@ -1,11 +1,13 @@
 package com.example.studentlifeapp.fragments
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Switch
@@ -86,9 +88,13 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         val fragment = StudiesGeneratedFragment(studies)
         val fragmentManager = activity!!.supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentManager.popBackStack()
         fragmentTransaction.replace(R.id.subject_detail_fragment, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+
     }
 
 }

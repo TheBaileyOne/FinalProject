@@ -44,7 +44,7 @@ class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf()
     private val formatter3=DateTimeFormatter.ofPattern("EEE, dd MMM")
     fun setEvents(newEvents:MutableList<Event>){
         events = newEvents
-//        this.notifyDataSetChanged()
+        this.notifyDataSetChanged()
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashViewHolder {
         return DashViewHolder(parent.inflate(R.layout.event_item_view))
@@ -52,6 +52,10 @@ class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf()
     override fun getItemCount(): Int = events.size
     override fun onBindViewHolder(holder: DashViewHolder, position: Int) {
         holder.bind(events[position])
+    }
+
+    fun clearEvents(){
+        events.clear()
     }
 
     inner class DashViewHolder(override val containerView:View):RecyclerView.ViewHolder(containerView),LayoutContainer{
@@ -250,14 +254,6 @@ class DashboardFragment : Fragment() {
                     }
                 }
                 else if (docChange.type == DocumentChange.Type.REMOVED){
-//                    if(events.any{it.eventRef == event.eventRef}){
-//                        val foundEvent = events.find { it.eventRef == event.eventRef}!!
-//                        val index = events.indexOf(foundEvent)
-//                        events.removeAt(index)
-//                    }
-//                    else{
-//                        Log.d("ERROR", "Modified event should be found in the list.")
-//                    }
                     events.removeIf{it.eventRef == event.eventRef}
                 }
             }
@@ -275,6 +271,22 @@ class DashboardFragment : Fragment() {
         val dbReminder = mutableListOf<Event>()
         val dbNext = mutableListOf<Event>()
         val dbNext2 = mutableListOf<Event>()
+
+        placeholder_today.visibility = View.VISIBLE
+        placeholder_tomorrow.visibility = View.VISIBLE
+        placeholder_deadlines.visibility = View.VISIBLE
+        placeholder_reminders.visibility = View.VISIBLE
+
+
+
+        reminderAdapter.clearEvents()
+        nextAdapter.clearEvents()
+        next2Adapter.clearEvents()
+        upcomingAdapter.clearEvents()
+        tomorrowAdapter.clearEvents()
+        todayAdapter.clearEvents()
+
+
         var tomorrow = LocalDateTime.now().toLocalDate().plusDays(1)
         var firstDay: LocalDate? = null
         var secondDay: LocalDate? = null
