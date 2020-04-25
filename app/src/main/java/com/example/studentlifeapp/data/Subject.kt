@@ -71,12 +71,12 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
     }
 }
 
-enum class Classification{
-    FIRST, UPPER_SECOND, LOWER_SECOND, PASS, FAIL, INVALID
+enum class Classification(val string: String){
+    FIRST("First"), UPPER_SECOND("2:1"), LOWER_SECOND("2:2"), PASS("Pass"), FAIL("Fail"), INVALID("Invalid")
 }
 
-enum class AcademicYear{
-    FIRST_YEAR,SECOND_YEAR,THIRD_YEAR,FOURTH_YEAR,FIFTH_YEAR
+enum class AcademicYear(val string: String){
+    FIRST_YEAR("1st Year"),SECOND_YEAR("2nd Year"),THIRD_YEAR("3rd Year"),FOURTH_YEAR("4th Year"),FIFTH_YEAR("5th Year")
 //    TODO: Implement years and credits for subjects, edit the database. Update table to show academiyear
 }
 

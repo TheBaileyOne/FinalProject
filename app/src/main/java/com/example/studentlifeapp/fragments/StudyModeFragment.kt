@@ -114,7 +114,13 @@ class StudyModeFragment : Fragment() {
                 study_recyclerView.visibility = View.GONE
                 textView13.text = getString(R.string.study_running)
             }
-            else -> true
+            else -> {
+                fragment.visibility = View.VISIBLE
+                study_recyclerView.visibility = View.VISIBLE
+                textView13.text = getString(R.string.select_study)
+                studyButtonManual.text = getString(R.string.start_custom_study)
+
+            }
         }
         eventViewModel.events.observe(this, Observer { eventsModel ->
             events = eventsModel.filter{ it.type == EventType.STUDY && (it.startTime.isAfter(LocalDateTime.now()) || it.startTime.isEqual(LocalDateTime.now()))}.toMutableList()
@@ -152,7 +158,7 @@ class StudyModeFragment : Fragment() {
             else -> {
                 fragment.visibility = View.VISIBLE
                 study_recyclerView.visibility = View.VISIBLE
-                textView13.text = getString(R.string.study_running)
+                textView13.text = getString(R.string.select_study)
                 studyButtonManual.text = getString(R.string.start_custom_study)
             }
         }

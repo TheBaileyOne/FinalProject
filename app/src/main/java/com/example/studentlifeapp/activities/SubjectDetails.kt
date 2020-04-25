@@ -56,7 +56,7 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
             val formatter = DateTimeFormatter.ofPattern("EEE")
             val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-            subject_event_view_title.text = event.first
+            subject_event_view_title.text = event.second[0].title
             if (event.second.size > 1) subject_event_view_timeList.text = "Times..."
             else subject_event_view_timeList.text =
                 "${timeFormatter.format(event.second[0].startTime)} - ${timeFormatter.format(event.second[0].endTime)}"
@@ -126,6 +126,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         subjectRef = subject.getId()
         eventsListener = subDbEventsListener()
         assessmentListener = subDbAssessmentsListener()
+        displayTotalPercentage(false)
 
         //TODO: sort out animation for activity opening
         val eventsGroup = formatEvents(events)

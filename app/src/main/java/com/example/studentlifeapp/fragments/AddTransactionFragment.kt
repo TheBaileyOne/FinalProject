@@ -34,7 +34,7 @@ class AddTransactionFragment : Fragment() {
         radio_expense.isChecked = true
 
         val values = enumValues<RepeatType>()
-        val spinner = view.findViewById<Spinner>(R.id.spinner_transaction_repeat_options)
+        val spinner = view.findViewById<Spinner>(R.id.spinner_transaction_repeat)
         spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
@@ -92,7 +92,7 @@ class AddTransactionFragment : Fragment() {
 
     private fun addTransaction(){
         if(add_transaction_amount_edit.text.isNullOrBlank()||add_transaction_name_edit.text.isNullOrBlank()||
-            add_transaction_date_edit.text.isNullOrBlank()|| (add_transaction_repeat_num.text.isNullOrBlank()&&repeatType == RepeatType.NEVER)){
+            add_transaction_date_edit.text.isNullOrBlank()|| (add_transaction_repeat_num.text.isNullOrBlank()&& repeatType != RepeatType.NEVER)){
             Toast.makeText(context, "Please fill in all compulsory fields", Toast.LENGTH_LONG).show()
 
         }else{

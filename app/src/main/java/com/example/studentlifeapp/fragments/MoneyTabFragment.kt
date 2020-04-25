@@ -32,6 +32,7 @@ import io.grpc.internal.SharedResourceHolder
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.fragment_money_tab.*
+import kotlinx.android.synthetic.main.transaction_item.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
@@ -52,7 +53,7 @@ class TransactionAdapter(private var transactions: MutableList<Transaction> = mu
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        return TransactionViewHolder(parent.inflate(R.layout.event_item_view))
+        return TransactionViewHolder(parent.inflate(R.layout.transaction_item))
     }
 
     //    inner class SubjectViewHolder(inflater : LayoutInflater,parent:ViewGroup):RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item,parent,false)){
@@ -67,14 +68,14 @@ class TransactionAdapter(private var transactions: MutableList<Transaction> = mu
         fun bind(transaction: Transaction){
             when (transaction.type){
                 TransactionType.EXPENSE -> {
-                    event_view_icon.setImageResource(R.drawable.ic_remove)
+                    transaction_view_icon.setImageResource(R.drawable.ic_remove)
 //                    event_view_icon.setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN)
-                    event_view_icon.setColorFilter(Color.rgb(220,20,60), PorterDuff.Mode.SRC_IN)
+                    transaction_view_icon.setColorFilter(Color.rgb(220,20,60), PorterDuff.Mode.SRC_IN)
 
                 }
                 TransactionType.INCOME -> {
-                    event_view_icon.setImageResource(R.drawable.ic_add)
-                    event_view_icon.setColorFilter(Color.rgb(50,205 ,50), PorterDuff.Mode.SRC_IN)
+                    transaction_view_icon.setImageResource(R.drawable.ic_add)
+                    transaction_view_icon.setColorFilter(Color.rgb(50,205 ,50), PorterDuff.Mode.SRC_IN)
 //                    event_view_icon.setColorFilter(Color.GREEN, PorterDuff.Mode.SRC_IN)
 
                 }
@@ -82,10 +83,10 @@ class TransactionAdapter(private var transactions: MutableList<Transaction> = mu
             val formatter = DateTimeFormatter.ofPattern("dd\nMMM")
 
             val moneyString =transaction.amount.toString()
-            event_view_title.text = moneyString
+            transaction_view_title.text = moneyString
 
-            event_view_location.text = transaction.name
-            event_view_time.text = formatter.format(transaction.date)
+            transaction_view_name.text = transaction.name
+            transaction_view_time.text = formatter.format(transaction.date)
         }
     }
     fun refreshList(newTransactions:MutableList<Transaction>){
@@ -193,7 +194,12 @@ class MoneyTabFragment : Fragment() {
 
             for(transaction in viewTransactions){
                 if (transaction.date.isAfter(LocalDateTime.now().plusDays(32))) {
-                    break
+                    if (transaction.type == TransactionType.INCOME){
+                        incomeTransactions.add(transaction)
+                        incomeAdapter.notifyDataSetChanged()
+                    }else{
+                        break
+                    }
                 }
                 else if(transaction.date.isAfter(LocalDateTime.of(LocalDate.now(),LocalTime.of(23,58)))){
                     when(transaction.type){
@@ -342,23 +348,6 @@ class MoneyTabFragment : Fragment() {
                     when(docChange.type){
                         DocumentChange.Type.ADDED ->{
                             transactions.add(transaction)
-//                            viewModel.getTransactions()?.add(transaction)
-//                            //Display the transactions within the next month
-//                            if (transaction.date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,58)))
-//                                && transaction.date.isBefore(LocalDateTime.now().plusDays(32))){
-//                                when(transaction.type){
-//                                    TransactionType.EXPENSE ->{
-//                                        expenseTransactions.add(transaction)
-//                                        expenseAdapter.notifyDataSetChanged()
-//                                        monthExpense += transaction.amount
-//                                    }
-//                                    TransactionType.INCOME -> {
-//                                        incomeTransactions.add(transaction)
-//                                        incomeAdapter.notifyDataSetChanged()
-//                                        monthIncome += transaction.amount
-//                                    }
-//                                }
-//                            }
                             if(!transaction.completed&&transaction.date.isBefore(LocalDateTime.now())){
                                 DatabaseManager().getDatabase().collection("transactions")
                                     .document(transaction.transactionRef).update("completed",true)

@@ -51,7 +51,7 @@ class TransactionDetailsFragment(val transaction: Transaction) : Fragment() {
 
         button_delete_transaction.setOnClickListener {
             transaction.delete()
-            hideKeyboard()
+//            hideKeyboard()
             activity?.onBackPressed()
         }
 

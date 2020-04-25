@@ -102,7 +102,7 @@ class AddSubjectFragment : Fragment() {
             datePicker.show()
         }
         val spinner = view.findViewById<Spinner>(R.id.academic_year_spinner)
-        val values = enumValues<AcademicYear>()
+        val values = enumValues<AcademicYear>().map { it.string }
         spinner?.adapter = ArrayAdapter(activity?.applicationContext!!, android.R.layout.simple_spinner_item, values).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
@@ -114,8 +114,9 @@ class AddSubjectFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 //                val type = parent?.getItemAtPosition(position)
 //                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
-                val year = parent?.getItemAtPosition(position)
-                academicYear = year as AcademicYear
+                val year = parent?.getItemAtPosition(position) as String
+//                academicYear = year as AcademicYear
+                academicYear = AcademicYear.values().first { it.string == year }
                 Toast.makeText(context,"Type: $year",Toast.LENGTH_SHORT).show()
             }
         }
@@ -156,7 +157,6 @@ class AddSubjectFragment : Fragment() {
                     Log.d(TAG,  "Document written with ID: ${documentReference.id}")
 
                     callback.onSubjectSaved(subject)
-                    optionsMenu.findItem(R.id.action_add).isVisible = true
                 }
                 .addOnFailureListener{e ->
                     Log.w(TAG, "Error adding document", e)

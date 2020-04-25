@@ -171,6 +171,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
+
+
     fun setEvents(events:MutableList<Event>){
         this.events = events
 

@@ -62,6 +62,7 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
     val events = mutableListOf<Event>() //Data source for the adapter
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
+    private val formatter3=DateTimeFormatter.ofPattern("EEE, dd MMM")
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventsViewHolder {
@@ -127,6 +128,9 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
 //                event_view_location.text = ""
 //                event_view_location_icon.visibility = View.INVISIBLE
 //            }
+
+            event_view_location.text = formatter3.format(event.startTime)
+            event_view_time.text = "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
 
             event_view_time.text = when (event.type) {
                 EventType.REMINDER -> formatter.format(event.startTime)

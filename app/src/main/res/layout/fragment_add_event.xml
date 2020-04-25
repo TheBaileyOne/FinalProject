@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@color/cardview_light_background"
@@ -87,7 +88,7 @@
 
     <EditText
         android:id="@+id/add_event_date"
-        android:layout_width="142dp"
+        android:layout_width="165dp"
         android:layout_height="43dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
@@ -96,6 +97,8 @@
         android:hint="Date"
         android:inputType="date"
         android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView21"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView4"
         app:layout_constraintTop_toBottomOf="@+id/event_type_spinner" />
 
@@ -107,13 +110,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:hint="Time"
         android:clickable="true"
         android:focusable="false"
-        android:textSize="16sp"
+        android:hint="Time"
         android:inputType="time"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/add_event_date"
+        app:layout_constraintStart_toEndOf="@+id/textView21"
         app:layout_constraintTop_toBottomOf="@+id/event_type_spinner" />
 
     <TextView
@@ -129,32 +132,34 @@
 
     <EditText
         android:id="@+id/add_event_end_date"
-        android:layout_width="0dp"
+        android:layout_width="165dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Date"
         android:inputType="date"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@+id/add_event_time_end"
+        app:layout_constraintEnd_toStartOf="@+id/textView21"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView5"
         app:layout_constraintTop_toBottomOf="@+id/add_event_date" />
 
     <EditText
         android:id="@+id/add_event_time_end"
-        android:layout_width="179dp"
+        android:layout_width="0dp"
         android:layout_height="42dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:clickable="true"
         android:focusable="false"
         android:hint="Time"
-        android:textSize="16sp"
         android:inputType="date"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView21"
         app:layout_constraintTop_toBottomOf="@+id/add_event_time" />
 
 
@@ -244,6 +249,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_event_notes"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:text="\"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="247dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
