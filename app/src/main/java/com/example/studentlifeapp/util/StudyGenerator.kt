@@ -1,11 +1,8 @@
 package com.example.studentlifeapp.util
 
 import android.util.Log
-import android.view.View
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.Subject
-import com.example.studentlifeapp.toTimeStamp
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -13,24 +10,25 @@ import org.threeten.bp.LocalTime
 import kotlin.math.ceil
 
 
-class StudyGenerator(private val name:String, private val startDate: LocalDateTime = LocalDateTime.now(),
-                     private val endDate: LocalDate, val events:List<Event>,
-                     private var studyLength:Long = 1L, private val dayInterval:Long = 1L,
-                     private val lunchTime: LocalTime = LocalTime.of(13,0),
-                     private val timeBeg:LocalTime = LocalTime.of(9,0),
-                     private val timeEnd:LocalTime = LocalTime.of(19,0),
-                     private val weekendStudy:Boolean = true,
-                     private val weeklyStudy:Long = 14L
+class StudyGenerator(
+    private val name: String,
+    private val endDate: LocalDate,
+    val events: List<Event>,
+    private var studyLength: Long = 1L,
+    private val dayInterval: Long = 1L,
+    private val lunchTime: LocalTime = LocalTime.of(13, 0),
+    private val timeBeg: LocalTime = LocalTime.of(9, 0),
+    private val timeEnd: LocalTime = LocalTime.of(19, 0),
+    private val weekendStudy: Boolean = true,
+    weeklyStudy: Long = 14L
 ){
 
     private val studyList = mutableListOf<Event>()
     private val dailyStudy = if(weekendStudy) weeklyStudy/7 else ceil(weeklyStudy/5.0).toLong()
     private val groupedEvents = events.groupBy{it.startTime.toLocalDate()}
-//    private val studyLength = 1L
 
     fun getStudies():MutableList<Event>{
         Log.d("Study Generator", "generating studies")
-
         generateStudy()
         return studyList
     }

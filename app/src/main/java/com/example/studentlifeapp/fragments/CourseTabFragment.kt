@@ -5,11 +5,11 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.studentlifeapp.R
@@ -17,7 +17,6 @@ import com.example.studentlifeapp.data.AcademicYear
 import com.example.studentlifeapp.data.Classification
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.util.calculateClassification
-import kotlinx.android.synthetic.main.activity_signup.*
 import kotlinx.android.synthetic.main.fragment_course_tab.*
 
 class CourseTabFragment : Fragment() {
@@ -25,7 +24,6 @@ class CourseTabFragment : Fragment() {
     private var subjectRows: MutableList<Pair<Subject, TableRow>> = mutableListOf()
     private lateinit var checked: MutableList<Boolean>
     private var requiredCredits: Int = 20
-    private var ignoreLowest = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -41,7 +39,7 @@ class CourseTabFragment : Fragment() {
         } ?: throw Exception("Invalid Activity")
         course_grade_obtained.text = getString(R.string.obtained_percent,0.0)
         course_grade_classification.text = getString(R.string.classification, Classification.FAIL)
-        viewModel.subjects.observe(this, Observer<MutableList<Subject>>{subjects ->
+        viewModel.subjects.observe(viewLifecycleOwner, Observer<MutableList<Subject>>{subjects ->
             clearTable(tableLayout)
             setTable(subjects, tableLayout)
             checked = MutableList(subjectRows.size){false}

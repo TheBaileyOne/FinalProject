@@ -1,31 +1,25 @@
 package com.example.studentlifeapp.fragments
 
-import android.content.ContentValues
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.preference.PreferenceFragmentCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.StudyMode
-import com.example.studentlifeapp.data.*
+import com.example.studentlifeapp.data.Event
+import com.example.studentlifeapp.data.EventType
 import com.example.studentlifeapp.inflate
-import com.example.studentlifeapp.toTimeStamp
-import com.example.studentlifeapp.tolocalDateTime
 import com.example.studentlifeapp.util.PrefUtil
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_study_mode.*
 import kotlinx.android.synthetic.main.fragment_study_mode.view.*
@@ -33,7 +27,6 @@ import kotlinx.android.synthetic.main.study_item.*
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
-import java.lang.Exception
 
 class StudyAdapter(private var studies:List<Event> = mutableListOf(), val onClick: (Event)-> Unit): RecyclerView.Adapter<StudyAdapter.StudyViewHolder>(){
     override fun getItemCount(): Int = studies.size
@@ -101,7 +94,7 @@ class StudyModeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        when (PrefUtil.getTimerState(context!!)){
+        when (PrefUtil.getTimerState(requireContext())){
             StudyMode.TimerState.RUNNING ->{
                 studyButtonManual.text = getString(R.string.view_study_timer)
                 fragment.visibility = View.GONE
@@ -122,7 +115,7 @@ class StudyModeFragment : Fragment() {
 
             }
         }
-        eventViewModel.events.observe(this, Observer { eventsModel ->
+        eventViewModel.events.observe(viewLifecycleOwner, Observer { eventsModel ->
             events = eventsModel.filter{ it.type == EventType.STUDY && (it.startTime.isAfter(LocalDateTime.now()) || it.startTime.isEqual(LocalDateTime.now()))}.toMutableList()
             events.sortBy { it.startTime }
             viewAdapter.refreshList(events)
@@ -142,7 +135,7 @@ class StudyModeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        when (PrefUtil.getTimerState(context!!)){
+        when (PrefUtil.getTimerState(requireContext())){
             StudyMode.TimerState.RUNNING ->{
                 studyButtonManual.text = getString(R.string.view_study_timer)
                 fragment.visibility = View.GONE

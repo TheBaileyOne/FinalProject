@@ -28,7 +28,7 @@ class TransactionDetailsFragment(val transaction: Transaction) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val formatter= DateTimeFormatter.ofPattern("EEE, dd MMM")
-        if (transaction.name.isNullOrBlank()){
+        if (transaction.name.isBlank()){
             transaction_details_name_view.visibility = View.GONE
         }else{
             transaction_details_name.text = getString(R.string.placeholder_string, transaction.name)

@@ -67,7 +67,7 @@ class AddTransactionFragment : Fragment() {
 
         setDate.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+            val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)
@@ -84,7 +84,7 @@ class AddTransactionFragment : Fragment() {
         }
         transaction_expand_back.setOnClickListener {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
             activity?.onBackPressed()
         }
 

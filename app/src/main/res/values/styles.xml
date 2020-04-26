@@ -31,13 +31,6 @@
         <item name="titleTextStyle">@style/myTitleStyle</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Body1" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="android:textSize">12sp</item>
-    </style>
-    <style name="TextAppearance.MyApp.Body2" parent="TextAppearance.MaterialComponents.Body2">
-        <item name="android:textSize">10sp</item>
-    </style>
-
     <style name = "DialogStyle" parent="@style/ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:headerBackground">@color/primaryColor</item>
 <!--        <item name="android:headerYearTextAppearance">@style/TextAppearance.MaterialComponents.Headline4</item>-->

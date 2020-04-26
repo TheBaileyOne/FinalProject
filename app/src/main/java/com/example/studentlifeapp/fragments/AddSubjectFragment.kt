@@ -60,10 +60,6 @@ class AddSubjectFragment : Fragment() {
         optionsMenu = menu
         menu.findItem(R.id.option_about_app).isVisible = false
         menu.findItem(R.id.option_logout).isVisible = false
-        if(menu.findItem(R.id.action_add)!=null){
-            menu.findItem(R.id.action_add).isEnabled = false
-        }
-
         super.onPrepareOptionsMenu(menu)
     }
 //Todo fix like everything. opening up the fragment means it doesnt change when you change navigation view
@@ -75,7 +71,7 @@ class AddSubjectFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         add_subject_background.setOnClickListener {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
             activity?.onBackPressed()
         }
 
@@ -84,7 +80,7 @@ class AddSubjectFragment : Fragment() {
 
         setStart.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
+            val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)
@@ -98,7 +94,7 @@ class AddSubjectFragment : Fragment() {
         var endDate:String
         setEnd.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
+            val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ _, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)

@@ -2,24 +2,21 @@ package com.example.studentlifeapp.fragments
 
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Transaction
-import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.fragment_transaction_tab.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
-import java.lang.ClassCastException
 
 
 class TransactionTabFragment : Fragment() {
@@ -64,7 +61,7 @@ class TransactionTabFragment : Fragment() {
         transaction_history_recycler_view.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         transactionAdapter.notifyDataSetChanged()
 
-        viewModel.transactions.observe(this, Observer { viewTransactions ->
+        viewModel.transactions.observe(viewLifecycleOwner, Observer { viewTransactions ->
             viewTransactions.sortByDescending{it.date}
             transactions.clear()
             for (transaction in viewTransactions){

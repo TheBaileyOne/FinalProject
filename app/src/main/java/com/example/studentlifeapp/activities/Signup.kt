@@ -1,21 +1,17 @@
 package com.example.studentlifeapp.activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.annotation.NonNull
+import androidx.appcompat.app.AppCompatActivity
 import com.example.studentlifeapp.R
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
-import java.lang.Exception
 
 class Signup : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -57,7 +53,8 @@ class Signup : AppCompatActivity() {
             }
 
             else{
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, OnCompleteListener{ task ->
+                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this
+                ) { task ->
                     if(task.isSuccessful){
                         Toast.makeText(this, "Successfully Registered", Toast.LENGTH_LONG).show()
 
@@ -68,7 +65,7 @@ class Signup : AppCompatActivity() {
                             "name" to name,
                             "email" to email)
                         documentReference.set(user)
-                            .addOnSuccessListener { documentReference ->
+                            .addOnSuccessListener {
                                 Log.d("TAG", "DocumentSnapshot added with ID: $userID")
                             }
                             .addOnFailureListener {exception ->
@@ -78,11 +75,11 @@ class Signup : AppCompatActivity() {
                         startActivity(intent)
                         finish()
                     }else {
-                        Log.w("TAG", "createUserWithEmail:failure", task.exception);
+                        Log.w("TAG", "createUserWithEmail:failure", task.exception)
 
                         Toast.makeText(this, "Registration Failed", Toast.LENGTH_LONG).show()
                     }
-                })
+                }
             }
             
         }

@@ -3,19 +3,17 @@ package com.example.studentlifeapp.fragments
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.Selection
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.selection.*
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.SubjectDetails
 import com.example.studentlifeapp.data.Event
@@ -23,9 +21,7 @@ import com.example.studentlifeapp.inflate
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.fragment_studies_generated.*
-import kotlinx.android.synthetic.main.fragment_study_mode.*
 import org.threeten.bp.format.DateTimeFormatter
-import java.lang.IllegalStateException
 
 
 class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adapter<StudiesGeneratedAdapter.StudiesGeneratedViewHolder>(){

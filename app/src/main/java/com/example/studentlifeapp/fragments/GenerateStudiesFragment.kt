@@ -3,7 +3,6 @@ package com.example.studentlifeapp.fragments
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,14 +11,13 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.Switch
 import android.widget.Toast
-
+import androidx.fragment.app.Fragment
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.util.StudyGenerator
 import kotlinx.android.synthetic.main.fragment_generate_studies.*
 import kotlinx.android.synthetic.main.fragment_generate_studies.view.*
-import kotlinx.android.synthetic.main.fragment_studies_generated.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -51,7 +49,7 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         }
         endDate.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker = DatePickerDialog(context!!,DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+            val datePicker = DatePickerDialog(requireContext(),DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)
@@ -83,17 +81,23 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
     }
 
     private fun generateStudy(name:String, endDate:LocalDate, lunchTime:LocalTime, weekendStudy:Boolean){
-        val studyGenerator = StudyGenerator(name,endDate = endDate, events = events, lunchTime = lunchTime, weekendStudy = weekendStudy)
+        val studyGenerator = StudyGenerator(
+            name,
+            endDate = endDate,
+            events = events,
+            lunchTime = lunchTime,
+            weekendStudy = weekendStudy
+        )
         val studies = studyGenerator.getStudies()
         val fragment = StudiesGeneratedFragment(studies)
-        val fragmentManager = activity!!.supportFragmentManager
+        val fragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentManager.popBackStack()
         fragmentTransaction.replace(R.id.subject_detail_fragment, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+        imm.hideSoftInputFromWindow(requireView().windowToken, 0)
 
     }
 

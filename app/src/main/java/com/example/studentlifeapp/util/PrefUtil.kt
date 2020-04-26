@@ -2,10 +2,7 @@ package com.example.studentlifeapp.util
 
 import android.content.Context
 import androidx.preference.PreferenceManager
-import android.content.SharedPreferences.Editor
 import com.example.studentlifeapp.activities.StudyMode
-
-import java.security.AccessControlContext
 
 class PrefUtil{
     companion object{

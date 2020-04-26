@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="60dp"
-    android:id="@+id/transaction_view"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     app:strokeWidth="1dp"
     android:focusable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id = "@+id/transaction_view_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -46,7 +42,7 @@
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_below="@+id/event_view_title"
+            android:layout_below="@+id/transaction_view_title"
             android:layout_marginTop="4dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"

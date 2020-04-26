@@ -46,7 +46,6 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
     lateinit var eventName:String
     lateinit var eventStartTime: LocalDateTime
     lateinit var eventEndTime:LocalDateTime
-    lateinit var location :Location
     lateinit var notes:String
     lateinit var eventType: EventType
     lateinit var durationValue: String
@@ -99,7 +98,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
         var startDateTime:String
         setDate.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
+            val datePicker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)
@@ -130,8 +129,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
 
         setFinishDate.setOnClickListener {
             val now = Calendar.getInstance()
-            val datePicker2 = DatePickerDialog(context!!, DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
-                Toast.makeText(context,"Date picker picked", Toast.LENGTH_SHORT)
+            val datePicker2 = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener{ view, year, month, dayOfMonth ->
                 val selectedDate = Calendar.getInstance()
                 selectedDate.set(Calendar.YEAR,year)
                 selectedDate.set(Calendar.MONTH,month)
@@ -227,7 +225,7 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
             if (activity is SubjectDetails){
                 (activity as SubjectDetails).updateSubEvents()
             }
-            activity!!.onBackPressed()
+            requireActivity().onBackPressed()
         }
     }
 

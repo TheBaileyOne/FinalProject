@@ -3,10 +3,8 @@ package com.example.studentlifeapp.data
 import android.content.ContentValues.TAG
 import android.util.Log
 import com.example.studentlifeapp.toTimeStamp
-import com.example.studentlifeapp.util.Utils
 import com.example.studentlifeapp.util.calculateClassification
 import org.threeten.bp.LocalDateTime
-import java.lang.Exception
 
 class Subject(val name: String, val summary: String, val events:MutableList<String> = mutableListOf(),
               val subjectStart: LocalDateTime = LocalDateTime.now(), val subjectEnd:LocalDateTime = subjectStart.plusMonths(1),
@@ -91,8 +89,6 @@ data class Assessment(
     //sort out for database implementation.
 ){
     private var percentage = calculatePercentage()
-    var classification:Classification = calculateClassification(percentage)
-    val subAssesments = mutableListOf<Assessment>()
     fun calculatePercentage():Double {
         return (mark/maxMark)*100
     }

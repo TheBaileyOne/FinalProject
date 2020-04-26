@@ -156,7 +156,7 @@ class EventExpandFragment(private val groupRef:String, val title:String) : Fragm
         event_expanded_recyclerView.adapter=eventAdapter
         event_expanded_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
 
-        eventsViewModel.events.observe(this, Observer { viewEvents ->
+        eventsViewModel.events.observe(viewLifecycleOwner, Observer { viewEvents ->
             viewEvents.sortBy { it.startTime }
             events = viewEvents.filter { it.eventId == groupRef }.toMutableList()
             eventAdapter.refreshList(events)

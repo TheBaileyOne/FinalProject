@@ -3,40 +3,36 @@ package com.example.studentlifeapp.fragments
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.PorterDuff
-import android.net.Uri
-import android.net.sip.SipSession
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.studentlifeapp.*
+import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.getColorCompat
 import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.tolocalDateTime
 import com.example.studentlifeapp.util.Utils
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.event_item_view.*
-import kotlinx.android.synthetic.main.fragment_add_assessment.*
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.LocalDateTime
-import java.lang.ClassCastException
+import org.threeten.bp.format.DateTimeFormatter
 
 class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf(), val onClick:(Event)->Unit):RecyclerView.Adapter<DashEventsAdapter.DashViewHolder>(){
 //  private var events: MutableList<Event> = mutableListOf()

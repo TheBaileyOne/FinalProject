@@ -5,8 +5,6 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.fragment.app.FragmentStatePagerAdapter
-import java.lang.Exception
 
 class MainPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
     private val screens = arrayListOf<MainScreen>()

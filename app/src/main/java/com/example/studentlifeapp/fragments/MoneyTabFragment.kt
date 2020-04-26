@@ -3,7 +3,6 @@ package com.example.studentlifeapp.fragments
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.text.InputType
@@ -11,9 +10,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.content.ContextCompat.getColor
-import androidx.core.content.res.ResourcesCompat.getColor
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -25,19 +24,15 @@ import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.RepeatType
 import com.example.studentlifeapp.data.Transaction
 import com.example.studentlifeapp.data.TransactionType
-import com.example.studentlifeapp.inflate
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
-import io.grpc.internal.SharedResourceHolder
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.fragment_money_tab.*
 import kotlinx.android.synthetic.main.transaction_item.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.lang.ClassCastException
 import kotlin.math.abs
 import kotlin.math.floor
 
@@ -185,7 +180,7 @@ class MoneyTabFragment : Fragment() {
         upcoming_expenses_recycler.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         expenseAdapter.notifyDataSetChanged()
 
-        viewModel.transactions.observe(this, Observer { viewTransactions->
+        viewModel.transactions.observe(viewLifecycleOwner, Observer { viewTransactions->
             viewTransactions.sortBy{it.date}
             expenseTransactions.clear()
             incomeTransactions.clear()
@@ -226,7 +221,7 @@ class MoneyTabFragment : Fragment() {
 
         fab_money_tab_add.setOnClickListener{
             val textInput = EditText(context)
-            val builder = moneyInputBuilder(context!!, textInput, "Add Money")
+            val builder = moneyInputBuilder(requireContext(), textInput, "Add Money")
             builder.setPositiveButton("Add") { _, _->
                 val amount = textInput.text.toString().toDouble()
                 val transaction = Transaction(
@@ -240,7 +235,7 @@ class MoneyTabFragment : Fragment() {
         }
         fab_money_tab_minus.setOnClickListener{
             val textInput = EditText(context)
-            val builder = moneyInputBuilder(context!!, textInput, "Minus Money")
+            val builder = moneyInputBuilder(requireContext(), textInput, "Minus Money")
             builder.setPositiveButton("Minus") { _, _->
                 val amount = textInput.text.toString().toDouble()
                 val transaction = Transaction(

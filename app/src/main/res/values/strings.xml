@@ -2,20 +2,10 @@
     <string name="app_name">StudentLifeApp</string>
     <string name="activity_main_bottom_screen_dashboard">Dashboard</string>
     <string name="activity_main_bottom_screen_timeTable">Timetable</string>
-    <string name="activity_main_bottom_screen_subjects">Subjects</string>
     <string name="activity_main_bottom_screen_course">Course</string>
     <string name="activity_main_bottom_screen_studyMode">Study Mode</string>
 
     <string name="title_activity_study_mode">StudyMode</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
     <string name="email_hint">Email</string>
     <string name="password_hint">Password</string>
     <string name="login_btn">Login</string>
@@ -25,7 +15,6 @@
     <string name="subject_percent_string">%1$.2f%%</string>
     <string name="placeholder_string">%1$s</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="study_duration">%1$d  Mins</string>
     <string name="subject_details_name">%1$s Details:</string>
     <string name="date_span">%1$s - %2$s</string>

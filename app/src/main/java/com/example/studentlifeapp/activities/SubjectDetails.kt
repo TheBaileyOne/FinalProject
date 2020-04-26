@@ -1,9 +1,7 @@
 package com.example.studentlifeapp.activities
 
 import android.content.ContentValues.TAG
-import android.content.DialogInterface
 import android.graphics.PorterDuff
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -14,7 +12,7 @@ import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,10 +21,10 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.*
 import com.example.studentlifeapp.fragments.*
 import com.example.studentlifeapp.getColorCompat
-import com.example.studentlifeapp.util.getJsonExtra
 import com.example.studentlifeapp.inflate
 import com.example.studentlifeapp.tolocalDateTime
 import com.example.studentlifeapp.util.Utils
+import com.example.studentlifeapp.util.getJsonExtra
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -35,7 +33,6 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.activity_subject_details.*
 import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
-import java.lang.Exception
 import java.text.DecimalFormat
 
 class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?):
@@ -149,9 +146,9 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         viewAdapter = SubjectEventsAdapter(eventsGroup){event:Pair<String,List<Event>> ->eventClicked(event)}
 
         val formatter2= DateTimeFormatter.ofPattern("EEE, dd MMM")
-        subject_title_view_name.text = getString(R.string.subject_details_name,subject?.name)
+        subject_title_view_name.text = getString(R.string.subject_details_name, subject.name)
         subject_details_date.text = getString(R.string.date_span, formatter2.format(subject.subjectStart),formatter2.format(subject.subjectEnd))
-        subject_info_view_details.text = subject?.summary
+        subject_info_view_details.text = subject.summary
 
         recyclerView = subject_events_recyclerView.apply {
             setHasFixedSize(true)

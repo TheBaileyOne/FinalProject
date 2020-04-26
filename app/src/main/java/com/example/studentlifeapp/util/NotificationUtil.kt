@@ -1,22 +1,20 @@
 package com.example.studentlifeapp.util
 
 import android.annotation.TargetApi
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Color.BLUE
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import androidx.core.app.NotificationCompat
-import com.example.studentlifeapp.BuildConfig
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.TimerNotificationActionReceiver
-import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.activities.StudyMode
 import com.example.studentlifeapp.data.AppConstants
-import com.google.firebase.firestore.util.AsyncQueue
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -149,14 +147,12 @@ class NotificationUtil {
         @TargetApi(26)
         private fun NotificationManager.createNotificationChannel(channelID:String, channelName:String,
                                 playSound:Boolean){
-            if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
-                val channelImportance = if(playSound) NotificationManager.IMPORTANCE_DEFAULT
-                                            else NotificationManager.IMPORTANCE_LOW
-                val notificationChannel = NotificationChannel(channelID, channelName, channelImportance)
-                notificationChannel.enableLights(true)
-                notificationChannel.lightColor = BLUE
-                this.createNotificationChannel(notificationChannel)
-            }
+            val channelImportance = if(playSound) NotificationManager.IMPORTANCE_DEFAULT
+                                        else NotificationManager.IMPORTANCE_LOW
+            val notificationChannel = NotificationChannel(channelID, channelName, channelImportance)
+            notificationChannel.enableLights(true)
+            notificationChannel.lightColor = BLUE
+            this.createNotificationChannel(notificationChannel)
 
         }
 

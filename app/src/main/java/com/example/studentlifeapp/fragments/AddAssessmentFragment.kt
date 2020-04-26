@@ -39,7 +39,7 @@ class AddAssessmentFragment(private val remainingWeight: Int = 100) : Fragment()
         val seekBar = view.findViewById<SeekBar>(R.id.seekbar_assessment_weighting)
         assessment_expand_back.setOnClickListener {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view!!.windowToken, 0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
             activity?.onBackPressed()
         }
         seekBar.max = remainingWeight

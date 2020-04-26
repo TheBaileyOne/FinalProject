@@ -2,30 +2,23 @@ package com.example.studentlifeapp.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.inflate
-import com.example.studentlifeapp.tolocalDateTime
-import com.google.firebase.Timestamp
-import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fragment_course.*
 import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.list_item.*
-import java.lang.ClassCastException
 
 //class SubjectsAdapter(private var viewModel: SubjectsViewModel, val onClick: (Subject) ->Unit):
 class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):
@@ -122,24 +115,6 @@ class SubjectsTabFragment : Fragment() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.menu_add, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.action_add -> {
-                subAddClickListener.subAddClick()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_subjects_tab, container, false)
@@ -156,7 +131,7 @@ class SubjectsTabFragment : Fragment() {
         viewModel = activity?.run{
             ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
-        viewModel.subjects.observe(this, Observer<MutableList<Subject>>{subjects ->
+        viewModel.subjects.observe(viewLifecycleOwner, Observer<MutableList<Subject>>{subjects ->
             subjectAdapter.refreshList(subjects)
         })
 

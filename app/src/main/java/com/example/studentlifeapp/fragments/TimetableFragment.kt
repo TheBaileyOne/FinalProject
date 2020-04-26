@@ -1,59 +1,48 @@
 package com.example.studentlifeapp.fragments
 
- import android.content.ContentValues
-import android.content.ContentValues.TAG
+ //import kotlinx.android.synthetic.main.event_item_view.view.*
+//import org.threeten.bp.LocalDateTime
  import android.content.Context
  import android.graphics.PorterDuff
  import android.os.Bundle
-import android.util.Log
-import android.util.TypedValue
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.children
-import androidx.core.view.marginBottom
-import androidx.fragment.app.FragmentManager
- import androidx.lifecycle.ViewModelProvider
+ import android.util.TypedValue
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+ import android.widget.TextView
+ import android.widget.Toast
+ import androidx.core.view.children
+ import androidx.core.view.marginBottom
+ import androidx.fragment.app.Fragment
  import androidx.lifecycle.ViewModelProviders
  import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.studentlifeapp.*
-import com.example.studentlifeapp.activities.MainActivity
-import com.example.studentlifeapp.data.Event
-import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.inflate
-import com.example.studentlifeapp.setTextColorRes
+ import androidx.recyclerview.widget.LinearLayoutManager
+ import androidx.recyclerview.widget.RecyclerView
+ import com.example.studentlifeapp.*
+ import com.example.studentlifeapp.data.Event
+ import com.example.studentlifeapp.data.EventType
  import com.example.studentlifeapp.util.Utils
- import com.google.firebase.Timestamp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.ListenerRegistration
-import com.kizitonwose.calendarview.model.CalendarDay
-import com.kizitonwose.calendarview.model.CalendarMonth
-import com.kizitonwose.calendarview.model.DayOwner
-import com.kizitonwose.calendarview.ui.DayBinder
-import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
-import com.kizitonwose.calendarview.ui.ViewContainer
-import com.kizitonwose.calendarview.utils.next
-import com.kizitonwose.calendarview.utils.previous
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.calendar_day_layout.view.*
-import kotlinx.android.synthetic.main.fragment_timetable.*
-import kotlinx.android.synthetic.main.calendar_header.view.*
-import kotlinx.android.synthetic.main.event_item_view.*
-//import kotlinx.android.synthetic.main.event_item_view.view.*
-import org.threeten.bp.LocalDate
-//import org.threeten.bp.LocalDateTime
-import org.threeten.bp.YearMonth
-import org.threeten.bp.format.DateTimeFormatter
-import org.threeten.bp.format.TextStyle
- import java.lang.ClassCastException
+ import com.google.firebase.auth.FirebaseAuth
+ import com.google.firebase.firestore.CollectionReference
+ import com.google.firebase.firestore.FirebaseFirestore
+ import com.google.firebase.firestore.ListenerRegistration
+ import com.kizitonwose.calendarview.model.CalendarDay
+ import com.kizitonwose.calendarview.model.CalendarMonth
+ import com.kizitonwose.calendarview.model.DayOwner
+ import com.kizitonwose.calendarview.ui.DayBinder
+ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
+ import com.kizitonwose.calendarview.ui.ViewContainer
+ import com.kizitonwose.calendarview.utils.next
+ import com.kizitonwose.calendarview.utils.previous
+ import kotlinx.android.extensions.LayoutContainer
+ import kotlinx.android.synthetic.main.calendar_day_layout.view.*
+ import kotlinx.android.synthetic.main.calendar_header.view.*
+ import kotlinx.android.synthetic.main.event_item_view.*
+ import kotlinx.android.synthetic.main.fragment_timetable.*
+ import org.threeten.bp.LocalDate
+ import org.threeten.bp.YearMonth
+ import org.threeten.bp.format.DateTimeFormatter
+ import org.threeten.bp.format.TextStyle
  import java.util.*
 
 //TODO: include FAB button or another thing to add an event
@@ -194,7 +183,7 @@ class TimetableFragment : Fragment() {
         calendar_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         eventAdapter.notifyDataSetChanged()
 
-        eventViewModel.events.observe(this, androidx.lifecycle.Observer { events ->
+        eventViewModel.events.observe(viewLifecycleOwner, androidx.lifecycle.Observer { events ->
             groupedEvents = events.groupBy { it.startTime.toLocalDate() }.toMutableMap()
             calendarView.notifyCalendarChanged()
             updateAdapterForDate(today)
@@ -261,7 +250,6 @@ class TimetableFragment : Fragment() {
                         when {
                             events.count() == 1 -> {
                                 eventView3.setBackgroundColor(view.context.getColorCompat(events[0].colour))
-                                eventView3.marginBottom
                             }
                             events.count()==2 -> {
                                 eventView2.setBackgroundColor(view.context.getColorCompat(events[1].colour))

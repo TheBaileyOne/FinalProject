@@ -1,29 +1,23 @@
 package com.example.studentlifeapp.activities
 
 import android.app.AlarmManager
-import android.app.Notification
 import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.TimerExpiredReceiver
 import com.example.studentlifeapp.util.NotificationUtil
 import com.example.studentlifeapp.util.PrefUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import kotlinx.android.synthetic.main.activity_study_mode.*
 import kotlinx.android.synthetic.main.content_study_mode.*
 import java.util.*
-import kotlin.system.exitProcess
 
 class StudyMode : AppCompatActivity() {
 

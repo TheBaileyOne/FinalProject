@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/event_expand"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.EventExpandFragment"
@@ -88,8 +87,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/seekbar_assessment_weighting" />
 
           <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/add_assessment_max_mark"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+              style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

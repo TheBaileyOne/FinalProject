@@ -1,22 +1,17 @@
 package com.example.studentlifeapp.activities
 
-import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.data.Transaction
@@ -24,7 +19,6 @@ import com.example.studentlifeapp.fragments.*
 import com.example.studentlifeapp.pagers.MainPagerAdapter
 import com.example.studentlifeapp.pagers.MainScreen
 import com.example.studentlifeapp.pagers.getMainScreenForMenuItem
-import com.example.studentlifeapp.toTimeStamp
 import com.example.studentlifeapp.util.Utils
 import com.example.studentlifeapp.util.putExtraJson
 import com.google.android.material.bottomnavigation.BottomNavigationView

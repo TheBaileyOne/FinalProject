@@ -24,7 +24,6 @@
 
 
     <ScrollView
-        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/subject_button_container"
@@ -34,7 +33,6 @@
         app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
-            android:id="@+id/subject_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/cardview_light_background"
@@ -198,7 +196,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/subject_events_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

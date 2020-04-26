@@ -1,25 +1,18 @@
 package com.example.studentlifeapp.fragments
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import android.util.EventLog
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-
+import androidx.fragment.app.Fragment
 import com.example.studentlifeapp.R
-import com.example.studentlifeapp.activities.MainActivity
 import com.example.studentlifeapp.activities.SubjectDetails
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import kotlinx.android.synthetic.main.fragment_event_details.*
-import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.lang.ClassCastException
 
 class EventDetailsFragment(val event: Event) : Fragment() {
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")

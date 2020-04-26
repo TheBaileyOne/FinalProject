@@ -1,37 +1,25 @@
 package com.example.studentlifeapp.fragments
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.AcademicYear
 import com.example.studentlifeapp.data.DatabaseManager
-import com.example.studentlifeapp.inflate
+import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.tolocalDateTime
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
-import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.fragment_course.*
-import kotlinx.android.synthetic.main.list_item.*
-import java.lang.ClassCastException
-import java.lang.Exception
 
 class CoursePagerAdapter(fragment: Fragment):FragmentStateAdapter(fragment){
     val fragments:MutableList<Fragment> = mutableListOf()
@@ -132,7 +120,6 @@ class CourseFragment : Fragment() {
 }
 class SubjectsViewModel : ViewModel(){
     val subjects: MutableLiveData<MutableList<Subject>> = MutableLiveData()
-    fun getSubjects() = subjects.value
     fun setSubjects(subjects:MutableList<Subject>){
         this.subjects.value = subjects
     }
