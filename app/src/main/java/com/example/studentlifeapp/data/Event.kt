@@ -12,7 +12,7 @@ data class Event(
     var endTime: LocalDateTime = startTime,
     var notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
     var location: Location? = null,
-    var note: String? = null,
+    var note: String? = "",
 //    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
     var eventId: String = title,
     var eventRef:String = ""

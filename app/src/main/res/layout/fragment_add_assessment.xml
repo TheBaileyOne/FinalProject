@@ -59,6 +59,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
                     android:id="@+id/add_transactio_name_edit"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -86,17 +87,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seekbar_assessment_weighting" />
 
-<!--            <EditText-->
-<!--                android:id="@+id/add_assessment_max_mark"-->
-<!--                android:layout_width="100dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:layout_marginTop="8dp"-->
-<!--                android:ems="10"-->
-<!--                android:inputType="numberDecimal"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/add_assessment_name" />-->
-            <com.google.android.material.textfield.TextInputLayout
+          <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/add_assessment_max_mark"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
