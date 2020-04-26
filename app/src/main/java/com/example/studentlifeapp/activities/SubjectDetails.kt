@@ -377,6 +377,13 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                         .addOnFailureListener{e->
                             Log.d(TAG, "Error getting event: $e")
                         }
+                    DatabaseManager().getDatabase().collection("subjects").document(subjectRef).collection("eventRef").document(refs.id).delete()
+                        .addOnSuccessListener {
+                            Log.d(TAG, "event reference Deleted")
+                        }
+                        .addOnFailureListener {e->
+                            Log.d(TAG, "Error deleting event reference: $e")
+                        }
                 }
                 DatabaseManager().getDatabase().collection("subjects").document(subjectRef).delete()
                     .addOnSuccessListener {
