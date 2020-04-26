@@ -1,118 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:background="@color/primaryGrey">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.CourseTabFragment"
         android:orientation="vertical"
         android:background="@color/cardview_light_background"
         android:layout_margin="8dp">
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Select subjects to include in classification calculation"
+            android:id="@+id/textView24"
             style="@style/TextAppearance.MaterialComponents.Caption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="16dp"
-            android:textStyle="italic"/>
-        <TableLayout
+            android:layout_marginTop="8dp"
+            android:text="Select subjects to include in classification calculation"
+            android:textStyle="italic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/table_scroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="0,1,2,3"
-            android:id="@+id/course_grade_table"
-            android:layout_margin="8dp"
-            android:textAlignment="center">
-            <TableRow
-                android:id="@+id/course_grade_table_header"
-                android:textAlignment="center">
-                <TextView android:text="Subject"
-                    android:paddingEnd="16dp"
-                    android:textColor="@color/primaryTextColor"
-                    android:background="@color/primaryDarkColor"
-                    android:layout_marginHorizontal="1dp"
-                    android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
-                <TextView android:text="Credits"
-                    android:background="@color/primaryDarkColor"
-                    android:textColor="@color/primaryTextColor"
-                    android:layout_marginHorizontal="1dp"
-                    android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
-                <TextView android:text="Score"
-                    android:background="@color/primaryDarkColor"
-                    android:textColor="@color/primaryTextColor"
-                    android:layout_marginHorizontal="1dp"
-                    android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
-                <TextView android:text="Include?"
-                    android:background="@color/primaryDarkColor"
-                    android:textColor="@color/primaryTextColor"
-                    android:layout_marginHorizontal="1dp"
-                    android:textAlignment="center"
-                    style="@style/TextAppearance.MaterialComponents.Subtitle2"/>
-            </TableRow>
-        </TableLayout>
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/required_credits"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView24"
+            android:fadeScrollbars="false">
+
+            <TableLayout
+                android:id="@+id/course_grade_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:stretchColumns="0,1,2,3"
+                android:textAlignment="center"
+                tools:layout_editor_absoluteX="8dp">
+
+                <TableRow
+                    android:id="@+id/course_grade_table_header"
+                    android:textAlignment="center">
+
+                    <TextView
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_marginHorizontal="1dp"
+                        android:background="@color/primaryDarkColor"
+                        android:paddingEnd="16dp"
+                        android:text="Subject"
+                        android:textAlignment="center"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_marginHorizontal="1dp"
+                        android:background="@color/primaryDarkColor"
+                        android:text="Credits"
+                        android:textAlignment="center"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_marginHorizontal="1dp"
+                        android:background="@color/primaryDarkColor"
+                        android:text="Score"
+                        android:textAlignment="center"
+                        android:textColor="@color/primaryTextColor" />
+
+                    <TextView
+                        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:layout_marginHorizontal="1dp"
+                        android:background="@color/primaryDarkColor"
+                        android:text="Include?"
+                        android:textAlignment="center"
+                        android:textColor="@color/primaryTextColor" />
+                </TableRow>
+            </TableLayout>
+        </androidx.core.widget.NestedScrollView>
+
         <TextView
+            android:id="@+id/textView23"
+            style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Classification Calculator"
             android:layout_marginHorizontal="8dp"
             android:layout_marginVertical="4dp"
-            style="@style/TextAppearance.MaterialComponents.Headline5"/>
+            android:text="Classification Calculator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/required_credits"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/required_credits"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginVertical="4dp"/>
+            android:layout_marginVertical="4dp"
+            android:text="@string/required_credits"
+            app:layout_constraintBottom_toTopOf="@+id/seekbar_credits"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <SeekBar
             android:id="@+id/seekbar_credits"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/course_grade_classification"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <LinearLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/table_scroll">
+
             <TextView
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ignore lowest 20 credits?"
-                android:layout_margin="8dp"
                 android:layout_gravity="center"
-                style="@style/TextAppearance.MaterialComponents.Subtitle1"/>
+                android:layout_margin="8dp"
+                android:text="Ignore lowest 20 credits?" />
+
             <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/ignore_credit_checkbox"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/ignore_credit_checkbox"/>
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/course_grade_obtained"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/obtained_percent"
             android:textAlignment="textEnd"
-            android:layout_margin="8dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <TextView
             android:id="@+id/course_grade_classification"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.MaterialComponents.Headline6"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/classification"
             android:textAlignment="textEnd"
-            android:layout_margin="8dp"/>
+            app:layout_constraintBottom_toTopOf="@+id/course_grade_obtained"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

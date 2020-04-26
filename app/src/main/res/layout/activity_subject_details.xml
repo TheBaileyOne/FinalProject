@@ -42,7 +42,7 @@
 
             <TextView
                 android:id="@+id/subject_title_view_name"
-                style="@style/TextAppearance.MaterialComponents.Headline4"
+                style="@style/TextAppearance.MaterialComponents.Headline5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

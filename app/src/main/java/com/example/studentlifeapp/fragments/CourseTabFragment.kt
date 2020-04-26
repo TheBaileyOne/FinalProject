@@ -1,6 +1,7 @@
 package com.example.studentlifeapp.fragments
 
 import android.content.ContentValues.TAG
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -12,6 +13,7 @@ import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.data.AcademicYear
 import com.example.studentlifeapp.data.Classification
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.util.calculateClassification
@@ -116,11 +118,37 @@ class CourseTabFragment : Fragment() {
     }
 
     private fun setTable(subjects:MutableList<Subject>, table:TableLayout){
+        var currentYear:AcademicYear? = null
         for (subject in subjects){
+            if(subject.academicYear != currentYear){
+                val yearRow = insertYearRow(subject.academicYear)
+                table.addView(yearRow)
+                currentYear = subject.academicYear
+
+            }
             val row = newRow(subject)
             subjectRows.add(Pair(subject,row))
             table.addView(row)
         }
+
+    }
+
+    private fun insertYearRow(year:AcademicYear):TableRow{
+        val row = TableRow(context)
+        val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT)
+//        layoutParams.gravity = Gravity.CENTER
+        row.layoutParams = layoutParams
+
+        val subjectText = TextView(context)
+        subjectText.text = year.string
+        subjectText.setTypeface(subjectText.typeface, Typeface.BOLD)
+        subjectText.setPadding(8,0,0,0)
+
+        row.addView(subjectText)
+        row.setBackgroundColor(resources.getColor(R.color.AliceBlue))
+
+        return row
+
 
     }
 

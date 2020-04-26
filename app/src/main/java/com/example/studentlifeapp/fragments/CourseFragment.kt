@@ -123,6 +123,7 @@ class CourseFragment : Fragment() {
                         }
                     }
                 }
+                subjects.sortByDescending { it.academicYear.ordinal }
                 viewModel.setSubjects(subjects.toMutableList())
 
             }

@@ -1,6 +1,7 @@
 package com.example.studentlifeapp.activities
 
 import android.content.ContentValues.TAG
+import android.content.DialogInterface
 import android.graphics.PorterDuff
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TableRow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -221,6 +223,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
 
     }
 
+
+
     private fun addRow(assessment: Assessment){
         val row = TableRow(this)
         val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT)
@@ -336,16 +340,56 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                 onBackPressed()
                 return true
             }
+            R.id.action_delete ->{
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("Delete ${subject.name} Subject and all its events?")
+                builder.setCancelable(true)
+                builder.setPositiveButton("Delete") {dialog, _ ->
+                    dialog.cancel()
+                    deleteSubject()
+                }
+                builder.show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_delete, menu)
         return true
     }
     fun addStudies(studies:MutableList<Event>){
         subject.addEvents(studies)
         Toast.makeText(this, "${studies.size} studies added", Toast.LENGTH_SHORT).show()
+
+    }
+
+    private fun deleteSubject(){
+        DatabaseManager().getDatabase().collection("subjects").document(subjectRef).collection("eventRef").get()
+            .addOnSuccessListener {eventRefs ->
+                Log.d(TAG, "updateSubEvents listener success")
+                for (refs in eventRefs){
+                    val eventId = refs.getString("ref")!!
+                    DatabaseManager().getDatabase().collection("events").document(eventId).delete()
+                        .addOnSuccessListener {
+                            Log.d(TAG, "event deleted")
+                        }
+                        .addOnFailureListener{e->
+                            Log.d(TAG, "Error getting event: $e")
+                        }
+                }
+                DatabaseManager().getDatabase().collection("subjects").document(subjectRef).delete()
+                    .addOnSuccessListener {
+                        finish()
+                    }
+                    .addOnFailureListener { e->
+                        Log.d(TAG, "Error Deleting Subject: $e")
+                    }
+            }
+            .addOnFailureListener{e ->
+                Log.d(TAG, "Error getting eventRefs: $e")
+            }
+
 
     }
     override fun onEventSaved(events: MutableList<Event>) {
