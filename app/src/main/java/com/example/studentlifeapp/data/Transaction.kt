@@ -31,14 +31,18 @@ data class Transaction(
                 transactionRef = it.id
                 Log.d(TAG, "Transaction added")
 
-                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+                if(activity != null){
+                    val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+                }
                 activity?.onBackPressed()
             }
             .addOnFailureListener { e->
                 Log.w(TAG, "Transaction add error: $e")
-                val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+                if(activity != null){
+                    val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(activity.currentFocus!!.windowToken, 0)
+                }
                 activity?.onBackPressed()
             }
     }

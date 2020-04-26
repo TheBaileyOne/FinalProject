@@ -16,7 +16,9 @@ import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Transaction
 import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.fragment_transaction_tab.*
+import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import java.lang.ClassCastException
 
 
@@ -66,7 +68,7 @@ class TransactionTabFragment : Fragment() {
             viewTransactions.sortByDescending{it.date}
             transactions.clear()
             for (transaction in viewTransactions){
-                if (transaction.date.isBefore(LocalDateTime.now())){
+                if (transaction.date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59)))){
                     transactions.add(transaction)
                 }
             }
