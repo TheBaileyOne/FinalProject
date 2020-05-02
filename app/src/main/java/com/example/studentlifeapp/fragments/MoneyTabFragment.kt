@@ -150,6 +150,7 @@ class MoneyTabFragment : Fragment() {
                 updateBalance(document.getDouble("current_balance")!!)
                 calculateWeekly()
             }
+            listener = transactionListener()
         }
         return view
     }
@@ -168,7 +169,6 @@ class MoneyTabFragment : Fragment() {
 //
 //        expenseAdapter = TransactionAdapter(expenseTransactions)
 //        incomeAdapter = TransactionAdapter(incomeTransactions)
-        listener = transactionListener()
 
         next_income_recycler.layoutManager = LinearLayoutManager(requireContext(),RecyclerView.VERTICAL,false)
         next_income_recycler.adapter = incomeAdapter
@@ -356,7 +356,7 @@ class MoneyTabFragment : Fragment() {
                                                 RepeatType.YEARS -> transaction.date.plusYears(repeatLong)
                                                 else -> throw Exception("Error with repeat type")
                                             }
-                                            val nextInstance = transaction.copy(date = newDay!!)
+                                            val nextInstance = transaction.copy(date = newDay!!, transactionRef = "")
                                             nextInstance.addToDatabase()
                                         }
                                         transaction.completed = true
@@ -373,12 +373,6 @@ class MoneyTabFragment : Fragment() {
 //                            transactions.removeIf{it.transactionRef == transaction.transactionRef}
                             val removeIndex = transactions.indexOf(transactions.find { it.transactionRef == transaction.transactionRef })
                             val originalTransaction = transactions[removeIndex]
-//                            if (transaction.type== TransactionType.EXPENSE){
-//                                expenseTransactions.remove(originalTransaction)
-//                            }else{
-//                                incomeTransactions.remove(originalTransaction)
-//                            }
-
                             transactions.remove(originalTransaction)
                         }
                         DocumentChange.Type.MODIFIED->{

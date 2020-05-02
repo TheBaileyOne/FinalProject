@@ -104,7 +104,6 @@ class AddTransactionFragment : Fragment() {
             Toast.makeText(context, "Please fill in all compulsory fields", Toast.LENGTH_LONG).show()
 
         }else{
-
             val formatter = DateTimeFormatter.ofPattern("dd MMM, yyyy HH:mm")
             val name = add_transaction_name_edit.text.toString()
             val amount = add_transaction_amount_edit.text.toString().toDouble()
@@ -113,12 +112,9 @@ class AddTransactionFragment : Fragment() {
                                 else add_transaction_repeat_num.text.toString().toInt()
             val type = if(radio_income.isChecked) TransactionType.INCOME else TransactionType.EXPENSE
             val completed = repeat<=0
-//            date.toLocalDate().isBefore(LocalDate.now())
 
             val transaction = Transaction(name,amount, date, completed, type, repeat, repeatType)
             transaction.addToDatabase(activity)
-
-
         }
     }
 

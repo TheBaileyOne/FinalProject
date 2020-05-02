@@ -60,7 +60,7 @@ data class Transaction(
 
     fun delete(){
         if (transactionRef.isBlank()){
-            throw Exception("no databse reference")
+            throw Exception("no database reference")
         }else{
             DatabaseManager().getDatabase().collection("transactions").document(transactionRef).delete()
         }

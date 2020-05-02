@@ -65,7 +65,7 @@ class TransactionTabFragment : Fragment() {
             viewTransactions.sortByDescending{it.date}
             transactions.clear()
             for (transaction in viewTransactions){
-                if (transaction.date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59)))){
+                if (transaction.date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59))) && transaction.completed){
                     transactions.add(transaction)
                 }
             }
