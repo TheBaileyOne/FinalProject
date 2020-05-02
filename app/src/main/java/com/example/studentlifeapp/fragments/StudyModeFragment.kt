@@ -160,7 +160,6 @@ class StudyModeFragment : Fragment() {
     private fun studyClicked(study:Event){
         val intent = Intent(context, StudyMode::class.java)
         val difference = ChronoUnit.MINUTES.between(study.startTime, study.endTime).toInt()
-        Toast.makeText(context, "$difference mins", Toast.LENGTH_SHORT).show()
         intent.putExtra("timer_length", difference)
         intent.putExtra("study_name",study.title)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

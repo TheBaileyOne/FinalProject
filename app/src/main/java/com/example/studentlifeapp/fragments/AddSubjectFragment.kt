@@ -116,11 +116,9 @@ class AddSubjectFragment : Fragment() {
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 //                val type = parent?.getItemAtPosition(position)
-//                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
                 val year = parent?.getItemAtPosition(position) as String
 //                academicYear = year as AcademicYear
                 academicYear = AcademicYear.values().first { it.string == year }
-                Toast.makeText(context,"Type: $year",Toast.LENGTH_SHORT).show()
             }
         }
         view.button_save_subject.setOnClickListener{

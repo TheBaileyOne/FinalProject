@@ -109,7 +109,6 @@ class SubjectsTabFragment : Fragment() {
 
 
     private fun subjectClicked(subject:Subject){
-        Toast.makeText(activity,"Clicked: ${subject.name}", Toast.LENGTH_LONG).show()
         subClickListener.subClicked(subject)
 
     }

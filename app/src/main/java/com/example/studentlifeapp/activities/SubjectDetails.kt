@@ -357,7 +357,7 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     }
     fun addStudies(studies:MutableList<Event>){
         subject.addEvents(studies)
-        Toast.makeText(this, "${studies.size} studies added", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Studies added", Toast.LENGTH_SHORT).show()
 
     }
 
@@ -398,12 +398,10 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
     }
     override fun onEventSaved(events: MutableList<Event>) {
         subject.addEvents(events)
-        Toast.makeText(this, "${events.size} events added", Toast.LENGTH_SHORT).show()
 
     }
     override fun onAssessmentSaved(assessment: Assessment) {
         subject.addAssessment(assessment)
-        Toast.makeText(this, "assessment added",Toast.LENGTH_SHORT).show()
 
     }
 

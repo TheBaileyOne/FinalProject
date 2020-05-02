@@ -170,7 +170,6 @@ class TimetableFragment : Fragment() {
 
     //what to do when event clicked
     private fun eventClicked(event: Event){
-        Toast.makeText(activity,"Clicked: ${event.title}", Toast.LENGTH_LONG).show()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
 
     }

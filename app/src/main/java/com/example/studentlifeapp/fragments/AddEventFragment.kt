@@ -83,11 +83,9 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
 //                val type = parent?.getItemAtPosition(position)
-//                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
                 var type = parent?.getItemAtPosition(position)
                 type = type.toString()
                 eventType = EventType.valueOf(type)
-                Toast.makeText(context,"Type: $type",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -165,7 +163,6 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val type = parent?.getItemAtPosition(position)
-                Toast.makeText(context,"Time: $type",Toast.LENGTH_SHORT).show()
                 durationValue = type.toString()
                 if (durationValue.equals("Never")){
                     add_event_repeat_num.visibility = View.GONE

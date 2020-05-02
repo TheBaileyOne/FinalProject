@@ -212,7 +212,6 @@ class DashboardFragment : Fragment() {
     }
 
     private fun eventClicked(event:Event){
-        Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
 

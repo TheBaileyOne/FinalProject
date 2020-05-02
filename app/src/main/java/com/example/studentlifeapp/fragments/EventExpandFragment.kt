@@ -166,7 +166,6 @@ class EventExpandFragment(private val groupRef:String, val title:String) : Fragm
 
     }
     private fun eventClicked(event:Event){
-        Toast.makeText(context, "${event.title} pressed", Toast.LENGTH_SHORT).show()
 //        activity?.onBackPressed()
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
