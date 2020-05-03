@@ -116,6 +116,14 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 showBottomNav(false)
                 return true
             }
+            R.id.option_change_password->{
+                val fragmentManager = this.supportFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                val fragment = AccountManagementFragment()
+                fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack(null).commit()
+                showBottomNav(false)
+                return true
+            }
             android.R.id.home -> {
                 onBackPressed()
                 return true

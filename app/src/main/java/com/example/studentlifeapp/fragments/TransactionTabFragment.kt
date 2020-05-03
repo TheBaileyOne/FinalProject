@@ -68,6 +68,9 @@ class TransactionTabFragment : Fragment() {
                 if (transaction.date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59))) && transaction.completed){
                     transactions.add(transaction)
                 }
+                if (transaction.date.isBefore(LocalDateTime.now().minusMonths(6))){
+                    transaction.delete()
+                }
             }
             transactionAdapter.refreshList(transactions)
             transactionAdapter.notifyDataSetChanged()

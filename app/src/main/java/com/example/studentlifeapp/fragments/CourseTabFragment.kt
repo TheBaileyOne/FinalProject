@@ -18,6 +18,7 @@ import com.example.studentlifeapp.data.Classification
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.util.calculateClassification
 import kotlinx.android.synthetic.main.fragment_course_tab.*
+import kotlinx.coroutines.selects.select
 
 class CourseTabFragment : Fragment() {
     private lateinit var viewModel: SubjectsViewModel
@@ -87,23 +88,29 @@ class CourseTabFragment : Fragment() {
         var totalPercent = 0.0
         var lowestPercent = 100.0
         var classification:String
+        var selectedCredits = 0
         for (i in 0 until subjectRows.size){
             if (checked[i]){
                 val subPercent = subjectRows[i].first.percentage
                 val subCredits = subjectRows[i].first.credits
+                selectedCredits += subCredits
                 val weighting = subCredits/requiredCredits.toDouble()
                 val weightedPercent = subPercent * weighting
                 totalPercent += weightedPercent
             }
         }
-        classification = when (calculateClassification(totalPercent)){
-            Classification.LOWER_SECOND -> "2:2"
-            Classification.FAIL -> "Fail"
-            Classification.PASS -> "Pass"
-            Classification.UPPER_SECOND -> "2:1"
-            Classification.FIRST -> "First"
-            Classification.INVALID -> "INVALID"
-        }
+        classification = if (selectedCredits<= requiredCredits){
+                when (calculateClassification(totalPercent)){
+                    Classification.LOWER_SECOND -> "2:2"
+                    Classification.FAIL -> "Fail"
+                    Classification.PASS -> "Pass"
+                    Classification.UPPER_SECOND -> "2:1"
+                    Classification.FIRST -> "First"
+                    Classification.INVALID -> "INVALID"
+                }
+            }else{
+                "INVALID"
+            }
         course_grade_obtained.text = getString(R.string.obtained_percent, totalPercent)
         course_grade_classification.text = getString(R.string.classification, classification)
 

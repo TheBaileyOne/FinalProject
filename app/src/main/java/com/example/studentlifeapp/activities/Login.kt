@@ -9,8 +9,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.example.studentlifeapp.R
+import com.example.studentlifeapp.fragments.ForgottenPassword
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_login.*
 
 class Login : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -21,7 +23,6 @@ class Login : AppCompatActivity() {
     private lateinit var signupBtn: Button
     private lateinit var loginBtn: Button
 
-    private lateinit var resetPasswordTv: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +33,6 @@ class Login : AppCompatActivity() {
         signupBtn = findViewById(R.id.signup_btn)
         loginBtn = findViewById(R.id.login_btn)
 
-        resetPasswordTv = findViewById(R.id.reset_pass_tv)
 
         auth = FirebaseAuth.getInstance()
 
@@ -62,7 +62,16 @@ class Login : AppCompatActivity() {
             finish()
         }
 
+        reset_pass.setOnClickListener{
+            val fragmentManager = this.supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            val fragment = ForgottenPassword()
+            fragmentTransaction.replace(R.id.login_fragment_container, fragment).addToBackStack(null).commit()
+        }
+
 
     }
+
+
 }
 

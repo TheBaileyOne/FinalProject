@@ -168,6 +168,7 @@ class StudyMode : AppCompatActivity() {
             else PrefUtil.getTimerLength(this)
         timerLengthSeconds = (lengthInMinutes * 60L)
         progress_countdown.max = timerLengthSeconds.toInt()
+        progress_countdown.progress = timerLengthSeconds.toInt()
     }
 
     private fun setPreviousTimerLength(){
@@ -182,7 +183,7 @@ class StudyMode : AppCompatActivity() {
         textView_countdown.text = "$minutesUntilFinished:${
         if(secondsStr.length == 2) secondsStr 
         else "0" + secondsStr}"
-        progress_countdown.progress = (timerLengthSeconds - secondsRemaining).toInt()
+        progress_countdown.progress = (secondsRemaining).toInt()
     }
 
     private fun updateButtons(){

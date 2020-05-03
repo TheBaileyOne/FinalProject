@@ -144,19 +144,12 @@ class MoneyTabFragment : Fragment() {
             ViewModelProviders.of(this).get(TransactionsViewModel::class.java)
         }?: throw Exception("Invalid Activity")
 
-
-        DatabaseManager().getDatabase().get().addOnSuccessListener {document->
-            if (document.getDouble("current_balance") != null){
-                updateBalance(document.getDouble("current_balance")!!)
-                calculateWeekly()
-            }
-            listener = transactionListener()
-        }
         return view
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        balance = 0.0
         transactions.clear()
         expenseTransactions.clear()
         incomeTransactions.clear()
@@ -166,6 +159,19 @@ class MoneyTabFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         money_tab_current.text = getString(R.string.money_holder,balance.toFloat())
         money_tab_weekly.text = getString(R.string.money_holder,weeklyBudget.toFloat())
+        DatabaseManager().getDatabase().get().addOnSuccessListener {document->
+            if (document.getDouble("current_balance") != null){
+                balance = document.getDouble("current_balance")?: 0.0
+                money_tab_current.text = getString(R.string.money_holder, balance)
+                if (balance<0){
+                    money_tab_current.setTextColor(Color.rgb(220,20,60))
+                }else{
+                    money_tab_current.setTextColorRes(R.color.secondaryTextColor)
+                }
+                calculateWeekly()
+            }
+            listener = transactionListener()
+        }
 //
 //        expenseAdapter = TransactionAdapter(expenseTransactions)
 //        incomeAdapter = TransactionAdapter(incomeTransactions)
@@ -215,6 +221,7 @@ class MoneyTabFragment : Fragment() {
                 incomeAdapter.refreshList(incomeTransactions)
 
             }
+            calculateWeekly()
 
 
         })
