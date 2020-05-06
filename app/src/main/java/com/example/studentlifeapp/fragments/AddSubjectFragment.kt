@@ -44,7 +44,6 @@ class AddSubjectFragment : Fragment() {
     lateinit var optionsMenu:Menu
     private var academicYear:AcademicYear = AcademicYear.FIRST_YEAR
 
-    //TODO: make it so that main activity opens this fragment instead so listener can be used
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +61,6 @@ class AddSubjectFragment : Fragment() {
         menu.findItem(R.id.option_logout).isVisible = false
         super.onPrepareOptionsMenu(menu)
     }
-//Todo fix like everything. opening up the fragment means it doesnt change when you change navigation view
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_subject, container, false)
     }

@@ -12,13 +12,13 @@ import com.example.studentlifeapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.email_edt_text
+import kotlinx.android.synthetic.main.activity_login.pass_edt_text
+import kotlinx.android.synthetic.main.activity_signup.*
 
-class Signup : AppCompatActivity() {
+class SignUp : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
-
-    private lateinit var emailEt: EditText
-    private lateinit var passwordEt: EditText
-    private lateinit var nameEt: EditText
 
     private lateinit var signUpBtn: Button
     private lateinit var loginBtn: Button
@@ -31,18 +31,14 @@ class Signup : AppCompatActivity() {
         setContentView(R.layout.activity_signup)
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
-
-        emailEt = findViewById(R.id.email_edt_text)
-        passwordEt = findViewById(R.id.pass_edt_text)
-        nameEt = findViewById(R.id.name_edt_text)
-
         loginBtn = findViewById(R.id.login_btn)
         signUpBtn = findViewById(R.id.signup_btn)
 
+        //Registers a user when valid sign up information entered
         signUpBtn.setOnClickListener{
-            var email: String = emailEt.text.toString()
-            var password: String = passwordEt.text.toString()
-            var name: String = nameEt.text.toString()
+            val email: String = email_edt_text.text.toString()
+            val password: String = pass_edt_text.text.toString()
+            val name: String = name_edt_text.text.toString()
 
             if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(name)) {
                 Toast.makeText(this, "Please fill all the fields", Toast.LENGTH_LONG).show()
@@ -61,7 +57,7 @@ class Signup : AppCompatActivity() {
                         //add user to database
                         userID = auth.currentUser!!.uid
                         val documentReference:DocumentReference = db.collection("users").document(userID)
-                        var user = hashMapOf(
+                        val user = hashMapOf(
                             "name" to name,
                             "email" to email)
                         documentReference.set(user)
@@ -84,6 +80,7 @@ class Signup : AppCompatActivity() {
             
         }
 
+        //Open Login activity on click of button
         loginBtn.setOnClickListener{
             val intent = Intent(this, Login::class.java)
             startActivity(intent)

@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.activities.MainActivity
 
-
+/**
+ * Fragment to display information about app and libraries used for it
+ */
 class AboutAppFragment : Fragment() {
 
     override fun onCreateView(

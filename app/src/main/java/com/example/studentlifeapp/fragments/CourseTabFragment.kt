@@ -20,6 +20,10 @@ import com.example.studentlifeapp.util.calculateClassification
 import kotlinx.android.synthetic.main.fragment_course_tab.*
 import kotlinx.coroutines.selects.select
 
+/**
+ * Fragment displays achieved marks for subjects in score as well as classificaition for the average marks.
+ */
+
 class CourseTabFragment : Fragment() {
     private lateinit var viewModel: SubjectsViewModel
     private var subjectRows: MutableList<Pair<Subject, TableRow>> = mutableListOf()
@@ -40,6 +44,7 @@ class CourseTabFragment : Fragment() {
         } ?: throw Exception("Invalid Activity")
         course_grade_obtained.text = getString(R.string.obtained_percent,0.0)
         course_grade_classification.text = getString(R.string.classification, Classification.FAIL)
+        //observee changes to list of subject
         viewModel.subjects.observe(viewLifecycleOwner, Observer<MutableList<Subject>>{subjects ->
             clearTable(tableLayout)
             setTable(subjects, tableLayout)
@@ -84,6 +89,9 @@ class CourseTabFragment : Fragment() {
 
     }
 
+    /**
+     * Calculates total percentage achieved for the
+     */
     private fun updateTotal(){
         var totalPercent = 0.0
         var lowestPercent = 100.0
@@ -122,6 +130,9 @@ class CourseTabFragment : Fragment() {
         }
     }
 
+    /**
+     * Redraws the table with updated subjects
+     */
     private fun setTable(subjects:MutableList<Subject>, table:TableLayout){
         var currentYear:AcademicYear? = null
         for (subject in subjects){
@@ -138,6 +149,9 @@ class CourseTabFragment : Fragment() {
 
     }
 
+    /**
+     * Insert row, stating the academic year of the subjects, to the table
+     */
     private fun insertYearRow(year:AcademicYear):TableRow{
         val row = TableRow(context)
         val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT)
@@ -153,14 +167,15 @@ class CourseTabFragment : Fragment() {
         row.setBackgroundColor(resources.getColor(R.color.AliceBlue))
 
         return row
-
-
     }
 
+    /**
+     * Add row to display subject details
+     */
     private fun newRow(subject:Subject):TableRow{
         val row = TableRow(context)
         val layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.WRAP_CONTENT)
-//        layoutParams.gravity = Gravity.CENTER
+
         row.layoutParams = layoutParams
         val subjectText = TextView(context)
         subjectText.text = subject.name

@@ -17,6 +17,7 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
 
     fun getId() = id
 
+    //Add subjects events to datbaseas, and add their references to subject sub collection
     fun addEvents(newEvents: MutableList<Event>){
         Log.d("Subject.addEvents" ,"events: $newEvents")
         val db = DatabaseManager()
@@ -29,7 +30,6 @@ class Subject(val name: String, val summary: String, val events:MutableList<Stri
                 "end_time" to event.endTime.toTimeStamp(),
                 "note" to event.note,
                 "eventId" to event.eventId
-                //TODO: add notifications and location and times
             )
             db.getDatabase().collection("events").add(docData)
                 .addOnSuccessListener {documentReference ->
@@ -75,7 +75,6 @@ enum class Classification(val string: String){
 
 enum class AcademicYear(val string: String){
     FIRST_YEAR("1st Year"),SECOND_YEAR("2nd Year"),THIRD_YEAR("3rd Year"),FOURTH_YEAR("4th Year"),FIFTH_YEAR("5th Year")
-//    TODO: Implement years and credits for subjects, edit the database. Update table to show academiyear
 }
 
 data class Assessment(

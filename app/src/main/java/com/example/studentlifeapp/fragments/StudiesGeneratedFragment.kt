@@ -23,7 +23,9 @@ import kotlinx.android.synthetic.main.event_item_view.*
 import kotlinx.android.synthetic.main.fragment_studies_generated.*
 import org.threeten.bp.format.DateTimeFormatter
 
-
+/**
+ * Set content and layout for generated studies RecyclerView
+ */
 class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adapter<StudiesGeneratedAdapter.StudiesGeneratedViewHolder>(){
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
     private val formatter2= DateTimeFormatter.ofPattern("EEE\ndd\nMMM")
@@ -32,10 +34,6 @@ class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adap
     init {
         setHasStableIds(true)
     }
-
-//    fun setStudies(newStudies:List<Event>){
-//        studies = newStudies
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StudiesGeneratedViewHolder {
         return StudiesGeneratedViewHolder(parent.inflate(R.layout.event_item_view))
@@ -69,13 +67,6 @@ class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adap
             itemView.isActivated = isActivated
             event_view_title.text = study.title
             event_view_icon.visibility = View.INVISIBLE
-//            if (study.location?.basicDisplay() != null){
-//                event_view_location.text = study.location?.basicDisplay()
-//                event_view_location_icon.visibility = View.VISIBLE
-//            }else{
-//                event_view_location.text = ""
-//                event_view_location_icon.visibility = View.INVISIBLE
-//            }
 
             if (isActivated && newStudies.contains(study)){
 //                newStudies.remove(study)
@@ -101,17 +92,11 @@ class StudiesGeneratedAdapter(var studies:MutableList<Event>): RecyclerView.Adap
                 }
             }
     }
-//    fun getNewStudies() = newStudies
-//    fun getStudy(key:Long)=
 }
 
 class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragment() {
 
-//    internal lateinit var callback: AddEventFragment.OnEventSavedListener
-//
-//    fun setOnEventSavedListener(callback: AddEventFragment.OnEventSavedListener){
-//        this.callback = callback
-//    }
+
     var tracker: SelectionTracker<Long>? = null
     private val studyAdapter = StudiesGeneratedAdapter(studies)
     private lateinit var selectedStudy: MutableList<Event>
@@ -139,8 +124,8 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
         Log.d("Generated Studies","Total Generated Studies: ${studies.size}")
         trackSelectedItems()
 
+        //Remove selected items from list
         studies_generated_remove.setOnClickListener{
-
             if (::selectedStudy.isInitialized && selectedStudy.size > 0){
 
                 for(study in selectedStudy){
@@ -171,6 +156,9 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
 
     }
 
+    /**
+     * Function to track items selected in recyclerView
+     */
     private fun trackSelectedItems(){
         tracker = SelectionTracker.Builder<Long>("selection-1",
             studies_generated_recyclerView,
@@ -178,7 +166,7 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
             ItemLookup(studies_generated_recyclerView),
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything()).build()
-
+        //observe changes to tracked items
         tracker?.addObserver(
             object : SelectionTracker.SelectionObserver<Long>(){
                 override fun onSelectionChanged() {
@@ -197,7 +185,9 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
         studyAdapter.setTracker(tracker)
     }
 
-
+    /**
+     * Get key and positions of items that are tracked
+     */
     inner class ItemIdKeyProvider(private val recyclerView:RecyclerView)
         :ItemKeyProvider<Long>(SCOPE_MAPPED){
         override fun getKey(position: Int): Long? {
@@ -205,13 +195,16 @@ class StudiesGeneratedFragment(private var studies:MutableList<Event>) : Fragmen
                 ?: throw IllegalStateException("RecyclerView adapter is not set!")
 
         }
-
         override fun getPosition(key: Long): Int {
             val viewHolder = recyclerView.findViewHolderForItemId(key)
             return viewHolder?.layoutPosition ?:RecyclerView.NO_POSITION
         }
 
     }
+
+    /**
+     * Get details of selected item
+     */
     inner class ItemLookup(private val recyclerView: RecyclerView): ItemDetailsLookup<Long>(){
         override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
             val view = recyclerView.findChildViewUnder(e.x, e.y)

@@ -64,8 +64,6 @@ class StudyAdapter(private var studies:List<Event> = mutableListOf(), val onClic
 }
 
 class StudyModeFragment : Fragment() {
-//TODO: make it run a study mode
-
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: StudyAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -90,8 +88,11 @@ class StudyModeFragment : Fragment() {
         return view
 
     }
-    //TODO: Sort out list reloading, and make list fit in screen better
 
+    /**
+     * If timer is running or paused, only show option for continuing study
+     * Otherwise show options for starting a study session
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         when (PrefUtil.getTimerState(requireContext())){
@@ -167,6 +168,9 @@ class StudyModeFragment : Fragment() {
     }
 }
 
+/**
+ * Add preference for starting study mode
+ */
 class SetStudyModeFragment: PreferenceFragmentCompat(){
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.preferences)

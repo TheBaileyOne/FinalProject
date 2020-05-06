@@ -34,6 +34,9 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
+/**
+ * Adapter for displaying event items in the RecyclerViews for dashboard
+ */
 class DashEventsAdapter(private var events: MutableList<Event> = mutableListOf(), val onClick:(Event)->Unit):RecyclerView.Adapter<DashEventsAdapter.DashViewHolder>(){
 //  private var events: MutableList<Event> = mutableListOf()
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -148,6 +151,9 @@ class DashboardFragment : Fragment() {
         return view
     }
 
+    /**
+     * Clear all data to avoid local data remainin after sign out of account
+     */
     override fun onDestroy() {
         super.onDestroy()
         events.clear()
@@ -164,6 +170,7 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //initalise all recyclerViews
         deadlines_recycler_view.layoutManager = LinearLayoutManager(context,RecyclerView.VERTICAL,false)
         deadlines_recycler_view.adapter = upcomingAdapter
         deadlines_recycler_view.addItemDecoration(DividerItemDecoration(context,RecyclerView.VERTICAL))
@@ -215,6 +222,7 @@ class DashboardFragment : Fragment() {
         eventDetailClickListener.onEventClicked("TIMETABLE", event)
     }
 
+    //Lissten for events and add them to viewModel
     private fun dashEventsListener():ListenerRegistration{
         val db = DatabaseManager().getDatabase().collection("events")
         val dbOrder = db.orderBy("start_time")
@@ -236,7 +244,6 @@ class DashboardFragment : Fragment() {
                 event.setRef(docChange.document.id)
                 if(docChange.type == DocumentChange.Type.ADDED){
                     dbEvents.add(event)
-//                    eventViewModel.addEvent(event)
                     events.add(event)
                 }else if (docChange.type == DocumentChange.Type.MODIFIED){
                     if(events.any{it.eventRef == event.eventRef}){
@@ -259,6 +266,9 @@ class DashboardFragment : Fragment() {
 
     }
 
+    /**
+     * Function to arrance events into their relevant category
+     */
     private fun arrangeEventLists(events: MutableList<Event>){
         val dbUpcoming = mutableListOf<Event>()
         val dbToday = mutableListOf<Event>()
@@ -271,8 +281,6 @@ class DashboardFragment : Fragment() {
         placeholder_tomorrow.visibility = View.VISIBLE
         placeholder_deadlines.visibility = View.VISIBLE
         placeholder_reminders.visibility = View.VISIBLE
-
-
 
         reminderAdapter.clearEvents()
         nextAdapter.clearEvents()
@@ -287,7 +295,8 @@ class DashboardFragment : Fragment() {
         var secondDay: LocalDate? = null
         val dateFormatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
         for (event in events){
-            if(event.startTime.toLocalDate().isAfter(LocalDate.now()) or event.startTime.toLocalDate().isEqual(LocalDate.now())){
+            if(event.startTime.toLocalDate().isAfter(LocalDate.now())
+                or event.startTime.toLocalDate().isEqual(LocalDate.now())){
                 if (event.type == EventType.EXAM || event.type == EventType.COURSEWORK) {
                     dbUpcoming.add(event)
                     placeholder_deadlines.visibility = View.GONE
@@ -341,6 +350,9 @@ class DashboardFragment : Fragment() {
     }
 }
 
+/**
+ * View Model to store list of events across the lifecycle of the MainActivity
+ */
 class EventsViewModel : ViewModel(){
     val events: MutableLiveData<MutableList<Event>> = MutableLiveData()
     fun getEvents() = events.value

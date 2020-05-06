@@ -27,8 +27,8 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
     <color name="primaryGrey">#e9e9f9</color>
-<!--    TODO: setup colour theme-->
-<!--    temporary colours list-->
+
+
     <color name="Tomato">#FF6347</color>
     <color name="DeepPink">#FF1493</color>
     <color name="Red">#FF0000</color>

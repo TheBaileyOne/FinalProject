@@ -25,16 +25,14 @@ import kotlinx.android.synthetic.main.fragment_event_expand.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.lang.ClassCastException
 
+/**
+ * Adapter for list of all originally grouped events
+ */
 class EventExpandAdapter(var events:List<Event>,val onClick: (Event) -> Unit): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
-//class EventExpandAdapter(val events:List<Event>): RecyclerView.Adapter<EventExpandAdapter.EventExpandViewHolder>(){
 
 
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
-    private val formatter2=DateTimeFormatter.ofPattern("EEE\ndd\nMMM")
-
     private val formatter3=DateTimeFormatter.ofPattern("EEE, dd MMM")
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventExpandViewHolder {
         return EventExpandViewHolder(parent.inflate(R.layout.event_item_view))
@@ -64,7 +62,6 @@ class EventExpandAdapter(var events:List<Event>,val onClick: (Event) -> Unit): R
         }
 
         fun bind(event: Event) {
-//        fun bind(event: Event, clickListener: (Event) -> Unit) {
 
             event_view_title.text = event.title
             when(event.type){

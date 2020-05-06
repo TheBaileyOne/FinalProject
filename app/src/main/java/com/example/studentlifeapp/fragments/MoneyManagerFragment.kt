@@ -14,6 +14,9 @@ import com.example.studentlifeapp.data.Transaction
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
+/**
+ * ViewPager Adapter for displaying MoneyTabFragment() and TransactionTabFragment()
+ */
 class MoneyManagerPagerAdapter(fragment:Fragment):FragmentStateAdapter(fragment){
     val fragments:MutableList<Fragment> = mutableListOf()
 
@@ -62,6 +65,9 @@ class MoneyManagerFragment : Fragment() {
 
 }
 
+/**
+ * ViewModel for list of transactions
+ */
 class TransactionsViewModel : ViewModel(){
     val transactions: MutableLiveData<MutableList<Transaction>> = MutableLiveData()
     init {
@@ -71,7 +77,4 @@ class TransactionsViewModel : ViewModel(){
     fun setTransactions(transactions:MutableList<Transaction>){
         this.transactions.value = transactions
     }
-//    fun addTransaction(transaction:Transaction){
-//        this.transactions.value.add(transaction)
-//    }
 }

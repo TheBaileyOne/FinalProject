@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_forgotten_password.*
 
 /**
- * A simple [Fragment] subclass.
+ * Fragment for sending password reset link to email address
  */
 class ForgottenPassword : Fragment() {
 
@@ -36,7 +36,7 @@ class ForgottenPassword : Fragment() {
                 Toast.makeText(context, "Please enter email", Toast.LENGTH_SHORT).show()
             }else{
                 val email = send_email_edit.text.toString()
-                FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email) //Sends email to stated email address to change it
                     .addOnCompleteListener{
                         activity?.onBackPressed()
                         Toast.makeText(context, "Email sent", Toast.LENGTH_SHORT).show()

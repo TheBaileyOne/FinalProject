@@ -21,6 +21,9 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 
+/**
+ * View pager adapter to initialise SubjectsTabFragment() and CourseTabFragment() within the viepager
+ */
 class CoursePagerAdapter(fragment: Fragment):FragmentStateAdapter(fragment){
     val fragments:MutableList<Fragment> = mutableListOf()
     override fun getItemCount(): Int = 2
@@ -48,6 +51,7 @@ class CourseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.fragment_course, container, false)
+        //Run viewModel for the activity
         viewModel = activity?.run {
             ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
@@ -68,6 +72,8 @@ class CourseFragment : Fragment() {
         viewPager = view.findViewById(R.id.course_view_pager)
         viewPager.adapter = courseAdapter
         viewPager.isSaveEnabled = false
+
+        //Set the titles of the tabs for viewPager, and bind tabs to pages
         TabLayoutMediator(tabLayout, viewPager){tab, position ->
             tab.text = when (position) {
                 0 -> "Subjects"
@@ -78,6 +84,10 @@ class CourseFragment : Fragment() {
         listener = subDbListener()
 
     }
+
+    /**
+     * Listen for changes to subjects database, on inital call will add all subjects from database
+     */
     private fun subDbListener(): ListenerRegistration {
         val db = DatabaseManager()
         return db.getDatabase().collection("subjects")

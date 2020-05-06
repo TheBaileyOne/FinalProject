@@ -14,6 +14,10 @@ import com.example.studentlifeapp.data.Event
 import kotlinx.android.synthetic.main.fragment_event_details.*
 import org.threeten.bp.format.DateTimeFormatter
 
+/**
+ * Display details of the event item
+ * Allow for deletion and eding of event
+ */
 class EventDetailsFragment(val event: Event) : Fragment() {
     private val formatter = DateTimeFormatter.ofPattern("HH:mm")
     private val formatter2= DateTimeFormatter.ofPattern("EEE, dd MMM")
@@ -59,6 +63,7 @@ class EventDetailsFragment(val event: Event) : Fragment() {
             eventEditListener.eventEditClicked(event)
 
         }
+        //Delete evet from database
         button_delete_event.setOnClickListener{
             val eventRef = event.eventRef
             DatabaseManager().getDatabase().collection("events").document(eventRef).delete()
@@ -68,10 +73,6 @@ class EventDetailsFragment(val event: Event) : Fragment() {
                     }
                     activity?.onBackPressed()
                 }
-
-
-//            Toast.makeText(context, "${event.title} deleted", Toast.LENGTH_SHORT).show()
-
         }
 
     }

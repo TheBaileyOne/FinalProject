@@ -11,20 +11,17 @@ import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
     private val splashTimeOut= 500L
-//    private lateinit var auth: FirebaseAuth
-//    private var loggedIn:Boolean = false
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.requestFeature(Window.FEATURE_NO_TITLE)
-        //making this activity full screen
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.requestFeature(Window.FEATURE_NO_TITLE) //No Titlebar for screen
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN) //Make FullScreen
         setContentView(R.layout.activity_splash)
+        //Check current user and open relevant activity. If no user login, if user is logged in main activity
         val auth = FirebaseAuth.getInstance()
         val currentUser = auth.currentUser
-        var intent:Intent = if(currentUser!=null)Intent(this@SplashActivity,MainActivity::class.java)
+        val intent:Intent = if(currentUser!=null)Intent(this@SplashActivity,MainActivity::class.java)
                             else(Intent(this@SplashActivity, Login::class.java) )
         Handler().postDelayed({
             startActivity(intent)

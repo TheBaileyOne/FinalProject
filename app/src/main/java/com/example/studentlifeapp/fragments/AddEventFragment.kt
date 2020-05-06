@@ -16,7 +16,6 @@ import com.example.studentlifeapp.activities.SubjectDetails
 import com.example.studentlifeapp.data.DatabaseManager
 import com.example.studentlifeapp.data.Event
 import com.example.studentlifeapp.data.EventType
-import com.example.studentlifeapp.data.Location
 import com.example.studentlifeapp.toTimeStamp
 import kotlinx.android.synthetic.main.fragment_add_event.*
 import kotlinx.android.synthetic.main.fragment_add_event.view.*
@@ -26,9 +25,10 @@ import org.threeten.bp.temporal.ChronoUnit
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Fragment to save event details
+ */
 class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private val editEvent:Event? = null) : Fragment() {
-
-
 
     internal lateinit var callback: OnEventSavedListener
 
@@ -38,7 +38,6 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
     fun setOnEventSavedListener(callback: OnEventSavedListener){
         this.callback = callback
     }
-    //TODO: Notifications
     private val format = SimpleDateFormat("dd MMM, YYYY", Locale.UK)
     private val timeFormat = SimpleDateFormat ("HH:mm", Locale.UK)
     private val dateFormatter:DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMM, YYYY")
@@ -82,7 +81,6 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
                 TODO("Something to do with an error")
             }
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//                val type = parent?.getItemAtPosition(position)
                 var type = parent?.getItemAtPosition(position)
                 type = type.toString()
                 eventType = EventType.valueOf(type)
@@ -186,11 +184,15 @@ class AddEventFragment(private val subjectEnd: LocalDateTime? = null, private va
             spinner.setSelection(values.indexOf(editEvent.type))
             editing = true
         }
+        //Add or update event depending on context of fragment
         view.button_add_event.setOnClickListener{
             if (editing&&editEvent!=null) updateEvent() else addEvent()
         }
     }
 
+    /**
+     * Update event details in database
+     */
     private fun updateEvent() {
         if(add_event_name_edit.text.isNullOrBlank()|| add_event_date.text.isEmpty() ||
             add_event_time.text.isEmpty() || add_event_end_date.text.isEmpty() || add_event_time_end.text.isEmpty()){

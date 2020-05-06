@@ -11,7 +11,6 @@ data class Event(
     var startTime: LocalDateTime,
     var endTime: LocalDateTime = startTime,
     var notifications: MutableList<LocalDateTime> = mutableListOf(startTime),
-    var location: Location? = null,
     var note: String? = "",
 //    val times: MutableList<LocalDateTime> = mutableListOf(startTime,endTime),
     var eventId: String = title,
@@ -19,6 +18,7 @@ data class Event(
 ): Serializable
 {
     var colour: Int = setColour()
+    //Set the colour for the event based on event type
     private fun setColour(): Int {
         return when (type) {
             EventType.LECTURE ->  R.color.SkyBlue
@@ -32,23 +32,21 @@ data class Event(
             EventType.SOCIETY -> R.color.DeepPink
         }
     }
+
+    //For future imlementation  of setting own custom colour
     private fun setCustomColour(colour: Int) {
         this.colour = colour
     }
-
+    //Set events database reference
     fun setRef(ref:String){
         eventRef = ref
     }
 
 }
 
-data class Location(val name:String, val town: String? = null, val city: String? = null, val county: String? = null, val  postCode: String? = null, val country: String= "United Kingdom"){
-    //TODO: add change location to include building room and stuff.
-    fun basicDisplay()= "$name, $country"
-    fun fullDisplay()="$name, " + {if (town != null) "$town, "} + {if (city != null) "$city, "} + {if (county != null)"$county, "} + { if (postCode!=null)"postCode, "} +"$country."
-}
 
 enum class EventType{
     LECTURE, CLASS, STUDY, EXAM, COURSEWORK, JOBSHIFT, SOCIETY, REMINDER, EVENT
 }
-
+//Wraps list of events for passing through intents
+data class EventsParser(val events: MutableList<Event>)

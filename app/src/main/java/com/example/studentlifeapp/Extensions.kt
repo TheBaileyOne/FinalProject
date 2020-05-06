@@ -30,11 +30,14 @@ import java.util.*
 internal fun ViewGroup.inflate(@LayoutRes layoutRes: Int, attachToRoot: Boolean = false): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, attachToRoot)
 }
-
+//Get color from a resource
 internal fun Context.getColorCompat(@ColorRes color: Int) = ContextCompat.getColor(this, color)
 
 internal fun TextView.setTextColorRes(@ColorRes color: Int) = setTextColor(context.getColorCompat(color))
 
+/**
+ * Get layout of first dat of the week based on locality
+ */
 fun daysOfWeekFromLocale(): Array<DayOfWeek> {
     val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
     var daysOfWeek = DayOfWeek.values()
@@ -47,10 +50,15 @@ fun daysOfWeekFromLocale(): Array<DayOfWeek> {
     return daysOfWeek
 }
 
+//Convert LocalDateTime to a Timestamp
 fun LocalDateTime.toTimeStamp() = Timestamp(atZone(ZoneId.systemDefault()).toEpochSecond(),nano)
+//Convert timestamp to LocalDateTime
 fun Timestamp.tolocalDateTime(zone: ZoneId = ZoneId.systemDefault()) = LocalDateTime.ofInstant(
     Instant.ofEpochMilli(seconds*1000+nanoseconds/1000),zone)!!
 
+/**
+ * Extension function to limit input number to being 2 decimal places
+ */
 fun EditText.addDecimalLimiter(maxLimit:Int=2){
     this.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
@@ -73,6 +81,10 @@ fun EditText.addDecimalLimiter(maxLimit:Int=2){
         }
     })
 }
+
+/**
+ * Hide softKeyboard if open in fragment
+ */
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }
 }
@@ -85,6 +97,7 @@ fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }
+
 
 fun EditText.decimalLimiter(string: String, MAX_DECIMAL: Int): String {
 

@@ -9,7 +9,9 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import kotlin.math.ceil
 
-
+/**
+ * Class generates study events during free time in timetable
+ */
 class StudyGenerator(
     private val name: String,
     private val endDate: LocalDate,
@@ -33,6 +35,9 @@ class StudyGenerator(
         return studyList
     }
 
+    /**
+     * Function generates study events until end date is reached
+     */
     private fun generateStudy(){
         var day = LocalDate.now()
         while (day<=endDate){

@@ -18,7 +18,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+//Add transactioon to database
 class AddTransactionFragment : Fragment() {
     private lateinit var repeatType:RepeatType
 

@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 
+/**
+ * Adapter for navigation bar pager
+ */
 class MainPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
     private val screens = arrayListOf<MainScreen>()
 
@@ -29,6 +32,9 @@ class MainPagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
         return screens.size
     }
 
+    /**
+     * Restore state of previously loaded fragment
+     */
     override fun restoreState(state: Parcelable?, loader: ClassLoader?) {
         super.restoreState(state, loader)
         try{

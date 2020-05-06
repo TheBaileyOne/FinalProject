@@ -1,8 +1,6 @@
 package com.example.studentlifeapp.fragments
 
- //import kotlinx.android.synthetic.main.event_item_view.view.*
-//import org.threeten.bp.LocalDateTime
- import android.content.Context
+import android.content.Context
  import android.graphics.PorterDuff
  import android.os.Bundle
  import android.util.TypedValue
@@ -45,7 +43,9 @@ package com.example.studentlifeapp.fragments
  import org.threeten.bp.format.TextStyle
  import java.util.*
 
-//TODO: include FAB button or another thing to add an event
+/**
+ * Adapter for display events to display under calendar
+ */
 class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdapter.EventsViewHolder>(){
 
     val events = mutableListOf<Event>() //Data source for the adapter
@@ -110,14 +110,6 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
 
             event_view_icon.setColorFilter(itemView.context.getColorCompat(event.colour),PorterDuff.Mode.SRC_IN)
 
-//            if (event.location?.basicDisplay() != null){
-//                event_view_location.text = event.location?.basicDisplay()
-//                event_view_location_icon.visibility = View.VISIBLE
-//            }else{
-//                event_view_location.text = ""
-//                event_view_location_icon.visibility = View.INVISIBLE
-//            }
-
             event_view_location.text = formatter3.format(event.startTime)
             event_view_time.text = "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
 
@@ -125,7 +117,6 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
                 EventType.REMINDER -> formatter.format(event.startTime)
                 else -> "${formatter.format(event.startTime)}\n-\n${formatter.format(event.endTime)}"
             }
-//            event_view.strokeColor = itemView.context.getColorCompat(event.colour)
         }
 
     }
@@ -133,8 +124,6 @@ class EventAdapter(val onClick: (Event) -> Unit): RecyclerView.Adapter<EventAdap
 
 
 class TimetableFragment : Fragment() {
-
-
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
@@ -201,7 +190,9 @@ class TimetableFragment : Fragment() {
         }
 
 
-
+        /**
+         * Class for configuring the layout of the calendar
+         */
         class DayViewContainer(view:View):ViewContainer(view){
             lateinit var day: CalendarDay
             val textView = view.dayText
@@ -210,8 +201,6 @@ class TimetableFragment : Fragment() {
             val eventView2 = view.dayEvent2
             val eventView3 = view.dayEvent3
             val eventViewExtra = view.dayEventExtra
-
-
 
             init {
                 view.setOnClickListener {
@@ -271,7 +260,6 @@ class TimetableFragment : Fragment() {
                         }
                     }
                 } else {
-                    //TODO: set colour
                     layout.background = null
                 }
             }
@@ -331,11 +319,13 @@ class TimetableFragment : Fragment() {
         }
     }
 
+    /**
+     * Display events for the relevent date
+     */
     private fun updateAdapterForDate(date: LocalDate?) {
         eventAdapter.events.clear()
         eventAdapter.events.addAll(groupedEvents[date].orEmpty())
         eventAdapter.notifyDataSetChanged()
-
     }
 
 }

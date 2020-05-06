@@ -20,7 +20,9 @@ import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.fragment_subjects_tab.*
 import kotlinx.android.synthetic.main.list_item.*
 
-//class SubjectsAdapter(private var viewModel: SubjectsViewModel, val onClick: (Subject) ->Unit):
+/**
+ * RecyclerView Adapter for display of subjects
+ */
 class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf(), val onClick: (Subject) ->Unit):
     RecyclerView.Adapter<SubjectsAdapter.SubjectViewHolder>(){
 
@@ -35,7 +37,6 @@ class SubjectsAdapter(private var subjects: MutableList<Subject> = mutableListOf
         return SubjectViewHolder(parent.inflate(R.layout.list_item))
     }
 
-    //    inner class SubjectViewHolder(inflater : LayoutInflater,parent:ViewGroup):RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item,parent,false)){
     inner class SubjectViewHolder(override val containerView: View): RecyclerView.ViewHolder(containerView),
         LayoutContainer {
 
@@ -70,7 +71,6 @@ class SubjectsTabFragment : Fragment() {
     private lateinit var subAddClickListener: SubAddClickedListener
     private lateinit var viewModel: SubjectsViewModel
     private val subjectAdapter = SubjectsAdapter(mutableListOf()){ subject:Subject->subjectClicked(subject)}
-//    private val subjectAdapter = SubjectsAdapter(mutableListOf<Subject>()){ subject:Subject->subjectClicked(subject)}
     lateinit var menuItem: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,15 +104,10 @@ class SubjectsTabFragment : Fragment() {
         subjectAdapter.refreshList(mutableListOf())
     }
 
-    fun onLogout(){
-    }
-
-
     private fun subjectClicked(subject:Subject){
         subClickListener.subClicked(subject)
 
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -126,7 +121,7 @@ class SubjectsTabFragment : Fragment() {
         subjects_recyclerView.adapter=subjectAdapter
         subjects_recyclerView.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         subjectAdapter.notifyDataSetChanged()
-
+        //Observe changes to list of subjects
         viewModel = activity?.run{
             ViewModelProviders.of(this).get(SubjectsViewModel::class.java)
         } ?: throw Exception("Invalid Activity")

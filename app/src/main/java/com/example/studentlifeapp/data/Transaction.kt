@@ -11,7 +11,9 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 import java.lang.Exception
 
-
+/**
+ * Class for storing information about transactions, as well as database addition, modification and deletion methods
+ */
 data class Transaction(
     var name: String = "", var amount:Double, var date: LocalDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.MAX), var completed:Boolean = true,
     var type:TransactionType, var repeatNumber:Int = 0, var repeatType: RepeatType = RepeatType.NEVER, var transactionRef:String = ""

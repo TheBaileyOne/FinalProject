@@ -11,26 +11,21 @@ object IntentUtil {
     val gson: Gson = GsonBuilder().create()
 }
 
+/**
+ * Put data as Json file for intent exra
+ * @param name reference for intent extra
+ */
 fun Intent.putExtraJson(name: String, src: Any) {
     putExtra(name, IntentUtil.gson.toJson(src))
 }
 
-fun Intent.putExtraJson(src: Any) {
-    putExtra(DEFAULT_NAME, IntentUtil.gson.toJson(src))
-}
-
+/**
+ * Get the value from Json Intent extra
+ */
 fun <T> Intent.getJsonExtra(name: String, `class`: Class<T>): T? {
     val stringExtra = getStringExtra(name)
     if (stringExtra != null) {
         return IntentUtil.gson.fromJson<T>(stringExtra, `class`)
     }
     return null
-}
-
-fun <T> Intent.getJsonExtra(`class`: Class<T>): T {
-    val stringExtra = getStringExtra(DEFAULT_NAME)
-    if (stringExtra != null) {
-        return IntentUtil.gson.fromJson<T>(stringExtra, `class`)
-    }
-    return IntentUtil.gson.fromJson<T>("",`class`)
 }

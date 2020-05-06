@@ -20,8 +20,12 @@ import kotlinx.android.synthetic.main.content_study_mode.*
 import java.util.*
 
 class StudyMode : AppCompatActivity() {
-
+    /**
+     * Companion object for managing timer functionality as an AlarmService
+     */
     companion object{
+
+        //Set the alarm timing
         fun setAlarm(context: Context, nowSeconds:Long, secondsRemaining: Long): Long{
             val wakeupTime = (nowSeconds+secondsRemaining) * 1000
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -33,6 +37,7 @@ class StudyMode : AppCompatActivity() {
             return wakeupTime
         }
 
+        //Remove the alarm from the services
         fun removeAlarm(context: Context){
             val intent = Intent(context, TimerExpiredReceiver::class.java)
             val pendingIntent = PendingIntent.getBroadcast(context,0,intent,0)
@@ -41,7 +46,7 @@ class StudyMode : AppCompatActivity() {
             PrefUtil.setAlarmSetTime(0,context)
 
         }
-
+        //Get the time of the alarm in seconds
         val nowSeconds: Long
             get() = Calendar.getInstance().timeInMillis /1000
 
@@ -60,12 +65,10 @@ class StudyMode : AppCompatActivity() {
         val studyName = intent.getStringExtra("study_name")
         setContentView(R.layout.activity_study_mode)
         setSupportActionBar(toolbar)
-//        supportActionBar?.setIcon(R.drawable.ic_timer)
         supportActionBar?.title = " Study Mode${if(studyName != null)" : $studyName" else ""}"
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(!(this.isTaskRoot))
 
-
+        //Change the timer stat based on the button clicked
         fab_start.setOnClickListener{
             startTimer()
             timerState = TimerState.RUNNING
@@ -82,15 +85,19 @@ class StudyMode : AppCompatActivity() {
         }
     }
 
+    /**
+     * On resume of the activity, resume timer from state found in initTimer()
+     */
     override fun onResume() {
         super.onResume()
-
         initTimer()
-
         removeAlarm(this)
         NotificationUtil.hideTimerNotification(this)
     }
 
+    /**
+     * Set an alarm when focus is no longer on the Activity
+     */
     override fun onPause() {
         super.onPause()
         if (timerState == TimerState.RUNNING){
@@ -107,6 +114,9 @@ class StudyMode : AppCompatActivity() {
         PrefUtil.setTimerState(timerState, this)
     }
 
+    /**
+     * Initialise timer with the time stored in the preferences
+     */
     private fun initTimer(){
         timerState = PrefUtil.getTimerState(this)
         if (timerState == TimerState.STOPPED)
@@ -131,6 +141,9 @@ class StudyMode : AppCompatActivity() {
         updateCountdownUI()
     }
 
+    /**
+     * Change state of timer to STOPPED when the countdown has ended
+     */
     private fun onTimerFinished(){
         timerState=TimerState.STOPPED
         setNewTimerLength()
@@ -142,25 +155,27 @@ class StudyMode : AppCompatActivity() {
         updateCountdownUI()
     }
 
+    /**
+     * Start the running of the timer
+     */
     private fun startTimer(){
         timerState = TimerState.RUNNING
         val context = this
 
+        //On each tick of the timer, update the UI to reflect time remaining
         timer = object:CountDownTimer(secondsRemaining*1000, 1000){
             override fun onFinish() = onTimerFinished()
 
             override fun onTick(millisUntilFinished: Long) {
                 secondsRemaining = millisUntilFinished/1000
                 updateCountdownUI()
-//                val progress = (timerLengthSeconds - secondsRemaining).toInt()
-//                if(progress % 30 == 0){
-////                    NotificationUtil.recommendBreak(context)
-//                    Log.d("TAG", "Break Notification")
-//                }
             }
         }.start()
     }
 
+    /**
+     * set the Timer length for the next instance of the timer coundown
+     */
     private fun setNewTimerLength(){
         val duration = intent.getIntExtra("timer_length",0)
         Log.d("setting duration", "duration: $duration")
@@ -171,11 +186,17 @@ class StudyMode : AppCompatActivity() {
         progress_countdown.progress = timerLengthSeconds.toInt()
     }
 
+    /**
+     * Set the timerlength to that of the previous timer length
+     */
     private fun setPreviousTimerLength(){
         timerLengthSeconds = PrefUtil.getPreviousTimerLengthSeconds(this)
         progress_countdown.max = timerLengthSeconds.toInt()
     }
 
+    /**
+     * Update progressbar to display the remaining time left
+     */
     private fun updateCountdownUI(){
         val minutesUntilFinished = secondsRemaining / 60
         val secondsInMinutesUntilFinished = secondsRemaining - minutesUntilFinished * 60
@@ -186,6 +207,9 @@ class StudyMode : AppCompatActivity() {
         progress_countdown.progress = (secondsRemaining).toInt()
     }
 
+    /**
+     * Toggle the appearance of the fabs dependinf on the state of the timer
+     */
     private fun updateButtons(){
         when (timerState){
             TimerState.RUNNING -> {
@@ -206,6 +230,9 @@ class StudyMode : AppCompatActivity() {
         }
     }
 
+    /**
+     * Change appearance of fab depending on whether selected or not
+     */
     private fun toggleFabEnabled(fab: FloatingActionButton, enabled:Boolean){
         fab.isEnabled = enabled
         if(enabled){
@@ -215,18 +242,11 @@ class StudyMode : AppCompatActivity() {
         }
 
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             android.R.id.home -> {
-//                if (this.isTaskRoot){
-//                    val mainIntent = Intent(this, MainActivity::class.java)
-////                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-////                    finish()
-//                    startActivity(mainIntent)
-//
-//                }else{
-                    onBackPressed()
-//                }
+                onBackPressed()
                 return true
             }
         }

@@ -1,5 +1,8 @@
 package com.example.studentlifeapp.data
 
+/**
+ * Constatns for the Actions for the timer
+ */
 class AppConstants{
     companion object{
         const val  ACTION_STOP = "stop"

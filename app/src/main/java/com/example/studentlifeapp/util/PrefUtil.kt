@@ -4,7 +4,11 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import com.example.studentlifeapp.activities.StudyMode
 
+
 class PrefUtil{
+    /**
+     * Object sets preferences for Timer
+     */
     companion object{
         private const val TIMER_LENGTH_ID = "com.example.studentlifeapp.timer_length"
         //length in minutes
@@ -49,13 +53,10 @@ class PrefUtil{
         }
 
         private const val SECONDS_REMAINING_ID = "com.example.studentlifeapp.seconds_remaining"
-
-
         fun getSecondsRemaining(context:Context):Long{
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             return preferences.getLong(SECONDS_REMAINING_ID,0)
         }
-
         fun setSecondsRemaining(seconds:Long, context:Context){
             val editor = PreferenceManager.getDefaultSharedPreferences(context).edit()
             editor.putLong(SECONDS_REMAINING_ID, seconds)

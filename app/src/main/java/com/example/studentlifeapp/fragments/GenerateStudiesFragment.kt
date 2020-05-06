@@ -24,14 +24,12 @@ import org.threeten.bp.format.DateTimeFormatter
 import java.text.SimpleDateFormat
 import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
 
 
 class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subject?) : Fragment() {
 
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_generate_studies, container, false)
     }
 
@@ -80,6 +78,9 @@ class GenerateStudiesFragment(val events:MutableList<Event>, val subject: Subjec
         }
     }
 
+    /**
+     * Generate studies and open fragment displaying studies generated
+     */
     private fun generateStudy(name:String, endDate:LocalDate, lunchTime:LocalTime, weekendStudy:Boolean){
         val studyGenerator = StudyGenerator(
             name,

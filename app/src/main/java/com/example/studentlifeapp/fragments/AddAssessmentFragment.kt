@@ -18,6 +18,9 @@ import com.example.studentlifeapp.data.Assessment
 import com.example.studentlifeapp.data.EventType
 import kotlinx.android.synthetic.main.fragment_add_assessment.*
 
+/**
+ * Fragment for creating an Assessment
+ */
 class AddAssessmentFragment(private val remainingWeight: Int = 100) : Fragment() {
 
     internal lateinit var callback: OnAssessmentSavedListener
@@ -62,6 +65,7 @@ class AddAssessmentFragment(private val remainingWeight: Int = 100) : Fragment()
             }
         })
 
+        //Adds assessment based on input fields
         button_save_assessment.setOnClickListener {
             if(add_transaction_date_edit.text.isNullOrBlank() || add_transactio_name_edit.text.isNullOrBlank() || add_assessment_max_mark_edit.text.isNullOrBlank()){
                 Toast.makeText(context, "Fill in Empty fields", Toast.LENGTH_SHORT).show()

@@ -18,7 +18,9 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.LocalTime
 
-
+/**
+ * Fragment to display list of previous transactions
+ */
 class TransactionTabFragment : Fragment() {
     private var transactions = mutableListOf<Transaction>()
 
@@ -61,6 +63,7 @@ class TransactionTabFragment : Fragment() {
         transaction_history_recycler_view.addItemDecoration(DividerItemDecoration(requireContext(),RecyclerView.VERTICAL))
         transactionAdapter.notifyDataSetChanged()
 
+        //observer to add relevant transactions to RecyclerView
         viewModel.transactions.observe(viewLifecycleOwner, Observer { viewTransactions ->
             viewTransactions.sortByDescending{it.date}
             transactions.clear()

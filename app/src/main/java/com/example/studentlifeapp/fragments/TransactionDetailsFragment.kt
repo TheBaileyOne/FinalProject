@@ -15,6 +15,10 @@ import com.example.studentlifeapp.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_transaction_details.*
 import org.threeten.bp.format.DateTimeFormatter
 
+/**
+ * Fragment to display details about transaction
+ * Option to delete and stop occurence of the transaction
+ */
 class TransactionDetailsFragment(val transaction: Transaction) : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,savedInstanceState: Bundle?
@@ -50,12 +54,15 @@ class TransactionDetailsFragment(val transaction: Transaction) : Fragment() {
             )
         }
 
+        //Delete transaction from database
         button_delete_transaction.setOnClickListener {
             transaction.delete()
-//            hideKeyboard()
             activity?.onBackPressed()
         }
 
+        /*Change the details of transaction so it will not repeat
+         * Update the database with changed details
+         */
         button_stop_recurrance.setOnClickListener {
             transaction.completed = true
             transaction.repeatNumber = 0

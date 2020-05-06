@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.viewpager.widget.ViewPager
 import com.example.studentlifeapp.R
 import com.example.studentlifeapp.data.Event
+import com.example.studentlifeapp.data.EventsParser
 import com.example.studentlifeapp.data.Subject
 import com.example.studentlifeapp.data.Transaction
 import com.example.studentlifeapp.fragments.*
@@ -25,9 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-//TODO: Add a side navigation draw with access to user settings (Account managing)
-
+//Inherits listener from all associated fragments, for passing data and triggering methods
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
     SubjectsTabFragment.SubClickedListener, SubjectsTabFragment.SubAddClickedListener,
     AddSubjectFragment.OnSubjectSavedListener, Utils.EventDetailClickListener,
@@ -41,23 +40,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     private var events = mutableListOf<Event>()
     private var navShowing = true
 
+    /**
+     * Method overrides back press to ensure correct page title is showing
+     * Also ensures bottom navigation is showing when returning to fragments in ViewPager
+     */
     override fun onBackPressed() {
         super.onBackPressed()
         if(!navShowing)showBottomNav(true)
         supportActionBar?.show()
-        var title = mainPagerAdapter.getItems()[viewPager.currentItem].titleStringId
+        val title = mainPagerAdapter.getItems()[viewPager.currentItem].titleStringId
         supportActionBar?.setTitle(title)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(0,0)
         setContentView(R.layout.activity_main)
         setSupportActionBar(mainToolbar)
-
+        //Set up the view pager and congigure adapter
         viewPager=findViewById(R.id.view_pager)
         viewPager.offscreenPageLimit = 4
         bottomNavigationView=findViewById(R.id.bottom_navigation_view)
@@ -66,7 +68,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         //set items to be displayed
         mainPagerAdapter.setItems(arrayListOf(MainScreen.DASHBOARD, MainScreen.TIMETABLE, MainScreen.COURSE,
             MainScreen.STUDYMODE,MainScreen.MONEYMANAGER))
-//        mainPagerAdapter.setItems(arrayListOf(MainScreen.TIMETABLE, MainScreen.SUBJECTS, MainScreen.STUDYMODE))
 
         //show default screen
         val defaultScreen = MainScreen.DASHBOARD
@@ -90,16 +91,22 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         })
     }
 
+    /**
+     * Inflate the logout menu, which displays the logout, about, and password changing options
+     */
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_logout, menu)
         return true
     }
 
+    /**
+     * Perform actions based on the options item selected
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.option_logout-> {
+                //Sign out user and finish all activities and stacks
                 FirebaseAuth.getInstance().signOut()
-
                 viewModelStore.clear()
                 Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this,Login::class.java)
@@ -109,6 +116,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 return true
             }
             R.id.option_about_app ->{
+                //Open AboutAppFragment()
                 val fragmentManager = this.supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val fragment = AboutAppFragment()
@@ -117,6 +125,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 return true
             }
             R.id.option_change_password->{
+                //Open AccountManagementFragment() for changing password
                 val fragmentManager = this.supportFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 val fragment = AccountManagementFragment()
@@ -125,6 +134,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                 return true
             }
             android.R.id.home -> {
+                //Back to the previous activity/fragment in stack
                 onBackPressed()
                 return true
             }
@@ -132,7 +142,9 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return super.onOptionsItemSelected(item)
     }
 
-    //scrolls ViewPager to show the screen
+    /**
+     * scrolls ViewPager to show the selected screen
+     */
     private fun scrollToScreen(mainScreen:MainScreen){
         val screenPosition = mainPagerAdapter.getItems().indexOf(mainScreen)
         if(screenPosition != viewPager.currentItem){
@@ -141,29 +153,38 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-    //from interface, when subject is clicked listener
+    /**
+     *  Overrides method from interface
+     *  When subject clicked in SubjectsTabFragment(), SubjectDetails() activity is opened with subject passed
+     */
     override fun subClicked(subject: Subject) {
         val intent = Intent(this, SubjectDetails::class.java).apply{
             putExtraJson("subject",subject)
             putExtra("subRef", subject.getId())
-            putExtraJson("events",EventsParser(events))
+            putExtraJson("events",
+                EventsParser(events)
+            )
         }
         startActivity(intent)
     }
 
+    /**
+     *  Overrides method from interface
+     *  When Add Subject Button clicked in SubjectsTabFragment(), AddSubjectFragment Opened
+     */
     override fun subAddClick() {
         val fragmentManager = this.supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = AddSubjectFragment()
         fragment.setOnSubjectSavedListener(this)
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("addSubFrag").commit()
-//        val bottomNav = findViewById<View>(R.id.bottom_navigation_view)
-//        bottomNav.visibility = View.GONE
         showBottomNav(false)
     }
 
 
-
+    /**
+     * Toggle bottom navigation menu visibility
+     */
     fun showBottomNav(show:Boolean){
         val bottomNav = findViewById<View>(R.id.bottom_navigation_view)
         if(show){
@@ -176,16 +197,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         }
     }
 
-
-
-    fun setEvents(events:MutableList<Event>){
-        this.events = events
-
-    }
-
-    fun getEvents() = events
-
-
+    /**
+     *  Overrides method from interface
+     *  When subject saved in AddSubjectFragment(), SubjectDetails() is opened with the created subjects as extra
+     */
     override fun onSubjectSaved(subject: Subject) {
         showBottomNav(true)
         Log.d("onSubSaved","Listener called. \nSubject: ${subject.name}\nSubject Reference: ${subject.getId()}")
@@ -193,24 +208,24 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             putExtraJson("subject",subject)
             putExtra("subRef", subject.getId())
         }
-//        val intent = Intent(this, SubjectDetails::class.java).apply{
-//            putExtraJson(subject)
-//            putExtra("subRef", subject.getId())
-//        }
         val fm = this.supportFragmentManager
         startActivity(intent)
-
         fm.popBackStack("addSubFrag", FragmentManager.POP_BACK_STACK_INCLUSIVE)
     }
 
-    //select item in bottom navigation
+    /**
+     * Set the selected menu item
+     */
     private fun selectBottomNavigationViewMenuItem(@IdRes menuItemId: Int){
         bottomNavigationView.setOnNavigationItemSelectedListener(null)
         bottomNavigationView.selectedItemId=menuItemId
         bottomNavigationView.setOnNavigationItemSelectedListener(this)
     }
 
-    //listener for registering navigation clicks
+    /**
+     * Override function
+     * On navigation item click scroll to the related screen
+     */
     override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
         getMainScreenForMenuItem(menuItem.itemId)?.let{
             scrollToScreen(it)
@@ -220,17 +235,23 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return false
     }
 
+    /**
+     *  Overrides method from interface
+     *  When event item clicked, EventDetailsFragment() opened with clicked event
+     */
     override fun onEventClicked(tag: String, event: Event) {
         val fragmentManager = this.supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = EventDetailsFragment(event)
-//        fragment.setOnSubjectSavedListener(this)
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("eventDetailsFrag").commit()
         showBottomNav(false)
     }
 
+    /**
+     *  Overrides method from interface
+     *  When Edit Event button clicked, AddEventFragment() opened, with event item to prefill for editing
+     */
     override fun eventEditClicked(event: Event) {
-//        onBackPressed()
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         val fragment = AddEventFragment(null, event)
@@ -240,9 +261,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     override fun onEventSaved(events: MutableList<Event>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
+    /**
+     *  Overrides method from interface
+     *  When Add Transaction Button clicked, AddTransactionFragment() opened
+     */
     override fun transactionAddClick() {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -251,6 +276,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         showBottomNav(false)
     }
 
+    /**
+     *  Overrides method from interface
+     *  When transaction is clicked, TransactionDetailsFragment() opened
+     */
     override fun transactionClicked(transaction: Transaction) {
         val fragmentManager = this.supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -258,7 +287,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         fragmentTransaction.replace(R.id.view_pager_container, fragment).addToBackStack("transactionDetailFrag").commit()
         showBottomNav(false)
     }
-
-
 }
-data class EventsParser(val events: MutableList<Event>)
+
+

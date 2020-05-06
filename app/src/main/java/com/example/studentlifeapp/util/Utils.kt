@@ -14,6 +14,10 @@ class Utils {
 
 
 }
+
+/**
+ * Return the classificaition based on mark
+ */
 fun calculateClassification(percentage:Double): Classification {
     return if(percentage> 100){
         Classification.INVALID
@@ -38,6 +42,9 @@ fun calculateClassification(percentage:Double): Classification {
     }
 }
 
+/**
+ * Intent for launching activity from notification
+ */
 fun newLauncherIntent(context: Context): Intent? {
     val intent = Intent(context, MainActivity::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

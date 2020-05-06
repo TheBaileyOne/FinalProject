@@ -299,7 +299,7 @@ class MoneyTabFragment : Fragment() {
     }
 
     private fun calculateWeekly(){
-        var monthlyMoney = (balance*0.25) + monthIncome - monthExpense
+        val monthlyMoney = (balance*0.25) + monthIncome - monthExpense
         weeklyBudget = if (monthlyMoney>0&&balance>0)monthlyMoney/4.4
                         else 0.0
         weeklyBudget = 5*(floor(abs(weeklyBudget/5)))

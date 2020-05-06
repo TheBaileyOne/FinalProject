@@ -24,7 +24,7 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".activities.Signup"
+        <activity android:name=".activities.SignUp"
             android:screenOrientation="portrait"/>
         <activity android:name=".activities.Login"
             android:screenOrientation="portrait"/>

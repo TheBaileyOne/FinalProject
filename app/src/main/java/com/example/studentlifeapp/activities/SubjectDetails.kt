@@ -35,6 +35,11 @@ import kotlinx.android.synthetic.main.subject_event_item_view.*
 import org.threeten.bp.format.DateTimeFormatter
 import java.text.DecimalFormat
 
+/**
+ * Adapter for the RecyclerView to display events for the subject
+ * @property events list of events grouped by repeated insances
+ * @property onItemClick Function for click of an item
+ */
 class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, val onItemClick: ((Pair<String,List<Event>>) -> Unit)?):
     RecyclerView.Adapter<SubjectEventsAdapter.SubjectEventsViewHolder>(){
 
@@ -53,7 +58,7 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
                 onItemClick?.invoke(events[adapterPosition])
             }
         }
-        //TODO: on click listener to open up event details page, with edit event allowance
+        //Set the display of the event list items
         fun bind(event: Pair<String,List<Event>>) {
             val formatter = DateTimeFormatter.ofPattern("EEE")
             val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -64,6 +69,7 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
                 "${timeFormatter.format(event.second[0].startTime)} - ${timeFormatter.format(event.second[0].endTime)}"
 
             subject_event_view_day.text = formatter.format(event.second[0].startTime.dayOfWeek)
+            //Display logo depending on type of event
             when(event.second[0].type){
                 EventType.STUDY ->{
                     subject_event_view_icon.setImageResource(R.drawable.icons8_study)
@@ -108,7 +114,6 @@ class SubjectEventsAdapter(private var events:List<Pair<String,List<Event>>>, va
 
 class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener, AddAssessmentFragment.OnAssessmentSavedListener,
     Utils.EventDetailClickListener, EventDetailsFragment.EventEditListener{
-    //TODO:Finish implementing interface for communicating between fragment and activity
     private lateinit var recyclerView:RecyclerView
     private lateinit var viewAdapter: SubjectEventsAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
@@ -137,7 +142,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
         eventsViewModel.setEvents(events)
 
 
-        //TODO: sort out animation for activity opening
         val eventsGroup = formatEvents(events)
         supportActionBar?.title = "Subject Details"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -305,11 +309,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
             sub_percent_view.visibility = View.GONE
         }
     }
-
-    fun onMarkChange(){
-        //TODO: Allow marks to change
-    }
-
 
     private fun formatEvents(events:MutableList<Event>):List<Pair<String,List<Event>>>{
         events.sortBy { it.startTime }
@@ -511,11 +510,8 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                             updateSubEvents()
                         }
             }
-//        TODO: Fix this method, and make sure that the timetable and dashboard update events effectively
 
     }
-
-
 
     private fun subDbEventsListener():ListenerRegistration{
         val db = DatabaseManager()
@@ -549,9 +545,6 @@ class SubjectDetails : AppCompatActivity(),AddEventFragment.OnEventSavedListener
                                 db.getDatabase().collection("subjects").document(subjectRef).collection("eventRef")
                                     .document(event.id).delete()
                             }
-//                            val eventsGroup = formatEvents(dbEvents)
-//                            viewAdapter.refreshList(eventsGroup)
-//                            events = dbEvents.toMutableList()
 
                             events = dbEvents.toMutableList()
                             eventsViewModel.setEvents(events)

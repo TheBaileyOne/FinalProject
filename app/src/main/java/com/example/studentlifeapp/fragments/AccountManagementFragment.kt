@@ -15,13 +15,16 @@ import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_account_management.*
 
+/**
+ * Fragment for changing password
+ * Future versions will implement more account management functionality
+ */
 class AccountManagementFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account_management, container, false)
     }
 
@@ -31,6 +34,8 @@ class AccountManagementFragment : Fragment() {
 
         (activity as MainActivity).supportActionBar?.title = "Change Password"
         (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //Change users password method
         save_password_button.setOnClickListener {
             if (old_password_edit.text.isNullOrBlank() || new_password_edit.text.isNullOrBlank()
                 || confirm_password_edit.text.isNullOrBlank()){
@@ -38,7 +43,7 @@ class AccountManagementFragment : Fragment() {
             }else{
                 val oldPassword = old_password_edit.text.toString()
                 val credential = EmailAuthProvider.getCredential(user!!.email.toString(), oldPassword)
-                user.reauthenticate(credential)
+                user.reauthenticate(credential) //Checks whether user credentials are valid
                     .addOnSuccessListener {
                         val newPassword = new_password_edit.text.toString()
                         val confirmPassword  = confirm_password_edit.text.toString()
